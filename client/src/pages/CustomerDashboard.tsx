@@ -93,7 +93,7 @@ export default function CustomerDashboard() {
     enabled: isAuthenticated && user?.role === 'customer',
   });
 
-  const { data: user, refetch: refetchUser } = useQuery({
+  const { data: userBalance, refetch: refetchUserBalance } = useQuery({
     queryKey: ['/api/auth/user'],
     queryFn: () => apiRequest('GET', '/api/auth/user'),
     refetchInterval: 5000, // Refresh every 5 seconds for real-time balance updates
@@ -148,7 +148,7 @@ export default function CustomerDashboard() {
             </div>
             <div className="text-right">
               <p className="text-blue-100">Mevcut Kredi</p>
-              <p className="text-2xl font-bold">₺{user.creditBalance}</p>
+              <p className="text-2xl font-bold">₺{userBalance?.creditBalance || user?.creditBalance || 0}</p>
             </div>
           </div>
         </div>
