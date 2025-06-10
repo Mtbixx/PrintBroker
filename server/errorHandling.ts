@@ -104,6 +104,16 @@ export const globalErrorHandler = (error: Error, req: Request, res: Response, ne
 
   errorManager.logError(error, req, severity, userId);
 
+  // API endpoint hatalarını özel olarak işle
+  if (req.path.includes('/api/quotes') && error.message.includes('validation')) {
+    return res.status(400).json({
+      success: false,
+      message: 'Veri doğrulama hatası. Lütfen tüm gerekli alanları doldurun.',
+      errorType: 'validation_error',
+      timestamp: new Date().toISOString()
+    });
+  }
+
   if (!res.headersSent) {
     res.status(500).json({
       success: false,
