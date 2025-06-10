@@ -1804,7 +1804,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user has enough credit (35₺ per design)
       const designCost = 35;
-      const currentBalance = parseFloat(user.creditBalance || '0');
+      
+      // Get fresh user data to ensure current balance
+      const freshUser = await storage.getUser(userId);
+      if (!freshUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const currentBalance = parseFloat(freshUser.creditBalance || '0');
+      console.log(`💰 Credit check for user ${userId}: Current balance ${currentBalance}₺, Required: ${designCost}₺`);
 
       if (currentBalance < designCost) {
         return res.status(400).json({ 
@@ -1819,6 +1827,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Deduct credit from user balance
       const newBalance = currentBalance - designCost;
       await storage.updateUserCreditBalance(userId, newBalance.toString());
+      
+      // Update session with new balance
+      if (req.session && req.session.user) {
+        req.session.user.creditBalance = newBalance.toString();
+      }
+      
+      console.log(`💳 Credit deducted: ${designCost}₺, New balance: ${newBalance}₺`);
 
       // Auto-save design to user's history with enhanced data
       const savedDesign = await storage.saveDesignGeneration({

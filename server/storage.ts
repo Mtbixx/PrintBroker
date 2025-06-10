@@ -509,8 +509,18 @@ export class DatabaseStorage implements IStorage {
 
   private getStoredDesigns(): any[] {
     try {
-      const fs = require('fs');
-      const path = require('path');
+      import('fs').then(fs => {
+        import('path').then(path => {
+          const filePath = path.join(process.cwd(), 'design-history.json');
+          if (fs.existsSync(filePath)) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          }
+          return [];
+        });
+      });
+      // Fallback to sync import for now
+      const fs = eval('require')('fs');
+      const path = eval('require')('path');
       const filePath = path.join(process.cwd(), 'design-history.json');
       if (fs.existsSync(filePath)) {
         return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -524,8 +534,8 @@ export class DatabaseStorage implements IStorage {
 
   private storeDesigns(designs: any[]) {
     try {
-      const fs = require('fs');
-      const path = require('path');
+      const fs = eval('require')('fs');
+      const path = eval('require')('path');
       const filePath = path.join(process.cwd(), 'design-history.json');
       fs.writeFileSync(filePath, JSON.stringify(designs, null, 2));
     } catch (error) {

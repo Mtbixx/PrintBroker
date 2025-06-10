@@ -93,6 +93,12 @@ export default function CustomerDashboard() {
     enabled: isAuthenticated && user?.role === 'customer',
   });
 
+  const { data: user, refetch: refetchUser } = useQuery({
+    queryKey: ['/api/auth/user'],
+    queryFn: () => apiRequest('GET', '/api/auth/user'),
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time balance updates
+  });
+
   if (isLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -157,7 +163,7 @@ export default function CustomerDashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8">
-            {/* Teklif Türleri */}
+            
             <div>
               <h4 className="text-lg font-semibold mb-4 text-gray-900">Teklif Talep Et</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -193,7 +199,7 @@ export default function CustomerDashboard() {
               </div>
             </div>
 
-            {/* Hızlı İşlemler */}
+            
             <div>
               <h4 className="text-lg font-semibold mb-4 text-gray-900">Hızlı İşlemler</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -240,7 +246,7 @@ export default function CustomerDashboard() {
               </div>
             </div>
 
-            {/* Stats Grid */}
+            
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <StatsCard
                 title="Bekleyen Teklifler"
@@ -268,7 +274,7 @@ export default function CustomerDashboard() {
               />
             </div>
 
-            {/* Son Teklifler */}
+            
             <Card>
               <CardHeader>
                 <CardTitle>Son Tekliflerim</CardTitle>
@@ -341,7 +347,7 @@ export default function CustomerDashboard() {
                               </div>
                             )}
 
-                            {/* Overlay with actions */}
+                            
                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
                               <div className="flex gap-2">
                                 <Dialog>
@@ -402,7 +408,7 @@ export default function CustomerDashboard() {
 
                                     if (imageUrl) {
                                       try {
-                                        // Önce proxy üzerinden deneme
+                                        
                                         const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
                                         const response = await fetch(proxyUrl);
 
@@ -430,7 +436,7 @@ export default function CustomerDashboard() {
                                           throw new Error('Proxy indirme başarısız');
                                         }
                                       } catch (error) {
-                                        // Proxy başarısız olursa direkt URL'den indirme deneme
+                                        
                                         try {
                                           const directResponse = await fetch(imageUrl, { 
                                             mode: 'cors',
@@ -461,14 +467,14 @@ export default function CustomerDashboard() {
                                             throw new Error('Direkt indirme başarısız');
                                           }
                                         } catch (directError) {
-                                          // Son çare olarak download attribute ile link oluştur
+                                          
                                           const link = document.createElement('a');
                                           link.href = imageUrl;
                                           link.download = `tasarim-${design.id}.png`;
                                           link.target = '_blank';
                                           link.rel = 'noopener noreferrer';
 
-                                          // Geçici olarak body'e ekle ve tıkla
+                                          
                                           document.body.appendChild(link);
                                           link.click();
                                           document.body.removeChild(link);
@@ -511,7 +517,7 @@ export default function CustomerDashboard() {
                               </div>
                             </div>
 
-                            {/* Status badges */}
+                            
                             <div className="absolute top-2 right-2 space-y-1">
                               {design.isBookmarked && (
                                 <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
@@ -544,7 +550,7 @@ export default function CustomerDashboard() {
                       ))}
                     </div>
 
-                    {/* Pagination */}
+                    
                     {designHistory.totalPages > 1 && (
                       <div className="flex justify-center items-center gap-2 mt-6">
                         <Button
@@ -652,14 +658,14 @@ export default function CustomerDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Files Tab */}
+          
           <TabsContent value="files">
             <FileManager />
           </TabsContent>
         </Tabs>
       </main>
 
-      {/* Floating Chat Button */}
+      
       <Button
         onClick={() => setIsChatOpen(true)}
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-40"
@@ -678,7 +684,7 @@ export default function CustomerDashboard() {
         </div>
       </Button>
 
-      {/* Chat Component */}
+      
       {isChatOpen && (
         <Chat
           isOpen={isChatOpen}
