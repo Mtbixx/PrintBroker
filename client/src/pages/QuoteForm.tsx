@@ -1214,16 +1214,7 @@ export default function QuoteForm() {
 
                     
 
-                    <div className="space-y-2">
-                      <Label htmlFor="deadline">Teslim Tarihi</Label>
-                      <Input
-                        id="deadline"
-                        type="date"
-                        {...form.register("deadline")}
-                        className="border-gray-300 focus:border-blue-500"
-                      />
                     </div>
-                  </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="description">Proje Açıklaması</Label>
