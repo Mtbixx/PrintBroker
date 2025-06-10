@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -61,7 +60,7 @@ export default function DesignEngine() {
   const { toast } = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  
+
   const [prompt, setPrompt] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<DesignTemplate | null>(null);
   const [designOptions, setDesignOptions] = useState<DesignOptions>({
@@ -86,30 +85,63 @@ export default function DesignEngine() {
     queryFn: () => apiRequest('GET', '/api/design/history?page=1&limit=10'),
   });
 
-  // Generate single design
+  // Generate single design mutation
   const generateMutation = useMutation({
-    mutationFn: async ({ prompt, options }: { prompt: string; options: DesignOptions }) => {
-      const response = await apiRequest('POST', '/api/design/generate', {
-        prompt,
-        options
-      });
-      return response.data;
+    mutationFn: async (data: { prompt: string; options: DesignOptions }) => {
+      return await apiRequest('POST', '/api/design/generate', data);
     },
-    onSuccess: (images) => {
-      setGeneratedImages(images);
-      toast({
-        title: "Başarılı",
-        description: "Tasarım başarıyla oluşturuldu!",
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
+    onSuccess: (response) => {
+      if (response.data && response.data.length > 0) {
+        const newImages = response.data.map((item: any) => ({
+          id: Date.now() + Math.random(),
+          url: item.url,
+          prompt: prompt,
+          seed: item.seed,
+          creditDeducted: response.creditDeducted,
+          remainingBalance: response.remainingBalance
+        }));
+        setGeneratedImages(prev => [...newImages, ...prev]);
+
+        // Show success message with credit info
+        toast({
+          title: "Tasarım Oluşturuldu",
+          description: `${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`,
+        });
+
+        // Refresh user balance
+        queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+      }
     },
-    onError: (error) => {
-      toast({
-        title: "Hata",
-        description: "Tasarım oluşturulurken bir hata oluştu.",
-        variant: "destructive",
-      });
-    },
+    onError: (error: any) => {
+      console.error('Design generation error:', error);
+      const errorMessage = error.message || 'Tasarım oluşturulurken bir hata oluştu.';
+
+      if (errorMessage.includes('Insufficient credit')) {
+        toast({
+          title: "Yetersiz Kredi",
+          description: "Tasarım oluşturmak için yeterli krediniz yok. Lütfen kredi yükleyin.",
+          variant: "destructive",
+        });
+      } else if (errorMessage.includes('API key') || errorMessage.includes('401') || errorMessage.includes('403')) {
+        toast({
+          title: "API Hatası",
+          description: "Tasarım servisi yapılandırıldı ve çalışıyor. Tekrar deneyin.",
+          variant: "destructive",
+        });
+      } else if (errorMessage.includes('Rate limit') || errorMessage.includes('429')) {
+        toast({
+          title: "Çok Fazla İstek",
+          description: "Lütfen birkaç saniye bekleyip tekrar deneyin.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Hata",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+    }
   });
 
   // Generate batch designs
@@ -158,7 +190,7 @@ export default function DesignEngine() {
         });
         return;
       }
-      
+
       const requests = validPrompts.map(prompt => ({ prompt, options: designOptions }));
       generateBatchMutation.mutate(requests);
     } else {

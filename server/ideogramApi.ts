@@ -29,7 +29,7 @@ class IdeogramService {
   private baseUrl = 'https://api.ideogram.ai/generate';
 
   constructor() {
-    this.apiKey = process.env.IDEOGRAM_API_KEY || '';
+    this.apiKey = 'X3h2wLDuOfuJynGGclLZhLN1isGvy9oxBM-S8wcNJVTqk80lyW6pszMShoMHP8YbN7DYSfzti7eTLL-KCExqZw';
     if (!this.apiKey) {
       console.warn('IDEOGRAM_API_KEY environment variable not set - design generation will be disabled');
     }

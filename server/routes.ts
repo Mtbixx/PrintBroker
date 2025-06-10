@@ -1812,13 +1812,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Prompt is required" });
       }
 
-      // Check if Ideogram API is available
-      if (!process.env.IDEOGRAM_API_KEY) {
-        return res.status(503).json({ 
-          message: "Design generation service is currently unavailable. Please contact administrator.",
-          service: "ideogram_unavailable"
-        });
-      }
+      // Ideogram API is now configured directly in the service
+      console.log('🎨 Design generation request received:', { prompt, options });
 
       // Check if user has enough credit (35₺ per design)
       const designCost = 35;
