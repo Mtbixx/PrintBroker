@@ -402,6 +402,7 @@ export default function CustomerDashboard() {
 
                                     if (imageUrl) {
                                       try {
+                                        // Önce proxy üzerinden deneme
                                         const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
                                         const response = await fetch(proxyUrl);
 
@@ -425,13 +426,59 @@ export default function CustomerDashboard() {
                                             title: "Başarılı",
                                             description: "Tasarım başarıyla indirildi.",
                                           });
+                                        } else {
+                                          throw new Error('Proxy indirme başarısız');
                                         }
                                       } catch (error) {
-                                        window.open(imageUrl, '_blank');
-                                        toast({
-                                          title: "Bilgi",
-                                          description: "Tasarım yeni sekmede açıldı.",
-                                        });
+                                        // Proxy başarısız olursa direkt URL'den indirme deneme
+                                        try {
+                                          const directResponse = await fetch(imageUrl, { 
+                                            mode: 'cors',
+                                            credentials: 'omit'
+                                          });
+                                          
+                                          if (directResponse.ok) {
+                                            const blob = await directResponse.blob();
+                                            const link = document.createElement('a');
+                                            const objectUrl = URL.createObjectURL(blob);
+                                            link.href = objectUrl;
+                                            link.download = `tasarim-${design.id}.png`;
+                                            link.style.display = 'none';
+
+                                            document.body.appendChild(link);
+                                            link.click();
+
+                                            setTimeout(() => {
+                                              document.body.removeChild(link);
+                                              URL.revokeObjectURL(objectUrl);
+                                            }, 100);
+
+                                            toast({
+                                              title: "Başarılı",
+                                              description: "Tasarım başarıyla indirildi.",
+                                            });
+                                          } else {
+                                            throw new Error('Direkt indirme başarısız');
+                                          }
+                                        } catch (directError) {
+                                          // Son çare olarak download attribute ile link oluştur
+                                          const link = document.createElement('a');
+                                          link.href = imageUrl;
+                                          link.download = `tasarim-${design.id}.png`;
+                                          link.target = '_blank';
+                                          link.rel = 'noopener noreferrer';
+                                          
+                                          // Geçici olarak body'e ekle ve tıkla
+                                          document.body.appendChild(link);
+                                          link.click();
+                                          document.body.removeChild(link);
+
+                                          toast({
+                                            title: "İndirme Başlatıldı",
+                                            description: "Tasarım indirme işlemi başlatıldı. Tarayıcınızın indirme ayarlarını kontrol edin.",
+                                            variant: "default",
+                                          });
+                                        }
                                       }
                                     }
                                   }}
