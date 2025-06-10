@@ -1,32 +1,32 @@
 [
   {
-    "id": "dcaaa934-979b-486c-8c61-e47a7222e86c",
+    "id": "1760e6a7-472d-416e-a497-d8788cfc412f",
     "userId": "CUS-1749584324055-GDJ8XR",
-    "prompt": "Bovega Parfüm için kırmızı zemin üzerine gold çerçeveli etiket tasarımı yap",
+    "prompt": "Ürün etiketi tasarımı, Sevurg Parfüm için çekici ve bilgilendirici",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
-      "styleType": "DESIGN",
+      "styleType": "AUTO",
       "magicPrompt": "AUTO"
     },
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "IMPORTANT: FLAT LABEL DESIGN ONLY, NO MOCKUP, NO BOTTLE, NO PACKAGING, 2D GRAPHIC DESIGN, LABEL ARTWORK, STICKER DESIGN, DECAL DESIGN. Create a flat, 2D label design for: Bovega Parfüm için kırmızı zemin üzerine gold çerçeveli etiket tasarımı yap. Requirements: professional typography, clean layout, brand identity, commercial printing quality, vector style graphics, high contrast text, balanced composition, modern aesthetic. Style: minimalist, professional, print-ready. Format: flat graphic design suitable for label printing. ABSOLUTELY NO: 3D mockups, product bottles, packaging visualization, realistic rendering, shadows, perspective views, product photography.",
+        "prompt": "IMPORTANT: FLAT LABEL DESIGN ONLY, NO MOCKUP, NO BOTTLE, NO PACKAGING, 2D GRAPHIC DESIGN, LABEL ARTWORK, STICKER DESIGN, DECAL DESIGN. Create a flat, 2D label design for: Ürün etiketi tasarımı, Sevurg Parfüm için çekici ve bilgilendirici. Requirements: professional typography, clean layout, brand identity, commercial printing quality, vector style graphics, high contrast text, balanced composition, modern aesthetic. Style: minimalist, professional, print-ready. Format: flat graphic design suitable for label printing. ABSOLUTELY NO: 3D mockups, product bottles, packaging visualization, realistic rendering, shadows, perspective views, product photography.",
         "resolution": "1024x1024",
-        "seed": 1876336527,
+        "seed": 229915788,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/UjpvTLENR8-00ZO6ObaXxA.png?exp=1749672304&sig=0e7c5a2b4c58b3d2dc2987ea17382cf7436b8d0c343254aa148faf6bd490576c"
+        "url": "https://ideogram.ai/api/images/ephemeral/wIygh61PTXmE6xNl1W8hbQ.png?exp=1749673383&sig=46d436984c42a00231ae678418123375edc5c919afef390b1ef6e499acdbda06"
       },
-      "generationId": "3578120f-8821-489e-9361-af6512066280",
+      "generationId": "574f8eeb-3226-4640-aef6-7de9bd85911e",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
-        "styleType": "DESIGN",
+        "styleType": "AUTO",
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T20:05:04.820Z",
+    "createdAt": "2025-06-10T20:23:03.840Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false
