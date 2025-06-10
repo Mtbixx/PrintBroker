@@ -29,9 +29,11 @@ import {
   Layout,
   Loader2,
   Printer,
-  Disc
+  Disc,
+  Link
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import IdeogramAnalyzer from './IdeogramAnalyzer';
 
 interface DesignTemplate {
   id: string;
@@ -74,6 +76,7 @@ export default function DesignEngine() {
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [batchMode, setBatchMode] = useState(false);
   const [batchPrompts, setBatchPrompts] = useState<string[]>(['']);
+  const [activeTab, setActiveTab] = useState<'create' | 'templates' | 'history' | 'ideogram'>('create'); // Added 'templates'
 
   // Fetch design templates
   const { data: templates = [] } = useQuery({
@@ -330,7 +333,7 @@ export default function DesignEngine() {
       </div>
 
       <Tabs defaultValue="create" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="create" className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
             Tasarım Oluştur
@@ -342,6 +345,10 @@ export default function DesignEngine() {
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
             Geçmiş
+          </TabsTrigger>
+          <TabsTrigger value="ideogram" className="flex items-center gap-2">
+            <Link className="h-4 w-4" />
+            Ideogram
           </TabsTrigger>
         </TabsList>
 
@@ -718,6 +725,11 @@ export default function DesignEngine() {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        {/* Ideogram Tab */}
+        <TabsContent value="ideogram">
+          <IdeogramAnalyzer />
         </TabsContent>
       </Tabs>
     </div>
