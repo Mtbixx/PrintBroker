@@ -1,8 +1,8 @@
 [
   {
-    "id": "07daea26-b35a-4e8b-a44c-45640f9a147c",
+    "id": "97cc7b15-7398-4be2-a865-baa3c39d8953",
     "userId": "CUS-1749584324055-GDJ8XR",
-    "prompt": "Bendoral Parfüm için etiket tasarla",
+    "prompt": "Selvora için parfüm etiketi tasarla",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
@@ -12,13 +12,13 @@
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "A clean, modern, high-quality label design for Bendoral Parfüm. The label has professional typography with clear, readable text. There is a balanced composition with proper spacing, and the design is focused on the brand. The label is print-ready with sharp edges, and it has a commercial product label aesthetic. The professional color scheme is used, and the graphics are in a vector-style. The design is flat and has high contrast and legibility for printing.",
+        "prompt": "An ultra high-quality, professional design of a product label for Selvora's perfume. The label has a clean vector style with crisp details and sharp typography. The design is commercial grade and print-ready with a premium aesthetics and brand identity. The label features a modern layout with readable typography and a balanced composition. The professional color scheme is brand-focused. The design is high resolution and has a CMYK color profile. It is scalable and meets commercial printing standards. The design is a flat 2D label without any mockups, bottles, packages, 3D renderings, or realistic product shots.",
         "resolution": "1024x1024",
-        "seed": 1415182849,
+        "seed": 1456038588,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/qeJh6cLbQ3et9yf1MJ5SSg.png?exp=1749671642&sig=e2e0b7b6f0a28d1401290472ffef4df09285fb26bb31445c68922c834fa1304c"
+        "url": "https://ideogram.ai/api/images/ephemeral/pYu9T10YQWWeemBlmdwetg.png?exp=1749671840&sig=a2a1ec1afae638e22704fdffc324e683e9aef61bfd7b007b2efd65b92350e812"
       },
-      "generationId": "9f028f30-ec08-4f47-b88b-12be9c86992b",
+      "generationId": "19ad52bf-411a-4664-a3eb-a09fe39b9034",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
@@ -26,7 +26,7 @@
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T19:54:02.384Z",
+    "createdAt": "2025-06-10T19:57:20.293Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false
