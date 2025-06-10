@@ -63,6 +63,54 @@ const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Form validasyonu - zorunlu alanları kontrol et
+    if (!formData.quantity || parseInt(formData.quantity) < 1) {
+      toast({
+        title: "Eksik Bilgi",
+        description: "Lütfen miktar bilgisini giriniz.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.companyName.trim()) {
+      toast({
+        title: "Eksik Bilgi",
+        description: "Lütfen firma adını giriniz.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.contactName.trim()) {
+      toast({
+        title: "Eksik Bilgi",
+        description: "Lütfen yetkili kişi adını giriniz.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      toast({
+        title: "Eksik Bilgi",
+        description: "Lütfen e-posta adresini giriniz.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // E-posta formatı kontrolü
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Geçersiz E-posta",
+        description: "Lütfen geçerli bir e-posta adresi giriniz.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const response = await fetch('/api/quotes/public', {
         method: 'POST',
@@ -172,6 +220,7 @@ const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
                 placeholder="Örn: 5000"
                 value={formData.quantity}
                 onChange={(e) => setFormData({...formData, quantity: e.target.value})}
+                className={!formData.quantity ? "border-red-200 focus:border-red-500" : ""}
                 required
               />
               <p className="text-xs text-gray-500 mt-1">{category.minOrder}</p>
@@ -238,6 +287,7 @@ const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
                   id="companyName"
                   value={formData.companyName}
                   onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                  className={!formData.companyName.trim() ? "border-red-200 focus:border-red-500" : ""}
                   required
                 />
               </div>
@@ -248,6 +298,7 @@ const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
                   id="contactName"
                   value={formData.contactName}
                   onChange={(e) => setFormData({...formData, contactName: e.target.value})}
+                  className={!formData.contactName.trim() ? "border-red-200 focus:border-red-500" : ""}
                   required
                 />
               </div>
@@ -261,6 +312,7 @@ const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className={!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ? "border-red-200 focus:border-red-500" : ""}
                   required
                 />
               </div>
@@ -280,7 +332,11 @@ const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
             <Button type="button" variant="outline" onClick={() => setIsOpen(false)} className="flex-1">
               İptal
             </Button>
-            <Button type="submit" className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 font-semibold">
+            <Button 
+              type="submit" 
+              disabled={!formData.quantity || !formData.companyName.trim() || !formData.contactName.trim() || !formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)}
+              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Zap className="w-4 h-4 mr-2" />
               Otomatik Sistem Başlat
             </Button>
