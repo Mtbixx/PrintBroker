@@ -1,8 +1,8 @@
 [
   {
-    "id": "451025f1-03c9-4076-b71a-9c428548affb",
+    "id": "07daea26-b35a-4e8b-a44c-45640f9a147c",
     "userId": "CUS-1749584324055-GDJ8XR",
-    "prompt": "Rendoa Parfüm için siyah zemin üzerine gold etiket tasarla",
+    "prompt": "Bendoral Parfüm için etiket tasarla",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
@@ -12,13 +12,13 @@
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "Flat vector label design for Rendoa Parfüm için siyah zemin üzerine gold etiket tasarla. Design requirements: FLAT 2D label design only, vector graphics style, clean typography, professional branding elements, geometric shapes, minimalist aesthetic, brand colors, high contrast text, commercial label layout. Style: flat design, vector illustration, 2D graphics, label artwork, sticker design. NO 3D elements, NO mockups, NO bottles, NO packaging, NO realistic rendering, NO shadows, NO perspective, NO product photography. Pure flat graphic design for printing on labels.",
+        "prompt": "A clean, modern, high-quality label design for Bendoral Parfüm. The label has professional typography with clear, readable text. There is a balanced composition with proper spacing, and the design is focused on the brand. The label is print-ready with sharp edges, and it has a commercial product label aesthetic. The professional color scheme is used, and the graphics are in a vector-style. The design is flat and has high contrast and legibility for printing.",
         "resolution": "1024x1024",
-        "seed": 2073098427,
+        "seed": 1415182849,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/o49LX5j8TWyustJHl24Y_A.png?exp=1749671422&sig=2d1e94e065e4d70b1dd7f1e061474802c2e460af9a1a3b6268da80334740532b"
+        "url": "https://ideogram.ai/api/images/ephemeral/qeJh6cLbQ3et9yf1MJ5SSg.png?exp=1749671642&sig=e2e0b7b6f0a28d1401290472ffef4df09285fb26bb31445c68922c834fa1304c"
       },
-      "generationId": "7283192c-4b83-46a1-88b7-7e0b67771f56",
+      "generationId": "9f028f30-ec08-4f47-b88b-12be9c86992b",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
@@ -26,7 +26,7 @@
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T19:50:22.777Z",
+    "createdAt": "2025-06-10T19:54:02.384Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false

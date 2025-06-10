@@ -1,14 +1,14 @@
 [
   {
-    "id": "b1b44065-b12c-44d0-8389-8c8dbd350626",
+    "id": "403eaf5c-8c11-4c2d-a895-b105e75ade59",
     "userId": "dev-user-1748981533183",
     "type": "new_quote",
     "title": "Yeni Teklif Talebi",
-    "message": "Kozmetik - 48,906 adet - ₺13782",
+    "message": "Kozmetik - 57,293 adet - ₺16177",
     "data": {
-      "quoteId": "b25cb955-3298-4b43-bc10-f7aaa03e4c6e"
+      "quoteId": "61fd725d-ea73-4b4a-ac91-20d2be56f8fa"
     },
     "isRead": false,
-    "createdAt": "2025-06-10T19:47:23.635Z"
+    "createdAt": "2025-06-10T19:54:36.002Z"
   }
 ]
