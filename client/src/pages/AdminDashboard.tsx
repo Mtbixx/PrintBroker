@@ -1,29 +1,55 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Link } from "wouter";
+import {
+  Plus,
+  Users,
+  FileText,
+  DollarSign,
+  TrendingUp,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Settings,
+  Shield,
+  Activity,
+  Database,
+  Server,
+  Zap,
+  BarChart3,
+  MessageCircle,
+  UserCheck,
+  UserX,
+  Filter,
+  Download,
+  RefreshCw,
+  Eye,
+  Edit,
+  Trash2,
+  Bell
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import Navigation from "@/components/Navigation";
-import StatsCard from "@/components/StatsCard";
+import Chat from "@/components/Chat";
 import SystemMonitoring from "@/components/SystemMonitoring";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import ReportsAndAnalytics from "@/components/ReportsAndAnalytics";
 import { 
-  Users, 
   Building2, 
-  FileText, 
   ShoppingCart,
-  Settings,
-  AlertCircle,
   UserPlus,
-  CheckCircle,
-  Link,
   Sparkles
 } from "lucide-react";
 
