@@ -47,15 +47,19 @@ class IdeogramService {
       throw new Error('Ideogram API key not configured. Please contact administrator.');
     }
     try {
+      // Etiket tasarımları için özel prompt optimizasyonu
+      const enhancedPrompt = this.enhancePromptForLabels(prompt);
+      const enhancedOptions = this.optimizeOptionsForLabels(prompt, options);
+
       const requestData: IdeogramRequest = {
         image_request: {
-          prompt,
-          aspect_ratio: options.aspectRatio || 'ASPECT_1_1',
-          model: options.model || 'V_2',
-          style_type: options.styleType || 'AUTO',
-          magic_prompt_option: options.magicPrompt || 'AUTO',
-          negative_prompt: options.negativePrompt,
-          seed: options.seed,
+          prompt: enhancedPrompt,
+          aspect_ratio: enhancedOptions.aspectRatio || 'ASPECT_1_1',
+          model: enhancedOptions.model || 'V_2',
+          style_type: enhancedOptions.styleType || 'DESIGN',
+          magic_prompt_option: enhancedOptions.magicPrompt || 'AUTO',
+          negative_prompt: enhancedOptions.negativePrompt,
+          seed: enhancedOptions.seed,
         }
       };
 
@@ -104,6 +108,64 @@ class IdeogramService {
     }
 
     return results;
+  }
+
+  // Etiket tasarımları için prompt geliştirme
+  private enhancePromptForLabels(originalPrompt: string): string {
+    const isLabelDesign = this.isLabelDesign(originalPrompt);
+    
+    if (isLabelDesign) {
+      // Etiket tasarımı için özel ana prompt
+      const labelPrompt = `Professional product label design: ${originalPrompt}. 
+        Create a clean, modern, high-quality label design with:
+        - Professional typography and clear readable text
+        - Balanced composition with proper spacing
+        - Brand-focused graphic elements
+        - Print-ready quality with sharp edges
+        - Commercial product label aesthetic
+        - Professional color scheme
+        - Vector-style clean graphics
+        - No mockup or bottle/package visualization
+        - Focus purely on the flat label graphic design
+        - High contrast and legibility for printing
+        - Commercial printing standards`;
+      
+      return labelPrompt;
+    }
+    
+    return originalPrompt;
+  }
+
+  // Etiket tasarımları için seçenek optimizasyonu
+  private optimizeOptionsForLabels(originalPrompt: string, options: any): any {
+    const isLabelDesign = this.isLabelDesign(originalPrompt);
+    
+    if (isLabelDesign) {
+      return {
+        ...options,
+        styleType: 'DESIGN', // Etiket için her zaman DESIGN stili
+        aspectRatio: options.aspectRatio || 'ASPECT_1_1', // Kare format varsayılan
+        magicPrompt: 'ON', // Magic prompt aktif
+        negativePrompt: (options.negativePrompt || '') + 
+          ', mockup, 3d rendering, bottle, package, container, photorealistic product, shadows, perspective view, mock-up, product photography, physical object'
+      };
+    }
+    
+    return options;
+  }
+
+  // Etiket tasarımı algılama
+  private isLabelDesign(prompt: string): boolean {
+    const labelKeywords = [
+      'etiket', 'label', 'etiketi', 'labelı', 'ürün etiketi', 'product label',
+      'marka etiketi', 'brand label', 'kozmetik etiketi', 'cosmetic label',
+      'gıda etiketi', 'food label', 'içecek etiketi', 'beverage label',
+      'şampuan etiketi', 'parfüm etiketi', 'deterjan etiketi',
+      'etiket tasarım', 'label design', 'etiket tasarla'
+    ];
+    
+    const lowerPrompt = prompt.toLowerCase();
+    return labelKeywords.some(keyword => lowerPrompt.includes(keyword.toLowerCase()));
   }
 }
 
