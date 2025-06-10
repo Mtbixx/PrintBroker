@@ -67,7 +67,7 @@ export default function PrinterDashboard() {
       }, 1500);
       return;
     }
-    
+
     // Additional role check
     if (!isLoading && user && user.role !== 'printer') {
       toast({
@@ -98,42 +98,80 @@ export default function PrinterDashboard() {
   });
 
   const submitQuoteMutation = useMutation({
-    mutationFn: async (data: { quoteId: string; price: string; estimatedDays: string; notes: string }) => {
-      await apiRequest('POST', `/api/quotes/${data.quoteId}/printer-quotes`, {
-        price: parseFloat(data.price),
-        estimatedDays: parseInt(data.estimatedDays),
-        notes: data.notes
+    mutationFn: async (data: any) => {
+      if (!selectedQuote) throw new Error("No quote selected");
+
+      const response = await fetch(`/api/quotes/${selectedQuote.id}/printer-quotes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(data),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Network error' }));
+        throw new Error(errorData.message || 'Failed to submit quote');
+      }
+
+      return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
-        title: "Başarılı",
-        description: "Teklifiniz başarıyla gönderildi.",
+        title: "Başarılı!",
+        description: data.message || "Teklifiniz başarıyla gönderildi.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/quotes"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/printer-quotes"] });
       setSelectedQuote(null);
       setQuoteForm({ price: '', estimatedDays: '', notes: '' });
+      queryClient.invalidateQueries({ queryKey: ["/api/quotes"] });
     },
-    onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
+    onError: (error: Error) => {
+      console.error("Quote submission error:", error);
       toast({
-        title: "Hata",
-        description: "Teklif gönderilirken bir hata oluştu.",
+        title: "Teklif Gönderim Hatası",
+        description: error.message,
         variant: "destructive",
       });
     },
   });
+
+  const handleSubmitQuote = () => {
+    // Enhanced validation
+    if (!quoteForm.price || !quoteForm.estimatedDays) {
+      toast({
+        title: "Eksik Bilgi",
+        description: "Lütfen fiyat ve tahmini süre bilgilerini doldurun.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const price = parseFloat(quoteForm.price);
+    const estimatedDays = parseInt(quoteForm.estimatedDays);
+
+    if (isNaN(price) || price <= 0) {
+      toast({
+        title: "Geçersiz Fiyat",
+        description: "Lütfen geçerli bir fiyat girin.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isNaN(estimatedDays) || estimatedDays <= 0) {
+      toast({
+        title: "Geçersiz Süre",
+        description: "Lütfen geçerli bir tahmini süre girin.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    submitQuoteMutation.mutate({
+      price: price.toString(),
+      estimatedDays: estimatedDays.toString(),
+      notes: quoteForm.notes || ''
+    });
+  };
 
   if (isLoading || !isAuthenticated) {
     return (
@@ -160,22 +198,6 @@ export default function PrinterDashboard() {
       </div>
     );
   }
-
-  const handleSubmitQuote = () => {
-    if (!selectedQuote || !quoteForm.price || !quoteForm.estimatedDays) {
-      toast({
-        title: "Hata",
-        description: "Lütfen tüm gerekli alanları doldurun.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    submitQuoteMutation.mutate({
-      quoteId: selectedQuote.id,
-      ...quoteForm
-    });
-  };
 
   const getStatusBadge = (status: string) => {
     const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
@@ -353,57 +375,87 @@ export default function PrinterDashboard() {
 
         {/* Quote Submission Modal */}
         {selectedQuote && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <CardHeader>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-3xl max-h-[95vh] overflow-hidden flex flex-col">
+              <CardHeader className="flex-shrink-0 border-b">
                 <div className="flex items-center justify-between">
-                  <CardTitle>Teklif Ver - {selectedQuote.title}</CardTitle>
-                  <Button
-                    variant="ghost"
+                  <div>
+                    <CardTitle className="text-xl">Teklif Detayları</CardTitle>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {selectedQuote.title} - {selectedQuote.id}
+                    </p>
+                  </div>
+                  <Button 
+                    variant="ghost" 
                     size="sm"
                     onClick={() => setSelectedQuote(null)}
+                    className="rounded-full"
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="price">Fiyat (₺)</Label>
+              <CardContent className="overflow-y-auto flex-grow">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                <div className="space-y-1">
+                  <Label htmlFor="price" className="text-sm font-medium">
+                    Teklif Fiyatı (₺) <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="price"
                     type="number"
-                    placeholder="Teklif fiyatınızı girin"
+                    min="0"
+                    step="0.01"
+                    placeholder="Örn: 1500"
                     value={quoteForm.price}
                     onChange={(e) => setQuoteForm({ ...quoteForm, price: e.target.value })}
+                    className={!quoteForm.price ? "border-red-200" : ""}
                   />
+                  {!quoteForm.price && (
+                    <p className="text-xs text-red-500">Fiyat bilgisi gereklidir</p>
+                  )}
                 </div>
 
-                <div>
-                  <Label htmlFor="estimatedDays">Tahmini Süre (Gün)</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="estimatedDays" className="text-sm font-medium">
+                    Tahmini Süre (Gün) <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="estimatedDays"
                     type="number"
-                    placeholder="Teslim süresi"
+                    min="1"
+                    max="365"
+                    placeholder="Örn: 7"
                     value={quoteForm.estimatedDays}
                     onChange={(e) => setQuoteForm({ ...quoteForm, estimatedDays: e.target.value })}
+                    className={!quoteForm.estimatedDays ? "border-red-200" : ""}
                   />
+                  {!quoteForm.estimatedDays && (
+                    <p className="text-xs text-red-500">Tahmini süre gereklidir</p>
+                  )}
                 </div>
 
-                <div>
-                  <Label htmlFor="notes">Notlar (Opsiyonel)</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="notes" className="text-sm font-medium">Notlar ve Açıklamalar</Label>
                   <Textarea
                     id="notes"
-                    placeholder="Ek bilgiler ve özel notlar"
+                    placeholder="Ek bilgiler, özel şartlar, kalite detayları..."
                     value={quoteForm.notes}
                     onChange={(e) => setQuoteForm({ ...quoteForm, notes: e.target.value })}
+                    rows={3}
                   />
+                  <p className="text-xs text-gray-500">
+                    Müşteriye iletmek istediğiniz ek bilgileri buraya yazabilirsiniz
+                  </p>
+                </div>
                 </div>
 
+                <div className="space-y-4">
                 {/* Quote Details Section */}
-                <div className="border-t pt-4 space-y-4">
+                <div className="border rounded-md p-4 space-y-2">
                   <h4 className="font-medium text-gray-900">Teklif Detayları</h4>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="text-gray-600">Miktar:</span>
                       <span className="ml-2 font-medium">{selectedQuote.quantity || 'Belirtilmemiş'}</span>
@@ -430,7 +482,7 @@ export default function PrinterDashboard() {
                 </div>
 
                 {/* Customer Files Section */}
-                <div className="border-t pt-4">
+                <div className="border rounded-md p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium text-gray-900">Müşteri Dosyaları</h4>
                     <Button
@@ -443,7 +495,7 @@ export default function PrinterDashboard() {
                       {viewingFiles ? 'Gizle' : 'Dosyaları Gör'}
                     </Button>
                   </div>
-                  
+
                   {viewingFiles && (
                     <div className="space-y-2">
                       {filesLoading ? (
@@ -515,19 +567,22 @@ export default function PrinterDashboard() {
                     </div>
                   )}
                 </div>
-
-                <div className="flex space-x-2 pt-4">
+                </div>
+                </div>
+                </div>
+              <CardContent className="flex-shrink-0 border-t">
+                <div className="flex space-x-2 pt-4 justify-end">
                   <Button
                     variant="outline"
                     onClick={() => setSelectedQuote(null)}
-                    className="flex-1"
+                    className="flex-1 md:flex-none"
                   >
                     İptal
                   </Button>
                   <Button
                     onClick={handleSubmitQuote}
                     disabled={submitQuoteMutation.isPending}
-                    className="flex-1 bg-orange-500 hover:bg-orange-600"
+                    className="flex-1 md:flex-none bg-orange-500 hover:bg-orange-600 text-white"
                   >
                     {submitQuoteMutation.isPending ? (
                       "Gönderiliyor..."

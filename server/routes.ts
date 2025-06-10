@@ -166,16 +166,37 @@ async function notifyPrintersForNewQuote(quote: any) {
       return true;
     });
     
-    // Log notification
+    // Enhanced notification logging
     if (suitablePrinters.length > 0) {
-      console.log(`📢 Yeni teklif ${suitablePrinters.length} matbaa firmasına bildirildi: ${quote.category} - ₺${quote.totalPrice}`);
+      console.log(`📢 Yeni teklif ${suitablePrinters.length} matbaa firmasına bildirildi:`);
+      console.log(`   📋 Kategori: ${quote.category}`);
+      console.log(`   💰 Tutar: ₺${quote.totalPrice}`);
+      console.log(`   📦 Adet: ${quote.quantity?.toLocaleString()} adet`);
+      console.log(`   📍 Konum: ${quote.location}`);
+      
+      // Store notification for real-time updates
+      for (const printer of suitablePrinters) {
+        try {
+          await storage.createNotification({
+            userId: printer.id,
+            type: 'new_quote',
+            title: 'Yeni Teklif Talebi',
+            message: `${quote.category} - ${quote.quantity?.toLocaleString()} adet - ₺${quote.totalPrice}`,
+            data: { quoteId: quote.id },
+            isRead: false,
+            createdAt: new Date()
+          });
+        } catch (notifError) {
+          console.error(`Failed to create notification for printer ${printer.id}:`, notifError);
+        }
+      }
     }
     
-    // Bu noktada gerçek sistemde push notification, email vs. gönderilir
-    // Mock sistemde sadece log tutuyoruz
+    return suitablePrinters.length;
     
   } catch (error) {
     console.error('Printer notification error:', error);
+    return 0;
   }
 }
 
@@ -1568,24 +1589,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only printers can submit quotes" });
       }
 
-      const printerQuoteData = insertPrinterQuoteSchema.parse({
-        ...req.body,
+      // Validate required fields
+      const { price, estimatedDays, notes } = req.body;
+      
+      if (!price || isNaN(parseFloat(price))) {
+        return res.status(400).json({ message: "Valid price is required" });
+      }
+      
+      if (!estimatedDays || isNaN(parseInt(estimatedDays))) {
+        return res.status(400).json({ message: "Valid estimated days is required" });
+      }
+
+      // Create printer quote with proper validation
+      const printerQuoteData = {
         quoteId,
         printerId: userId,
-      });
+        price: parseFloat(price),
+        estimatedDays: parseInt(estimatedDays),
+        notes: notes || '',
+        status: 'pending' as const,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
 
       const printerQuote = await storage.createPrinterQuote(printerQuoteData);
 
       // Update quote status to received_quotes
       await storage.updateQuoteStatus(quoteId, "received_quotes");
 
-      res.json(printerQuote);
+      res.json({
+        success: true,
+        printerQuote,
+        message: "Teklif başarıyla gönderildi"
+      });
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid quote data", errors: error.errors });
-      }
       console.error("Error creating printer quote:", error);
-      res.status(500).json({ message: "Failed to create printer quote" });
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to create printer quote",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 
@@ -2378,6 +2421,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching unread count:", error);
       res.status(500).json({ message: "Failed to fetch unread count" });
+    }
+  });
+
+  // Notifications API
+  app.get('/api/notifications', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id || req.session?.user?.id;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const notifications = await storage.getNotifications(userId);
+      res.json({ notifications });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ message: "Failed to fetch notifications" });
+    }
+  });
+
+  app.post('/api/notifications/:id/read', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id || req.session?.user?.id;
+      const notificationId = req.params.id;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      await storage.markNotificationAsRead(notificationId, userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      res.status(500).json({ message: "Failed to mark notification as read" });
     }
   });
 
