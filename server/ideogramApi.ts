@@ -146,22 +146,21 @@ class IdeogramService {
     const isLabelDesign = this.isLabelDesign(originalPrompt);
     
     if (isLabelDesign) {
-      // Geliştirilmiş etiket tasarımı promptu
-      const qualityKeywords = [
-        'ultra high quality', 'professional design', 'crisp details', 
-        'sharp typography', 'commercial grade', 'print-ready',
-        'clean vector style', 'premium aesthetics', 'brand identity'
+      // Güçlü anti-mockup etiket promptu
+      const antiMockupKeywords = [
+        'FLAT LABEL DESIGN ONLY', 'NO MOCKUP', 'NO BOTTLE', 'NO PACKAGING',
+        '2D GRAPHIC DESIGN', 'LABEL ARTWORK', 'STICKER DESIGN', 'DECAL DESIGN'
       ].join(', ');
 
-      const technicalSpecs = [
-        'high resolution', 'vector graphics', 'CMYK color profile',
-        'scalable design', 'commercial printing standards',
-        'typography hierarchy', 'visual balance'
+      const designSpecs = [
+        'professional typography', 'clean layout', 'brand identity', 
+        'commercial printing quality', 'vector style graphics',
+        'high contrast text', 'balanced composition', 'modern aesthetic'
       ].join(', ');
 
-      const labelPrompt = `${qualityKeywords}. Professional product label design: ${originalPrompt}. Technical requirements: ${technicalSpecs}. Design specifications: clean modern layout, readable typography, balanced composition, professional color scheme, brand-focused elements. STRICT EXCLUSIONS: no mockup, no bottle, no package, no 3D rendering, no realistic product shots, no shadows, no perspective. OUTPUT: flat 2D label design only, commercial quality, print-optimized.`;
+      const labelPrompt = `IMPORTANT: ${antiMockupKeywords}. Create a flat, 2D label design for: ${originalPrompt}. Requirements: ${designSpecs}. Style: minimalist, professional, print-ready. Format: flat graphic design suitable for label printing. ABSOLUTELY NO: 3D mockups, product bottles, packaging visualization, realistic rendering, shadows, perspective views, product photography.`;
       
-      console.log('🏷️ GELİŞTİRİLMİŞ ETIKET PROMPT:', {
+      console.log('🚫 GÜÇLÜ ANTİ-MOCKUP PROMPT:', {
         originalLength: originalPrompt.length,
         enhancedLength: labelPrompt.length,
         prompt: labelPrompt
@@ -182,32 +181,42 @@ class IdeogramService {
     const isLabelDesign = this.isLabelDesign(originalPrompt);
     
     if (isLabelDesign) {
-      const strongNegativePrompt = [
-        'mockup', '3d rendering', 'bottle', 'package', 'container',
-        'photorealistic product', 'shadows', 'perspective view',
-        'mock-up', 'product photography', 'physical object',
-        'realistic rendering', 'depth of field', 'studio lighting',
-        'blurry', 'low quality', 'pixelated', 'compressed',
-        'watermark', 'text artifacts', 'distorted typography'
+      // Çok güçlü negative prompt
+      const extremeAntiMockupPrompt = [
+        'mockup', 'mock-up', 'mock up', '3d mockup', 'product mockup',
+        'bottle mockup', 'packaging mockup', 'container mockup',
+        '3d rendering', '3d render', 'realistic rendering', 'photorealistic',
+        'bottle', 'bottles', 'product bottle', 'glass bottle', 'plastic bottle',
+        'package', 'packaging', 'product packaging', 'box packaging',
+        'container', 'product container', 'jar', 'tube', 'can',
+        'product photography', 'product shot', 'studio photography',
+        'shadows', 'drop shadows', 'cast shadows', 'lighting effects',
+        'perspective view', 'perspective', '3d perspective', 'depth of field',
+        'physical object', 'real product', 'actual product',
+        'studio lighting', 'professional lighting', 'rim lighting',
+        'reflection', 'surface reflection', 'glossy surface',
+        'background', 'realistic background', 'studio background',
+        'blur', 'blurry', 'out of focus', 'depth blur',
+        'low quality', 'pixelated', 'compressed', 'artifacts',
+        'watermark', 'logo overlay', 'brand overlay'
       ].join(', ');
 
       const optimizedOptions = {
         ...options,
-        styleType: 'DESIGN',
-        model: 'V_2', // En yeni model
+        styleType: 'DESIGN', // Grafik tasarım stili zorunlu
+        model: 'V_2',
         aspectRatio: options.aspectRatio || 'ASPECT_1_1',
-        magicPrompt: 'ON',
-        negativePrompt: options.negativePrompt ? 
-          `${options.negativePrompt}, ${strongNegativePrompt}` : 
-          strongNegativePrompt
+        magicPrompt: 'OFF', // Magic prompt kapatıyoruz çünkü kendi promptumuz çok spesifik
+        negativePrompt: extremeAntiMockupPrompt // Önceki negative prompt'u eziyoruz
       };
 
-      console.log('⚙️ ETIKET OPTİMİZASYONU:', {
+      console.log('🛡️ EKSTREME ANTİ-MOCKUP OPTİMİZASYONU:', {
         styleType: optimizedOptions.styleType,
         model: optimizedOptions.model,
         aspectRatio: optimizedOptions.aspectRatio,
         magicPrompt: optimizedOptions.magicPrompt,
-        negativePromptLength: optimizedOptions.negativePrompt.length
+        negativePromptLength: optimizedOptions.negativePrompt.length,
+        negativePromptWords: optimizedOptions.negativePrompt.split(', ').length
       });
 
       return optimizedOptions;
@@ -272,14 +281,44 @@ class IdeogramService {
     });
   }
 
-  // Tasarım sonucu kalite kontrolü
+  // Tasarım sonucu kalite kontrolü ve mockup tespiti
   private validateDesignResult(response: IdeogramResponse, originalPrompt: string): IdeogramResponse {
     const isLabelDesign = this.isLabelDesign(originalPrompt);
     
     if (isLabelDesign && response.data && response.data.length > 0) {
+      // Mockup tespit etme (URL tabanlı analiz)
+      const potentialMockups = response.data.filter(img => {
+        // Ideogram URL'lerinde mockup ipuçları arayabiliriz
+        const suspiciousPatterns = [
+          'bottle', 'package', 'mockup', 'container', '3d'
+        ];
+        
+        const imgPrompt = img.prompt?.toLowerCase() || '';
+        const hasSuspiciousContent = suspiciousPatterns.some(pattern => 
+          imgPrompt.includes(pattern)
+        );
+        
+        return hasSuspiciousContent;
+      });
+
+      if (potentialMockups.length > 0) {
+        console.warn('🚨 MOCKUP TESPİT EDİLDİ:', {
+          mockupCount: potentialMockups.length,
+          totalImages: response.data.length,
+          suspiciousPrompts: potentialMockups.map(img => img.prompt)
+        });
+        
+        // Mockup tespit edilen görselleri filtrele
+        response.data = response.data.filter(img => !potentialMockups.includes(img));
+        
+        console.log('🔄 Mockup görseller filtrelendi, kalan görsel sayısı:', response.data.length);
+      }
+
       // Etiket tasarımları için ek validasyon
-      console.log('✅ Etiket tasarımı başarıyla oluşturuldu:', {
-        imageCount: response.data.length,
+      console.log('✅ Etiket tasarımı validasyonu:', {
+        originalImageCount: response.data.length + potentialMockups.length,
+        filteredImageCount: response.data.length,
+        removedMockups: potentialMockups.length,
         allSafe: response.data.every(img => img.is_image_safe),
         originalPrompt,
         resolutions: response.data.map(img => img.resolution),
@@ -296,6 +335,11 @@ class IdeogramService {
 
       if (lowQualityIndicators.length > 0) {
         console.warn('⚠️ Düşük çözünürlük tespit edildi:', lowQualityIndicators.map(img => img.resolution));
+      }
+
+      // Hiç görsel kalmadıysa hata at
+      if (response.data.length === 0) {
+        throw new Error('Tüm üretilen görseller mockup olarak tespit edildi ve filtrelendi. Lütfen tekrar deneyin.');
       }
     }
     
