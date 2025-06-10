@@ -174,12 +174,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserCreditBalance(userId: string, newBalance: string): Promise<void> {
+    console.log(`💳 Updating credit balance for user ${userId}: ${newBalance}₺`);
+    
     await db.update(users)
       .set({ 
         creditBalance: newBalance,
         updatedAt: new Date()
       })
       .where(eq(users.id, userId));
+      
+    // Verify the update
+    const updatedUser = await this.getUser(userId);
+    console.log(`✅ Credit balance updated successfully. New balance: ${updatedUser?.creditBalance}₺`);
   }
 
   async updateUserSubscription(userId: string, status: 'active' | 'inactive' | 'suspended'): Promise<void> {

@@ -79,6 +79,11 @@ export default function DesignEngine() {
   // Generate single design mutation
   const generateMutation = useMutation({
     mutationFn: async (data: { prompt: string; options: DesignOptions }) => {
+      console.log('🎨 Starting design generation with data:', data);
+
+      // Refresh user balance before generation to ensure we have latest data
+      await queryClient.refetchQueries({ queryKey: ['/api/auth/user'] });
+
       return await apiRequest('POST', '/api/design/generate', data);
     },
     onSuccess: async (response) => {
@@ -105,7 +110,7 @@ export default function DesignEngine() {
         // Immediately refresh user balance and design history for real-time updates
         await queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
         await queryClient.invalidateQueries({ queryKey: ['/api/designs/history'] });
-        
+
         // Force re-fetch user data to update balance display
         await queryClient.refetchQueries({ queryKey: ['/api/auth/user'] });
       }
@@ -117,7 +122,7 @@ export default function DesignEngine() {
       if (errorMessage.includes('Insufficient credit')) {
         // Refresh user balance to show current amount
         await queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
-        
+
         toast({
           title: "Yetersiz Kredi 💳",
           description: "Tasarım oluşturmak için yeterli krediniz yok. Lütfen kredi yükleyin (35₺ gerekli).",

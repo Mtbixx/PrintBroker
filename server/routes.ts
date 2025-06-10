@@ -1813,6 +1813,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const currentBalance = parseFloat(freshUser.creditBalance || '0');
       console.log(`💰 Credit check for user ${userId}: Current balance ${currentBalance}₺, Required: ${designCost}₺`);
+      
+      // Additional debug log for troubleshooting
+      console.log(`🔍 Debug - User data: ID=${freshUser.id}, Email=${freshUser.email}, Balance=${freshUser.creditBalance}`);
 
       if (currentBalance < designCost) {
         return res.status(400).json({ 
