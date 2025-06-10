@@ -1,24 +1,25 @@
 [
   {
-    "id": "88f7f3d5-6509-4472-96d2-372bea89c799",
+    "id": "2f94d262-c088-4580-a035-93b00a639b20",
     "userId": "CUS-1749578585320-614JKG",
-    "prompt": "Remus Auto Detailing için logo tasarla\n",
+    "prompt": "İnvuste Parfüm için 50 ml kırmızı zemin üzerine gold detaylı parfüm etiketi tasarla.",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
       "styleType": "AUTO",
-      "magicPrompt": "AUTO"
+      "magicPrompt": "AUTO",
+      "negativePrompt": "Vector tabanlı etiket tasarımı"
     },
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "A logo design for Remus Auto Detailing. The logo features a stylized car with a shiny finish. There's a spray of water droplets coming from the car. The text \"Remus Auto Detailing\" is written in a modern, bold font. The background is white.",
+        "prompt": "A detailed illustration of a 50 ml perfume bottle with a red base. The bottle is topped with a gold cap. There is a gold label on the bottle with the text \"İnvuste Parfüm\". The background is white.",
         "resolution": "1024x1024",
-        "seed": 596258199,
+        "seed": 1030267574,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/02ooFRy8TsitTpFnoLISiw.png?exp=1749667324&sig=7b785ce7b7b74afb95d01f5f3ca4b0e6db0f0517ace737fd135a93c7f83d69f3"
+        "url": "https://ideogram.ai/api/images/ephemeral/NheHwiVdTTKOvEbSa0uxQA.png?exp=1749667703&sig=90f561adaa62b4af4f5ccea36f5227fa850337c8b9ce48606c5ced94164e6ebc"
       },
-      "generationId": "c8fddaaa-0597-47f1-bedf-0c20fed4d8cb",
+      "generationId": "15d5bffe-1fa6-4175-be7a-efdee84fe515",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
@@ -26,7 +27,7 @@
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T18:42:04.856Z",
+    "createdAt": "2025-06-10T18:48:23.939Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false
