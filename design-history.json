@@ -1,32 +1,32 @@
 [
   {
-    "id": "97cc7b15-7398-4be2-a865-baa3c39d8953",
+    "id": "dcaaa934-979b-486c-8c61-e47a7222e86c",
     "userId": "CUS-1749584324055-GDJ8XR",
-    "prompt": "Selvora için parfüm etiketi tasarla",
+    "prompt": "Bovega Parfüm için kırmızı zemin üzerine gold çerçeveli etiket tasarımı yap",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
-      "styleType": "AUTO",
+      "styleType": "DESIGN",
       "magicPrompt": "AUTO"
     },
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "An ultra high-quality, professional design of a product label for Selvora's perfume. The label has a clean vector style with crisp details and sharp typography. The design is commercial grade and print-ready with a premium aesthetics and brand identity. The label features a modern layout with readable typography and a balanced composition. The professional color scheme is brand-focused. The design is high resolution and has a CMYK color profile. It is scalable and meets commercial printing standards. The design is a flat 2D label without any mockups, bottles, packages, 3D renderings, or realistic product shots.",
+        "prompt": "IMPORTANT: FLAT LABEL DESIGN ONLY, NO MOCKUP, NO BOTTLE, NO PACKAGING, 2D GRAPHIC DESIGN, LABEL ARTWORK, STICKER DESIGN, DECAL DESIGN. Create a flat, 2D label design for: Bovega Parfüm için kırmızı zemin üzerine gold çerçeveli etiket tasarımı yap. Requirements: professional typography, clean layout, brand identity, commercial printing quality, vector style graphics, high contrast text, balanced composition, modern aesthetic. Style: minimalist, professional, print-ready. Format: flat graphic design suitable for label printing. ABSOLUTELY NO: 3D mockups, product bottles, packaging visualization, realistic rendering, shadows, perspective views, product photography.",
         "resolution": "1024x1024",
-        "seed": 1456038588,
+        "seed": 1876336527,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/pYu9T10YQWWeemBlmdwetg.png?exp=1749671840&sig=a2a1ec1afae638e22704fdffc324e683e9aef61bfd7b007b2efd65b92350e812"
+        "url": "https://ideogram.ai/api/images/ephemeral/UjpvTLENR8-00ZO6ObaXxA.png?exp=1749672304&sig=0e7c5a2b4c58b3d2dc2987ea17382cf7436b8d0c343254aa148faf6bd490576c"
       },
-      "generationId": "19ad52bf-411a-4664-a3eb-a09fe39b9034",
+      "generationId": "3578120f-8821-489e-9361-af6512066280",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
-        "styleType": "AUTO",
+        "styleType": "DESIGN",
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T19:57:20.293Z",
+    "createdAt": "2025-06-10T20:05:04.820Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false
