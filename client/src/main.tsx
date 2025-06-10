@@ -31,4 +31,11 @@ window.addEventListener('error', (event) => {
   event.preventDefault();
 });
 
+// Fix Vite HMR connection issues
+if (import.meta.hot) {
+  import.meta.hot.on('vite:beforeUpdate', () => {
+    console.log('HMR update received')
+  })
+}
+
 createRoot(document.getElementById("root")!).render(<App />);
