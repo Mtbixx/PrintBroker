@@ -4,12 +4,14 @@ import "./index.css";
 
 // Global error handling for unhandled promise rejections
 window.addEventListener('unhandledrejection', (event) => {
-  // Silently handle common network errors to reduce console spam
+  // Silently handle common network errors and dev tools errors
   if (event.reason?.message?.includes('fetch') || 
       event.reason?.message?.includes('Failed to fetch') ||
       event.reason?.status === 401 || 
       event.reason?.status === 404 ||
-      event.reason?.name === 'AbortError') {
+      event.reason?.name === 'AbortError' ||
+      event.reason?.stack?.includes('eruda') ||
+      event.reason?.stack?.includes('__replco')) {
     event.preventDefault();
     return;
   }
@@ -20,10 +22,16 @@ window.addEventListener('unhandledrejection', (event) => {
 
 // Global error handling for uncaught errors
 window.addEventListener('error', (event) => {
-  // Prevent crashes from minor errors
+  // Prevent crashes from minor errors and dev tools
   if (event.error?.name === 'ChunkLoadError' || 
-      event.error?.message?.includes('Loading chunk')) {
-    window.location.reload();
+      event.error?.message?.includes('Loading chunk') ||
+      event.filename?.includes('eruda') ||
+      event.filename?.includes('__replco') ||
+      event.error?.stack?.includes('eruda')) {
+    if (event.error?.name === 'ChunkLoadError') {
+      window.location.reload();
+    }
+    event.preventDefault();
     return;
   }
 
