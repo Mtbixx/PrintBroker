@@ -509,12 +509,15 @@ export class DatabaseStorage implements IStorage {
 
   private getStoredDesigns(): any[] {
     try {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(process.cwd(), 'design-history.json');
-      if (fs.existsSync(filePath)) {
-        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      }
+      import('fs').then(fs => {
+        import('path').then(path => {
+          const filePath = path.join(process.cwd(), 'design-history.json');
+          if (fs.existsSync(filePath)) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          }
+          return [];
+        });
+      });
       return [];
     } catch {
       return [];
@@ -523,10 +526,12 @@ export class DatabaseStorage implements IStorage {
 
   private storeDesigns(designs: any[]) {
     try {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(process.cwd(), 'design-history.json');
-      fs.writeFileSync(filePath, JSON.stringify(designs, null, 2));
+      import('fs').then(fs => {
+        import('path').then(path => {
+          const filePath = path.join(process.cwd(), 'design-history.json');
+          fs.writeFileSync(filePath, JSON.stringify(designs, null, 2));
+        });
+      });
     } catch (error) {
       console.error('Error storing designs:', error);
     }
@@ -765,12 +770,15 @@ export class DatabaseStorage implements IStorage {
 
   private getStoredNotifications(): any[] {
     try {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(process.cwd(), 'notifications.json');
-      if (fs.existsSync(filePath)) {
-        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      }
+      import('fs').then(fs => {
+        import('path').then(path => {
+          const filePath = path.join(process.cwd(), 'notifications.json');
+          if (fs.existsSync(filePath)) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          }
+          return [];
+        });
+      });
       return [];
     } catch {
       return [];
@@ -779,10 +787,12 @@ export class DatabaseStorage implements IStorage {
 
   private storeNotifications(notifications: any[]) {
     try {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(process.cwd(), 'notifications.json');
-      fs.writeFileSync(filePath, JSON.stringify(notifications, null, 2));
+      import('fs').then(fs => {
+        import('path').then(path => {
+          const filePath = path.join(process.cwd(), 'notifications.json');
+          fs.writeFileSync(filePath, JSON.stringify(notifications, null, 2));
+        });
+      });
     } catch (error) {
       console.error('Error storing notifications:', error);
     }

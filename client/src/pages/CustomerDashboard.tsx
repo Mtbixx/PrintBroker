@@ -34,6 +34,7 @@ import {
   Star
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function CustomerDashboard() {
   const { toast } = useToast();
@@ -41,6 +42,7 @@ export default function CustomerDashboard() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isDesignDialogOpen, setIsDesignDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const queryClient = useQueryClient();
 
   // Enhanced authentication handling
   useEffect(() => {

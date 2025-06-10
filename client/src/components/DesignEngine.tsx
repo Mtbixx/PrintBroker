@@ -223,37 +223,62 @@ export default function DesignEngine() {
 
   const downloadImage = async (url: string, filename: string) => {
     try {
-      // CORS sorunu için proxy kullan
-      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(url)}`;
-      const response = await fetch(proxyUrl);
-      
+      // Doğrudan görseli fetch et
+      const response = await fetch(url, {
+        method: 'GET',
+        mode: 'cors'
+      });
+
       if (!response.ok) {
-        throw new Error('İndirme başarısız');
+        // CORS sorunu varsa proxy kullan
+        const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(url)}`;
+        const proxyResponse = await fetch(proxyUrl);
+
+        if (!proxyResponse.ok) {
+          throw new Error('İndirme başarısız');
+        }
+
+        const blob = await proxyResponse.blob();
+        const link = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        link.href = objectUrl;
+        link.download = filename || `tasarim-${Date.now()}.png`;
+        link.style.display = 'none';
+
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(objectUrl);
+        }, 100);
+      } else {
+        // Direkt indirme
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        link.href = objectUrl;
+        link.download = filename || `tasarim-${Date.now()}.png`;
+        link.style.display = 'none';
+
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(objectUrl);
+        }, 100);
       }
-      
-      const blob = await response.blob();
-      const link = document.createElement('a');
-      const objectUrl = URL.createObjectURL(blob);
-      link.href = objectUrl;
-      link.download = filename || 'tasarim.png';
-      link.style.display = 'none';
-      
-      document.body.appendChild(link);
-      link.click();
-      
-      // Cleanup
-      setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(objectUrl);
-      }, 100);
-      
+
       toast({
         title: "Başarılı",
         description: "Tasarım başarıyla indirildi.",
       });
     } catch (error) {
       console.error('Download error:', error);
-      
+
       // Fallback: yeni pencerede aç
       try {
         window.open(url, '_blank');
@@ -468,7 +493,7 @@ export default function DesignEngine() {
                                 </DialogContent>
                               </Dialog>
                             </div>
-                            
+
                             {/* Print Quote Button */}
                             <div className="mt-3 w-full">
                               <Dialog>
@@ -502,7 +527,7 @@ export default function DesignEngine() {
                                         <div className="text-sm opacity-75">A4 formatında kesimli etiketler</div>
                                       </div>
                                     </Button>
-                                    
+
                                     <Button
                                       onClick={() => {
                                         window.location.href = '/quote/roll_label';
@@ -516,7 +541,7 @@ export default function DesignEngine() {
                                         <div className="text-sm opacity-75">Sürekli form etiketler</div>
                                       </div>
                                     </Button>
-                                    
+
                                     <Button
                                       onClick={() => {
                                         window.location.href = '/quote/general_printing';
