@@ -116,23 +116,13 @@ class IdeogramService {
     
     if (isLabelDesign) {
       // Etiket tasarımı için özel ana prompt
-      const labelPrompt = `Professional product label design: ${originalPrompt}. 
-        Create a clean, modern, high-quality label design with:
-        - Professional typography and clear readable text
-        - Balanced composition with proper spacing
-        - Brand-focused graphic elements
-        - Print-ready quality with sharp edges
-        - Commercial product label aesthetic
-        - Professional color scheme
-        - Vector-style clean graphics
-        - No mockup or bottle/package visualization
-        - Focus purely on the flat label graphic design
-        - High contrast and legibility for printing
-        - Commercial printing standards`;
+      const labelPrompt = `Professional product label design: ${originalPrompt}. Create a clean, modern, high-quality label design with professional typography and clear readable text, balanced composition with proper spacing, brand-focused graphic elements, print-ready quality with sharp edges, commercial product label aesthetic, professional color scheme, vector-style clean graphics. NO mockup, NO bottle, NO package visualization, NO 3D rendering. Focus purely on the flat label graphic design with high contrast and legibility for printing, following commercial printing standards.`;
       
+      console.log('🏷️ ETIKET PROMPT UYGULANDIĞI:', labelPrompt);
       return labelPrompt;
     }
     
+    console.log('📝 Normal prompt kullanılıyor:', originalPrompt);
     return originalPrompt;
   }
 
@@ -165,7 +155,15 @@ class IdeogramService {
     ];
     
     const lowerPrompt = prompt.toLowerCase();
-    return labelKeywords.some(keyword => lowerPrompt.includes(keyword.toLowerCase()));
+    const isLabel = labelKeywords.some(keyword => lowerPrompt.includes(keyword.toLowerCase()));
+    
+    console.log('🔍 Etiket algılama:', { 
+      prompt: lowerPrompt, 
+      isLabel,
+      matchedKeywords: labelKeywords.filter(keyword => lowerPrompt.includes(keyword.toLowerCase()))
+    });
+    
+    return isLabel;
   }
 }
 
