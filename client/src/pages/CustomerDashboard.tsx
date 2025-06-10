@@ -436,7 +436,7 @@ export default function CustomerDashboard() {
                                             mode: 'cors',
                                             credentials: 'omit'
                                           });
-                                          
+
                                           if (directResponse.ok) {
                                             const blob = await directResponse.blob();
                                             const link = document.createElement('a');
@@ -467,7 +467,7 @@ export default function CustomerDashboard() {
                                           link.download = `tasarim-${design.id}.png`;
                                           link.target = '_blank';
                                           link.rel = 'noopener noreferrer';
-                                          
+
                                           // Geçici olarak body'e ekle ve tıkla
                                           document.body.appendChild(link);
                                           link.click();
@@ -492,7 +492,7 @@ export default function CustomerDashboard() {
                                   onClick={async () => {
                                     try {
                                       await apiRequest('DELETE', `/api/design/${design.id}`);
-                                      queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
+                                      queryClient.invalidateQueries({ queryKey: ['/api/designs/history'] });
                                       toast({
                                         title: "Başarılı",
                                         description: "Tasarım silindi.",
@@ -553,11 +553,11 @@ export default function CustomerDashboard() {
                           disabled={designHistory.page <= 1}
                           onClick={() => {
                             queryClient.invalidateQueries({ 
-                              queryKey: ['/api/design/history'],
+                              queryKey: ['/api/designs/history'],
                               exact: false 
                             });
                             queryClient.refetchQueries({ 
-                              queryKey: ['/api/design/history'],
+                              queryKey: ['/api/designs/history'],
                               exact: false 
                             });
                           }}
@@ -575,11 +575,11 @@ export default function CustomerDashboard() {
                           disabled={designHistory.page >= designHistory.totalPages}
                           onClick={() => {
                             queryClient.invalidateQueries({ 
-                              queryKey: ['/api/design/history'],
+                              queryKey: ['/api/designs/history'],
                               exact: false 
                             });
                             queryClient.refetchQueries({ 
-                              queryKey: ['/api/design/history'],
+                              queryKey: ['/api/designs/history'],
                               exact: false 
                             });
                           }}

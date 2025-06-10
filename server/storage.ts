@@ -509,29 +509,25 @@ export class DatabaseStorage implements IStorage {
 
   private getStoredDesigns(): any[] {
     try {
-      import('fs').then(fs => {
-        import('path').then(path => {
-          const filePath = path.join(process.cwd(), 'design-history.json');
-          if (fs.existsSync(filePath)) {
-            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-          }
-          return [];
-        });
-      });
+      const fs = require('fs');
+      const path = require('path');
+      const filePath = path.join(process.cwd(), 'design-history.json');
+      if (fs.existsSync(filePath)) {
+        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      }
       return [];
-    } catch {
+    } catch (error) {
+      console.error('Error reading designs:', error);
       return [];
     }
   }
 
   private storeDesigns(designs: any[]) {
     try {
-      import('fs').then(fs => {
-        import('path').then(path => {
-          const filePath = path.join(process.cwd(), 'design-history.json');
-          fs.writeFileSync(filePath, JSON.stringify(designs, null, 2));
-        });
-      });
+      const fs = require('fs');
+      const path = require('path');
+      const filePath = path.join(process.cwd(), 'design-history.json');
+      fs.writeFileSync(filePath, JSON.stringify(designs, null, 2));
     } catch (error) {
       console.error('Error storing designs:', error);
     }
@@ -806,29 +802,38 @@ export class DatabaseStorage implements IStorage {
     result: any;
     createdAt: Date;
   }): Promise<any> {
-    const designHistory = this.getStoredDesigns();
-    const newDesign = {
-      id: crypto.randomUUID(),
-      ...data,
-      status: 'completed',
-      downloadCount: 0,
-      isBookmarked: false
-    };
-    
-    // Add to beginning of array (newest first)
-    designHistory.unshift(newDesign);
-    
-    // Keep only last 1000 designs per user to prevent unlimited growth
-    const userDesigns = designHistory.filter(d => d.userId === data.userId);
-    if (userDesigns.length > 1000) {
-      const designsToKeep = designHistory.filter(d => d.userId !== data.userId);
-      const limitedUserDesigns = userDesigns.slice(0, 1000);
-      this.storeDesigns([...limitedUserDesigns, ...designsToKeep]);
-    } else {
-      this.storeDesigns(designHistory);
+    try {
+      const designHistory = this.getStoredDesigns();
+      const newDesign = {
+        id: crypto.randomUUID(),
+        ...data,
+        status: 'completed',
+        downloadCount: 0,
+        isBookmarked: false,
+        createdAt: data.createdAt.toISOString()
+      };
+      
+      console.log('Saving new design:', newDesign.id, 'for user:', data.userId);
+      
+      // Add to beginning of array (newest first)
+      designHistory.unshift(newDesign);
+      
+      // Keep only last 1000 designs per user to prevent unlimited growth
+      const userDesigns = designHistory.filter(d => d.userId === data.userId);
+      if (userDesigns.length > 1000) {
+        const designsToKeep = designHistory.filter(d => d.userId !== data.userId);
+        const limitedUserDesigns = userDesigns.slice(0, 1000);
+        this.storeDesigns([...limitedUserDesigns, ...designsToKeep]);
+      } else {
+        this.storeDesigns(designHistory);
+      }
+      
+      console.log('Design saved successfully. Total designs:', designHistory.length);
+      return newDesign;
+    } catch (error) {
+      console.error('Error saving design generation:', error);
+      throw error;
     }
-    
-    return newDesign;
   }
 
   async getDesignHistory(userId: string, options: { page: number; limit: number }): Promise<{

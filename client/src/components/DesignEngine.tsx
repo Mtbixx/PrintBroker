@@ -104,7 +104,8 @@ export default function DesignEngine() {
 
         // Refresh user balance and design history
         await queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
-        await queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
+        // Tasarım geçmişini yenile
+        await queryClient.invalidateQueries({ queryKey: ['/api/designs/history'] });
       }
     },
     onError: (error: any) => {
@@ -193,7 +194,7 @@ export default function DesignEngine() {
     }
   };
 
-  
+
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -402,7 +403,7 @@ export default function DesignEngine() {
                     </div>
                   )}
 
-                  
+
                 </CardContent>
               </Card>
 
@@ -592,7 +593,7 @@ export default function DesignEngine() {
           </div>
         </TabsContent>
 
-        
+
 
         {/* History Tab */}
         <TabsContent value="history">
