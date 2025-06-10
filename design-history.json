@@ -1,32 +1,32 @@
 [
   {
-    "id": "bd54e351-2e8c-4c85-9b05-73c10147642e",
+    "id": "dccb2251-b55c-46f9-8585-7ad30143a674",
     "userId": "CUS-1749578585320-614JKG",
-    "prompt": "Pencov Parfüm için siyah zemin üzerine gold çerçeveli etiket ",
+    "prompt": "Remonla Parfüm için 50 ml etiket tasarla ",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
-      "styleType": "REALISTIC",
+      "styleType": "AUTO",
       "magicPrompt": "AUTO"
     },
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "A professional product label design for Pencov Parfüm on a black background with a gold frame. The label contains the text \"Pencov Parfüm\" in gold, with the words \"Parfüm\" and \"Pencov\" in larger, bold font. Below the brand name, there is the text \"Limon ve Tuzlu Meyve Çekirdeği Parfüm\" in gold. The label has a gold frame with a few decorative elements. The overall design is clean, modern, and high-quality.",
+        "prompt": "A clean, modern, high-quality label design for a 50 ml perfume bottle. The label is white with black text and a black perfume drop graphic. The perfume brand name, \"Remonla Parfüm\", is written in bold, uppercase letters. Below the brand name, the text \"50 ml\" is written in smaller, bold letters. The perfume drop graphic is placed below the text, and it has a vector-style clean graphic. The label design is print-ready with sharp edges and follows commercial printing standards.",
         "resolution": "1024x1024",
-        "seed": 1093220783,
+        "seed": 1530860657,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/5YqMH9qwSYe0vpgJPhEFfA.png?exp=1749669071&sig=fcafa3cdcef552299c12a33cda2d55887de713ad733c8ff0323e3e109a8b425a"
+        "url": "https://ideogram.ai/api/images/ephemeral/lfiiqYyOTxC_eB896FaV3Q.png?exp=1749670144&sig=63a5483fc1d1a9b3590b52f41e59ed98549e765e85e05617cc0a582f7d8e5990"
       },
-      "generationId": "9a62f209-b37c-4458-9760-332c1ef09c2f",
+      "generationId": "991010c8-65b7-40ee-8119-e5e42ce9bac6",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
-        "styleType": "REALISTIC",
+        "styleType": "AUTO",
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T19:11:11.344Z",
+    "createdAt": "2025-06-10T19:29:04.420Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false

@@ -1,14 +1,14 @@
 [
   {
-    "id": "aaabbdd0-e356-4263-a12a-7c6815bbf4d9",
+    "id": "f9d2cb52-0d6b-46a7-97aa-becfe71ec4ed",
     "userId": "dev-user-1748981533183",
     "type": "new_quote",
     "title": "Yeni Teklif Talebi",
-    "message": "Endüstriyel Etiket - 63,406 adet - ₺6836",
+    "message": "Endüstriyel Etiket - 58,452 adet - ₺7013",
     "data": {
-      "quoteId": "e683e985-4576-4a53-be4e-78314d93d2db"
+      "quoteId": "b75420ec-90aa-4187-99b5-45931bcc3889"
     },
     "isRead": false,
-    "createdAt": "2025-06-10T19:13:35.540Z"
+    "createdAt": "2025-06-10T19:30:35.685Z"
   }
 ]
