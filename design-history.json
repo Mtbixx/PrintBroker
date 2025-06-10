@@ -1,33 +1,32 @@
 [
   {
-    "id": "2f94d262-c088-4580-a035-93b00a639b20",
+    "id": "bd54e351-2e8c-4c85-9b05-73c10147642e",
     "userId": "CUS-1749578585320-614JKG",
-    "prompt": "İnvuste Parfüm için 50 ml kırmızı zemin üzerine gold detaylı parfüm etiketi tasarla.",
+    "prompt": "Pencov Parfüm için siyah zemin üzerine gold çerçeveli etiket ",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
-      "styleType": "AUTO",
-      "magicPrompt": "AUTO",
-      "negativePrompt": "Vector tabanlı etiket tasarımı"
+      "styleType": "REALISTIC",
+      "magicPrompt": "AUTO"
     },
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "A detailed illustration of a 50 ml perfume bottle with a red base. The bottle is topped with a gold cap. There is a gold label on the bottle with the text \"İnvuste Parfüm\". The background is white.",
+        "prompt": "A professional product label design for Pencov Parfüm on a black background with a gold frame. The label contains the text \"Pencov Parfüm\" in gold, with the words \"Parfüm\" and \"Pencov\" in larger, bold font. Below the brand name, there is the text \"Limon ve Tuzlu Meyve Çekirdeği Parfüm\" in gold. The label has a gold frame with a few decorative elements. The overall design is clean, modern, and high-quality.",
         "resolution": "1024x1024",
-        "seed": 1030267574,
+        "seed": 1093220783,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/NheHwiVdTTKOvEbSa0uxQA.png?exp=1749667703&sig=90f561adaa62b4af4f5ccea36f5227fa850337c8b9ce48606c5ced94164e6ebc"
+        "url": "https://ideogram.ai/api/images/ephemeral/5YqMH9qwSYe0vpgJPhEFfA.png?exp=1749669071&sig=fcafa3cdcef552299c12a33cda2d55887de713ad733c8ff0323e3e109a8b425a"
       },
-      "generationId": "15d5bffe-1fa6-4175-be7a-efdee84fe515",
+      "generationId": "9a62f209-b37c-4458-9760-332c1ef09c2f",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
-        "styleType": "AUTO",
+        "styleType": "REALISTIC",
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T18:48:23.939Z",
+    "createdAt": "2025-06-10T19:11:11.344Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false
