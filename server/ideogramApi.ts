@@ -286,60 +286,55 @@ class IdeogramService {
     const isLabelDesign = this.isLabelDesign(originalPrompt);
     
     if (isLabelDesign && response.data && response.data.length > 0) {
-      // Mockup tespit etme (URL tabanlı analiz)
+      // Mockup tespit etme - sadece görsel URL'sinde gerçek mockup ipuçları ara
       const potentialMockups = response.data.filter(img => {
-        // Ideogram URL'lerinde mockup ipuçları arayabiliriz
-        const suspiciousPatterns = [
-          'bottle', 'package', 'mockup', 'container', '3d'
+        // Sadece URL'de gerçek mockup belirtileri ara, prompt'ta değil
+        const imgUrl = img.url?.toLowerCase() || '';
+        const suspiciousUrlPatterns = [
+          'mockup', 'mock-up', 'product-shot', 'bottle-render', '3d-render'
         ];
         
-        const imgPrompt = img.prompt?.toLowerCase() || '';
-        const hasSuspiciousContent = suspiciousPatterns.some(pattern => 
-          imgPrompt.includes(pattern)
+        const hasSuspiciousUrl = suspiciousUrlPatterns.some(pattern => 
+          imgUrl.includes(pattern)
         );
         
-        return hasSuspiciousContent;
+        // Çok düşük çözünürlük kontrolü (256x256'dan küçük)
+        const isLowQuality = img.resolution && (
+          img.resolution.includes('256x256') || 
+          img.resolution.includes('128x128')
+        );
+        
+        return hasSuspiciousUrl || isLowQuality;
       });
 
       if (potentialMockups.length > 0) {
-        console.warn('🚨 MOCKUP TESPİT EDİLDİ:', {
-          mockupCount: potentialMockups.length,
+        console.warn('🚨 DÜŞÜK KALİTE GÖRSEL TESPİT EDİLDİ:', {
+          lowQualityCount: potentialMockups.length,
           totalImages: response.data.length,
-          suspiciousPrompts: potentialMockups.map(img => img.prompt)
+          filteredResolutions: potentialMockups.map(img => img.resolution)
         });
         
-        // Mockup tespit edilen görselleri filtrele
+        // Sadece gerçekten düşük kaliteli olanları filtrele
         response.data = response.data.filter(img => !potentialMockups.includes(img));
         
-        console.log('🔄 Mockup görseller filtrelendi, kalan görsel sayısı:', response.data.length);
+        console.log('🔄 Düşük kalite görseller filtrelendi, kalan görsel sayısı:', response.data.length);
       }
 
       // Etiket tasarımları için ek validasyon
       console.log('✅ Etiket tasarımı validasyonu:', {
         originalImageCount: response.data.length + potentialMockups.length,
         filteredImageCount: response.data.length,
-        removedMockups: potentialMockups.length,
+        removedLowQuality: potentialMockups.length,
         allSafe: response.data.every(img => img.is_image_safe),
         originalPrompt,
         resolutions: response.data.map(img => img.resolution),
         seeds: response.data.map(img => img.seed)
       });
 
-      // Düşük kalite kontrolü
-      const lowQualityIndicators = response.data.filter(img => 
-        img.resolution && (
-          img.resolution.includes('512') || 
-          img.resolution.includes('256')
-        )
-      );
-
-      if (lowQualityIndicators.length > 0) {
-        console.warn('⚠️ Düşük çözünürlük tespit edildi:', lowQualityIndicators.map(img => img.resolution));
-      }
-
-      // Hiç görsel kalmadıysa hata at
-      if (response.data.length === 0) {
-        throw new Error('Tüm üretilen görseller mockup olarak tespit edildi ve filtrelendi. Lütfen tekrar deneyin.');
+      // Sadece çok kritik durumlarda hata at - normal durumda görselleri döndür
+      if (response.data.length === 0 && potentialMockups.length > 0) {
+        console.warn('⚠️ Tüm görseller düşük kalite olarak filtrelendi, yine de döndürülüyor');
+        response.data = potentialMockups.slice(0, 1); // En azından bir görsel döndür
       }
     }
     
