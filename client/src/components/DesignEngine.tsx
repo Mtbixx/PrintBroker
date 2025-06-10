@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Wand2, 
   Download, 
@@ -27,7 +27,9 @@ import {
   Settings,
   History,
   Layout,
-  Loader2
+  Loader2,
+  Printer,
+  Disc
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -458,6 +460,72 @@ export default function DesignEngine() {
                                     <p className="text-sm text-gray-600"><strong>Açıklama:</strong> {image.prompt}</p>
                                     <p className="text-sm text-gray-600"><strong>Çözünürlük:</strong> {image.resolution}</p>
                                     <p className="text-sm text-gray-600"><strong>Seed:</strong> {image.seed}</p>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+                            
+                            {/* Print Quote Button */}
+                            <div className="mt-3 w-full">
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                                  >
+                                    <Printer className="h-4 w-4 mr-2" />
+                                    Baskı Teklifi Al
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-md">
+                                  <DialogHeader>
+                                    <DialogTitle>Baskı Türü Seçin</DialogTitle>
+                                    <DialogDescription>
+                                      Bu tasarım için hangi baskı türünde teklif almak istiyorsunuz?
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className="space-y-3 mt-4">
+                                    <Button
+                                      onClick={() => {
+                                        window.location.href = '/quote/sheet_label';
+                                      }}
+                                      className="w-full justify-start bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200"
+                                      variant="outline"
+                                    >
+                                      <Grid3X3 className="h-5 w-5 mr-3" />
+                                      <div className="text-left">
+                                        <div className="font-medium">Yaprak Etiket</div>
+                                        <div className="text-sm opacity-75">A4 formatında kesimli etiketler</div>
+                                      </div>
+                                    </Button>
+                                    
+                                    <Button
+                                      onClick={() => {
+                                        window.location.href = '/quote/roll_label';
+                                      }}
+                                      className="w-full justify-start bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200"
+                                      variant="outline"
+                                    >
+                                      <Disc className="h-5 w-5 mr-3" />
+                                      <div className="text-left">
+                                        <div className="font-medium">Rulo Etiket</div>
+                                        <div className="text-sm opacity-75">Sürekli form etiketler</div>
+                                      </div>
+                                    </Button>
+                                    
+                                    <Button
+                                      onClick={() => {
+                                        window.location.href = '/quote/general_printing';
+                                      }}
+                                      className="w-full justify-start bg-green-50 hover:bg-green-100 text-green-700 border border-green-200"
+                                      variant="outline"
+                                    >
+                                      <Printer className="h-5 w-5 mr-3" />
+                                      <div className="text-left">
+                                        <div className="font-medium">Genel Baskı</div>
+                                        <div className="text-sm opacity-75">Katalog, broşür, kartvizit</div>
+                                      </div>
+                                    </Button>
                                   </div>
                                 </DialogContent>
                               </Dialog>
