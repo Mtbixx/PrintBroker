@@ -496,68 +496,23 @@ export default function DesignEngine() {
 
                             {/* Print Quote Button */}
                             <div className="mt-3 w-full">
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <Button
-                                    size="sm"
-                                    className="w-full bg-green-600 hover:bg-green-700 text-white"
-                                  >
-                                    <Printer className="h-4 w-4 mr-2" />
-                                    Baskı Teklifi Al
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent className="max-w-md">
-                                  <DialogHeader>
-                                    <DialogTitle>Baskı Türü Seçin</DialogTitle>
-                                    <DialogDescription>
-                                      Bu tasarım için hangi baskı türünde teklif almak istiyorsunuz?
-                                    </DialogDescription>
-                                  </DialogHeader>
-                                  <div className="space-y-3 mt-4">
-                                    <Button
-                                      onClick={() => {
-                                        window.location.href = '/quote/sheet_label';
-                                      }}
-                                      className="w-full justify-start bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200"
-                                      variant="outline"
-                                    >
-                                      <Grid3X3 className="h-5 w-5 mr-3" />
-                                      <div className="text-left">
-                                        <div className="font-medium">Yaprak Etiket</div>
-                                        <div className="text-sm opacity-75">A4 formatında kesimli etiketler</div>
-                                      </div>
-                                    </Button>
-
-                                    <Button
-                                      onClick={() => {
-                                        window.location.href = '/quote/roll_label';
-                                      }}
-                                      className="w-full justify-start bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200"
-                                      variant="outline"
-                                    >
-                                      <Disc className="h-5 w-5 mr-3" />
-                                      <div className="text-left">
-                                        <div className="font-medium">Rulo Etiket</div>
-                                        <div className="text-sm opacity-75">Sürekli form etiketler</div>
-                                      </div>
-                                    </Button>
-
-                                    <Button
-                                      onClick={() => {
-                                        window.location.href = '/quote/general_printing';
-                                      }}
-                                      className="w-full justify-start bg-green-50 hover:bg-green-100 text-green-700 border border-green-200"
-                                      variant="outline"
-                                    >
-                                      <Printer className="h-5 w-5 mr-3" />
-                                      <div className="text-left">
-                                        <div className="font-medium">Genel Baskı</div>
-                                        <div className="text-sm opacity-75">Katalog, broşür, kartvizit</div>
-                                      </div>
-                                    </Button>
-                                  </div>
-                                </DialogContent>
-                              </Dialog>
+                              <Button
+                                size="sm"
+                                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                                onClick={() => {
+                                  // Store design data in localStorage for the quote form
+                                  const designData = {
+                                    imageUrl: image.url,
+                                    prompt: image.prompt,
+                                    timestamp: Date.now()
+                                  };
+                                  localStorage.setItem('selectedDesign', JSON.stringify(designData));
+                                  window.location.href = '/design-quote';
+                                }}
+                              >
+                                <Printer className="h-4 w-4 mr-2" />
+                                Hızlı Teklif Al
+                              </Button>
                             </div>
                           </div>
                           <div className="absolute top-2 right-2">

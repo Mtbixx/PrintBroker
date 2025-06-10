@@ -1,4 +1,3 @@
-
 import { Switch, Route, Router } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -20,6 +19,7 @@ import ProductCategories from "./pages/ProductCategories";
 import ProductCategoriesNew from "./pages/ProductCategoriesNew";
 import References from "./pages/References";
 import ReferencesNew from "./pages/ReferencesNew";
+import DesignQuote from "./pages/DesignQuote";
 import NotFound from "./pages/not-found";
 
 function AppRouter() {
@@ -43,7 +43,7 @@ function AppRouter() {
           <Route path="/customer-register" component={CustomerRegister} />
           <Route path="/printer-register" component={PrinterRegister} />
           <Route path="/payment" component={Payment} />
-          
+
           {/* Authentication-protected panel routes redirect to login */}
           <Route path="/customer-dashboard" component={() => {
             window.location.href = '/api/login?returnTo=/customer-dashboard';
@@ -61,11 +61,11 @@ function AppRouter() {
       ) : (
         <>
           <Route path="/" component={Home} />
-          
+
           <Route path="/dashboard" component={() => {
             // Universal dashboard route that redirects based on role
             const userRole = (user as any)?.role || 'customer';
-            
+
             if (userRole === 'admin') {
               window.location.href = '/admin-dashboard';
               return null;
@@ -78,12 +78,12 @@ function AppRouter() {
             window.location.href = '/customer-dashboard';
             return null;
           }} />
-          
+
           {/* Authenticated dashboard routes */}
           <Route path="/customer-dashboard" component={CustomerDashboard} />
           <Route path="/printer-dashboard" component={PrinterDashboard} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
-          
+
           <Route path="/quote/:type" component={() => {
             const userRole = (user as any)?.role;
             if (userRole !== 'customer') {
@@ -92,10 +92,11 @@ function AppRouter() {
             }
             return <QuoteForm />;
           }} />
-          
+
           <Route path="/payment" component={Payment} />
         </>
       )}
+      <Route path="/design-quote" component={DesignQuote} />
       <Route component={NotFound} />
     </Switch>
   );
