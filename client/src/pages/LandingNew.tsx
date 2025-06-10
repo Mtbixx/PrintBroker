@@ -43,7 +43,6 @@ import {
   X,
   Globe,
   Palette,
-  Printer,
   MessageSquare,
   BarChart3,
   DollarSign,
@@ -76,7 +75,7 @@ export default function LandingNew() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoggingIn(true);
-    
+
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
@@ -85,15 +84,15 @@ export default function LandingNew() {
         },
         body: JSON.stringify(loginForm),
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
         toast({
           title: "Giriş Başarılı",
           description: result.message,
         });
-        
+
         setShowLoginModal(false);
         window.location.href = result.redirectUrl || returnTo;
       } else {
@@ -240,7 +239,7 @@ export default function LandingNew() {
 
     fetchLiveJobs();
     const interval = setInterval(fetchLiveJobs, 30000);
-    
+
     const jobRotation = setInterval(() => {
       setCurrentJobIndex((prev) => liveJobs.length > 0 ? (prev + 1) % liveJobs.length : 0);
     }, 4000);
@@ -260,7 +259,10 @@ export default function LandingNew() {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Printer className="h-6 w-6 text-white" />
+                {/* New Logo */}
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xl">M</span>
+                </div>
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">MatBixx</h1>
@@ -282,7 +284,7 @@ export default function LandingNew() {
               <Link href="/blog" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Blog
               </Link>
-              
+
               {/* Search Bar */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -408,7 +410,7 @@ export default function LandingNew() {
                 </Link>
                 <div className="px-4 pt-2 border-t border-gray-200 space-y-2">
                   <div className="text-sm font-medium text-gray-900 mb-3">Panel Girişi</div>
-                  
+
                   <Button 
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white justify-start" 
                     onClick={() => {
@@ -418,7 +420,7 @@ export default function LandingNew() {
                     <User className="h-4 w-4 mr-2" />
                     Müşteri Girişi
                   </Button>
-                  
+
                   <Button 
                     className="w-full bg-orange-600 hover:bg-orange-700 text-white justify-start" 
                     onClick={() => {
@@ -428,7 +430,7 @@ export default function LandingNew() {
                     <Building2 className="h-4 w-4 mr-2" />
                     Üretici Girişi
                   </Button>
-                  
+
                   <Button 
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white justify-start" 
                     onClick={() => {
@@ -438,10 +440,10 @@ export default function LandingNew() {
                     <Factory className="h-4 w-4 mr-2" />
                     Admin Girişi
                   </Button>
-                  
+
                   <div className="border-t border-gray-200 my-2"></div>
                   <div className="text-sm font-medium text-gray-900 mb-3">Yeni Kayıt</div>
-                  
+
                   <Button 
                     variant="outline" 
                     className="w-full justify-start" 
@@ -452,7 +454,7 @@ export default function LandingNew() {
                     <User className="h-4 w-4 mr-2" />
                     Müşteri Kaydı (35₺/tasarım)
                   </Button>
-                  
+
                   <Button 
                     variant="outline" 
                     className="w-full justify-start" 
@@ -480,12 +482,12 @@ export default function LandingNew() {
                 <Sparkles className="h-4 w-4 mr-2" />
                 Türkiye'nin #1 B2B Baskı Platformu
               </div>
-              
+
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
                 Otomatik Tasarım Sistemi ile
                 <span className="text-blue-600 block">Kurumsal Baskı Çözümleri</span>
               </h1>
-              
+
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 AI destekli otomatik tasarım motoru ile profesyonel tasarımlar anında oluşturulur. 
                 500+ üretici firmadan 60 saniyede teklif alın, %40 maliyet tasarrufu sağlayın.
@@ -544,7 +546,7 @@ export default function LandingNew() {
                   <h3 className="font-semibold text-gray-900">Canlı İş Takibi</h3>
                   <Badge className="bg-green-100 text-green-800">Canlı</Badge>
                 </div>
-                
+
                 {liveJobs.length > 0 && (
                   <div className="space-y-3">
                     {liveJobs.slice(0, 3).map((job, index) => (
@@ -565,7 +567,7 @@ export default function LandingNew() {
                     ))}
                   </div>
                 )}
-                
+
                 <div className="mt-4 text-center">
                   <Button variant="ghost" size="sm" className="text-blue-600">
                     Tüm İşleri Görüntüle
@@ -607,7 +609,7 @@ export default function LandingNew() {
                     </Badge>
                   </div>
                 </div>
-                
+
                 <CardHeader>
                   <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
                     {category.title}
@@ -623,7 +625,7 @@ export default function LandingNew() {
                     <span className="text-sm text-gray-500">Fiyat Aralığı:</span>
                     <span className="font-semibold text-green-600">{category.priceRange}</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-500">Min. Sipariş:</span>
                     <span className="font-medium text-gray-900">{category.minOrder}</span>
@@ -691,7 +693,7 @@ export default function LandingNew() {
                     <p className="text-gray-600">AI sistemi ile profesyonel tasarımlar kredi sistemi ile oluşturulur. Aylık 2999₺ paket ile sınırsız tasarım.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
                     <TrendingUp className="h-6 w-6 text-green-600" />
@@ -701,7 +703,7 @@ export default function LandingNew() {
                     <p className="text-gray-600">Geleneksel 2-3 haftalık süreçler 1 saate düşer, işletme verimliliği maksimuma çıkar.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
                     <Shield className="h-6 w-6 text-purple-600" />
@@ -734,7 +736,7 @@ export default function LandingNew() {
                   <span className="text-gray-700">En uygun teklifi seçip üretimi başlatın</span>
                 </div>
               </div>
-              
+
               <Button 
                 className="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
                 onClick={() => window.location.href = '/customer-register'}
@@ -818,7 +820,7 @@ export default function LandingNew() {
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <Printer className="h-5 w-5 text-white" />
+                  <span className="text-white font-bold text-xl">M</span>
                 </div>
                 <span className="text-xl font-bold">MatBixx</span>
               </div>
@@ -827,7 +829,7 @@ export default function LandingNew() {
                 Professional printing solutions for businesses.
               </p>
             </div>
-            
+
             <div>
               <h3 className="font-semibold mb-4">Ürünler</h3>
               <ul className="space-y-2 text-sm text-gray-400">
@@ -837,7 +839,7 @@ export default function LandingNew() {
                 <li><a href="#" className="hover:text-white transition-colors">Ambalaj Çözümleri</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="font-semibold mb-4">Platform</h3>
               <ul className="space-y-2 text-sm text-gray-400">
@@ -847,7 +849,7 @@ export default function LandingNew() {
                 <li><a href="#" className="hover:text-white transition-colors">Kalite Standartları</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="font-semibold mb-4">İletişim</h3>
               <ul className="space-y-2 text-sm text-gray-400">
@@ -866,7 +868,7 @@ export default function LandingNew() {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400">
               © 2024 MatBixx. Tüm hakları saklıdır.

@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, User, Building2, Shield, FileText, BarChart3, Users, Zap, Target, LayoutGrid, Disc, Printer, CreditCard, Settings } from "lucide-react";
+import { LogOut, User, Building2, Shield, FileText, BarChart3, Users, Zap, Target, LayoutGrid, Disc, CreditCard, Settings } from "lucide-react";
 
 export default function Home() {
   const { user } = useAuth();
@@ -77,7 +77,7 @@ export default function Home() {
                   Admin
                 </Button>
               </div>
-              
+
               {(user as any)?.profileImageUrl && (
                 <img 
                   src={(user as any).profileImageUrl} 
@@ -149,7 +149,7 @@ export default function Home() {
           <Card className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-100 cursor-pointer" onClick={() => handleQuoteRequest('general_printing')}>
             <CardContent className="p-6 text-center">
               <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <Printer className="h-8 w-8 text-white" />
+                {/*  */}
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Genel Baskı</h3>
               <p className="text-gray-600 mb-4">Katalog, broşür, kartvizit</p>

@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/sheet";
 import { Link, useLocation } from "wouter";
 import {
-  PrinterIcon,
   Home,
   FileText,
   Plus,
@@ -152,8 +151,10 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/">
             <div className="flex items-center cursor-pointer">
-              <PrinterIcon className="text-primary text-2xl mr-3" />
-              <span className="text-2xl font-bold text-gray-900">Matbixx</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center mr-3 shadow-lg">
+                <span className="text-white font-bold text-xl">M</span>
+              </div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">Matbixx</span>
             </div>
           </Link>
 
@@ -270,8 +271,10 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/">
             <div className="flex items-center cursor-pointer">
-              <PrinterIcon className="text-primary text-xl mr-2" />
-              <span className="text-xl font-bold text-gray-900">Matbixx</span>
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center mr-2 shadow-lg">
+                <span className="text-white font-bold text-lg">M</span>
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">Matbixx</span>
             </div>
           </Link>
 
