@@ -1212,15 +1212,7 @@ export default function QuoteForm() {
                       )}
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="budget">Bütçe (TL)</Label>
-                      <Input
-                        id="budget"
-                        placeholder="Örn: 1000-5000"
-                        {...form.register("budget")}
-                        className="border-gray-300 focus:border-blue-500"
-                      />
-                    </div>
+                    
 
                     <div className="space-y-2">
                       <Label htmlFor="deadline">Teslim Tarihi</Label>
