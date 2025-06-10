@@ -46,26 +46,22 @@ class IdeogramService {
     if (!this.apiKey) {
       throw new Error('Ideogram API key not configured. Please contact administrator.');
     }
-    try {
-      // Etiket tasarımları için özel prompt optimizasyonu
-      const enhancedPrompt = this.enhancePromptForLabels(prompt);
-      const enhancedOptions = this.optimizeOptionsForLabels(prompt, options);
 
-      console.log('🎯 API İsteği Gönderiliyor:', {
-        originalPrompt: prompt,
-        enhancedPrompt,
-        options: enhancedOptions
+    try {
+      console.log('🎯 Ideogram API Request:', {
+        prompt,
+        options
       });
 
       const requestData: IdeogramRequest = {
         image_request: {
-          prompt: enhancedPrompt,
-          aspect_ratio: enhancedOptions.aspectRatio || 'ASPECT_1_1',
-          model: enhancedOptions.model || 'V_2',
-          style_type: enhancedOptions.styleType || 'DESIGN',
-          magic_prompt_option: enhancedOptions.magicPrompt || 'AUTO',
-          negative_prompt: enhancedOptions.negativePrompt,
-          seed: enhancedOptions.seed,
+          prompt: prompt,
+          aspect_ratio: options.aspectRatio || 'ASPECT_1_1',
+          model: options.model || 'V_2',
+          style_type: options.styleType || 'AUTO',
+          magic_prompt_option: options.magicPrompt || 'AUTO',
+          negative_prompt: options.negativePrompt,
+          seed: options.seed,
         }
       };
 
@@ -77,24 +73,19 @@ class IdeogramService {
             'Api-Key': this.apiKey,
             'Content-Type': 'application/json',
           },
-          timeout: 60000, // 60 seconds timeout
+          timeout: 60000,
         }
       );
 
-      console.log('📊 API Yanıtı:', {
+      console.log('📊 Ideogram API Response:', {
         status: response.status,
         dataCount: response.data.data?.length || 0,
         created: response.data.created
       });
 
-      // Gelişmiş hata kontrolü
-      this.validateApiResponse(response.data);
-
-      // Kalite kontrolü uygula
-      const validatedResult = this.validateDesignResult(response.data, prompt);
-      return validatedResult;
+      return response.data;
     } catch (error) {
-      console.error('❌ Ideogram API Hatası:', {
+      console.error('❌ Ideogram API Error:', {
         error: error instanceof Error ? error.message : error,
         prompt,
         options,
@@ -104,11 +95,11 @@ class IdeogramService {
           data: error.response?.data
         } : null
       });
-      
+
       if (axios.isAxiosError(error) && error.response) {
         throw new Error(`Ideogram API Error (${error.response.status}): ${error.response.statusText}`);
       }
-      
+
       throw new Error('Failed to generate image with Ideogram API');
     }
   }
@@ -118,7 +109,6 @@ class IdeogramService {
     return Promise.all(promises);
   }
 
-  // Batch generation with rate limiting
   async generateBatch(requests: Array<{ prompt: string; options?: Parameters<typeof this.generateImage>[1] }>, batchSize = 3): Promise<IdeogramResponse[]> {
     if (!this.apiKey) {
       throw new Error('Ideogram API key not configured. Please contact administrator.');
@@ -132,213 +122,12 @@ class IdeogramService {
       const batchResults = await Promise.all(batchPromises);
       results.push(...batchResults);
 
-      // Rate limiting delay between batches
       if (i + batchSize < requests.length) {
         await new Promise(resolve => setTimeout(resolve, 2000));
       }
     }
 
     return results;
-  }
-
-  // Etiket tasarımları için prompt geliştirme
-  private enhancePromptForLabels(originalPrompt: string): string {
-    const isLabelDesign = this.isLabelDesign(originalPrompt);
-    
-    if (isLabelDesign) {
-      // Güçlü anti-mockup etiket promptu
-      const antiMockupKeywords = [
-        'FLAT LABEL DESIGN ONLY', 'NO MOCKUP', 'NO BOTTLE', 'NO PACKAGING',
-        '2D GRAPHIC DESIGN', 'LABEL ARTWORK', 'STICKER DESIGN', 'DECAL DESIGN'
-      ].join(', ');
-
-      const designSpecs = [
-        'professional typography', 'clean layout', 'brand identity', 
-        'commercial printing quality', 'vector style graphics',
-        'high contrast text', 'balanced composition', 'modern aesthetic'
-      ].join(', ');
-
-      const labelPrompt = `IMPORTANT: ${antiMockupKeywords}. Create a flat, 2D label design for: ${originalPrompt}. Requirements: ${designSpecs}. Style: minimalist, professional, print-ready. Format: flat graphic design suitable for label printing. ABSOLUTELY NO: 3D mockups, product bottles, packaging visualization, realistic rendering, shadows, perspective views, product photography.`;
-      
-      console.log('🚫 GÜÇLÜ ANTİ-MOCKUP PROMPT:', {
-        originalLength: originalPrompt.length,
-        enhancedLength: labelPrompt.length,
-        prompt: labelPrompt
-      });
-      
-      return labelPrompt;
-    }
-    
-    // Normal tasarımlar için de kalite artırımı
-    const enhancedPrompt = `High quality, professional design: ${originalPrompt}. Clean composition, sharp details, modern aesthetic, commercial grade quality.`;
-    
-    console.log('📝 Geliştirilmiş normal prompt:', enhancedPrompt);
-    return enhancedPrompt;
-  }
-
-  // Etiket tasarımları için seçenek optimizasyonu
-  private optimizeOptionsForLabels(originalPrompt: string, options: any): any {
-    const isLabelDesign = this.isLabelDesign(originalPrompt);
-    
-    if (isLabelDesign) {
-      // Çok güçlü negative prompt
-      const extremeAntiMockupPrompt = [
-        'mockup', 'mock-up', 'mock up', '3d mockup', 'product mockup',
-        'bottle mockup', 'packaging mockup', 'container mockup',
-        '3d rendering', '3d render', 'realistic rendering', 'photorealistic',
-        'bottle', 'bottles', 'product bottle', 'glass bottle', 'plastic bottle',
-        'package', 'packaging', 'product packaging', 'box packaging',
-        'container', 'product container', 'jar', 'tube', 'can',
-        'product photography', 'product shot', 'studio photography',
-        'shadows', 'drop shadows', 'cast shadows', 'lighting effects',
-        'perspective view', 'perspective', '3d perspective', 'depth of field',
-        'physical object', 'real product', 'actual product',
-        'studio lighting', 'professional lighting', 'rim lighting',
-        'reflection', 'surface reflection', 'glossy surface',
-        'background', 'realistic background', 'studio background',
-        'blur', 'blurry', 'out of focus', 'depth blur',
-        'low quality', 'pixelated', 'compressed', 'artifacts',
-        'watermark', 'logo overlay', 'brand overlay'
-      ].join(', ');
-
-      const optimizedOptions = {
-        ...options,
-        styleType: 'DESIGN', // Grafik tasarım stili zorunlu
-        model: 'V_2',
-        aspectRatio: options.aspectRatio || 'ASPECT_1_1',
-        magicPrompt: 'OFF', // Magic prompt kapatıyoruz çünkü kendi promptumuz çok spesifik
-        negativePrompt: extremeAntiMockupPrompt // Önceki negative prompt'u eziyoruz
-      };
-
-      console.log('🛡️ EKSTREME ANTİ-MOCKUP OPTİMİZASYONU:', {
-        styleType: optimizedOptions.styleType,
-        model: optimizedOptions.model,
-        aspectRatio: optimizedOptions.aspectRatio,
-        magicPrompt: optimizedOptions.magicPrompt,
-        negativePromptLength: optimizedOptions.negativePrompt.length,
-        negativePromptWords: optimizedOptions.negativePrompt.split(', ').length
-      });
-
-      return optimizedOptions;
-    }
-    
-    // Normal tasarımlar için de kalite optimizasyonu
-    return {
-      ...options,
-      model: options.model || 'V_2',
-      styleType: options.styleType || 'DESIGN',
-      magicPrompt: options.magicPrompt || 'AUTO',
-      negativePrompt: options.negativePrompt ? 
-        `${options.negativePrompt}, low quality, blurry, pixelated` : 
-        'low quality, blurry, pixelated'
-    };
-  }
-
-  // Etiket tasarımı algılama
-  private isLabelDesign(prompt: string): boolean {
-    const labelKeywords = [
-      'etiket', 'label', 'etiketi', 'labelı', 'ürün etiketi', 'product label',
-      'marka etiketi', 'brand label', 'kozmetik etiketi', 'cosmetic label',
-      'gıda etiketi', 'food label', 'içecek etiketi', 'beverage label',
-      'şampuan etiketi', 'parfüm etiketi', 'deterjan etiketi',
-      'etiket tasarım', 'label design', 'etiket tasarla', 'sticker'
-    ];
-    
-    const lowerPrompt = prompt.toLowerCase();
-    const isLabel = labelKeywords.some(keyword => lowerPrompt.includes(keyword.toLowerCase()));
-    
-    console.log('🔍 Etiket algılama:', { 
-      prompt: lowerPrompt, 
-      isLabel,
-      matchedKeywords: labelKeywords.filter(keyword => lowerPrompt.includes(keyword.toLowerCase()))
-    });
-    
-    return isLabel;
-  }
-
-  // API yanıt doğrulama
-  private validateApiResponse(response: IdeogramResponse): void {
-    if (!response.data || response.data.length === 0) {
-      throw new Error('API boş yanıt döndü - hiç görsel oluşturulmadı');
-    }
-
-    // Güvenlik kontrolü
-    const unsafeImages = response.data.filter(img => !img.is_image_safe);
-    if (unsafeImages.length > 0) {
-      console.warn('⚠️ Güvenli olmayan görsel tespit edildi:', unsafeImages.length);
-    }
-
-    // URL kontrolü
-    const invalidUrls = response.data.filter(img => !img.url || !img.url.startsWith('http'));
-    if (invalidUrls.length > 0) {
-      throw new Error('Geçersiz görsel URL\'leri tespit edildi');
-    }
-
-    console.log('✅ API yanıtı doğrulandı:', {
-      totalImages: response.data.length,
-      safeImages: response.data.filter(img => img.is_image_safe).length,
-      validUrls: response.data.filter(img => img.url && img.url.startsWith('http')).length
-    });
-  }
-
-  // Tasarım sonucu kalite kontrolü ve mockup tespiti
-  private validateDesignResult(response: IdeogramResponse, originalPrompt: string): IdeogramResponse {
-    const isLabelDesign = this.isLabelDesign(originalPrompt);
-    
-    if (isLabelDesign && response.data && response.data.length > 0) {
-      // Mockup tespit etme - sadece görsel URL'sinde gerçek mockup ipuçları ara
-      const potentialMockups = response.data.filter(img => {
-        // Sadece URL'de gerçek mockup belirtileri ara, prompt'ta değil
-        const imgUrl = img.url?.toLowerCase() || '';
-        const suspiciousUrlPatterns = [
-          'mockup', 'mock-up', 'product-shot', 'bottle-render', '3d-render'
-        ];
-        
-        const hasSuspiciousUrl = suspiciousUrlPatterns.some(pattern => 
-          imgUrl.includes(pattern)
-        );
-        
-        // Çok düşük çözünürlük kontrolü (256x256'dan küçük)
-        const isLowQuality = img.resolution && (
-          img.resolution.includes('256x256') || 
-          img.resolution.includes('128x128')
-        );
-        
-        return hasSuspiciousUrl || isLowQuality;
-      });
-
-      if (potentialMockups.length > 0) {
-        console.warn('🚨 DÜŞÜK KALİTE GÖRSEL TESPİT EDİLDİ:', {
-          lowQualityCount: potentialMockups.length,
-          totalImages: response.data.length,
-          filteredResolutions: potentialMockups.map(img => img.resolution)
-        });
-        
-        // Sadece gerçekten düşük kaliteli olanları filtrele
-        response.data = response.data.filter(img => !potentialMockups.includes(img));
-        
-        console.log('🔄 Düşük kalite görseller filtrelendi, kalan görsel sayısı:', response.data.length);
-      }
-
-      // Etiket tasarımları için ek validasyon
-      console.log('✅ Etiket tasarımı validasyonu:', {
-        originalImageCount: response.data.length + potentialMockups.length,
-        filteredImageCount: response.data.length,
-        removedLowQuality: potentialMockups.length,
-        allSafe: response.data.every(img => img.is_image_safe),
-        originalPrompt,
-        resolutions: response.data.map(img => img.resolution),
-        seeds: response.data.map(img => img.seed)
-      });
-
-      // Sadece çok kritik durumlarda hata at - normal durumda görselleri döndür
-      if (response.data.length === 0 && potentialMockups.length > 0) {
-        console.warn('⚠️ Tüm görseller düşük kalite olarak filtrelendi, yine de döndürülüyor');
-        response.data = potentialMockups.slice(0, 1); // En azından bir görsel döndür
-      }
-    }
-    
-    return response;
   }
 }
 

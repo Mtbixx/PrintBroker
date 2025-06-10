@@ -339,9 +339,9 @@ export default function DesignEngine() {
       </div>
 
       <Tabs defaultValue="create" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="create" className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4" />
+            <Wand2 className="h-4 w-4" />
             Tasarım Oluştur
           </TabsTrigger>
           <TabsTrigger value="templates" className="flex items-center gap-2">
@@ -351,10 +351,6 @@ export default function DesignEngine() {
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
             Geçmiş
-          </TabsTrigger>
-          <TabsTrigger value="ideogram" className="flex items-center gap-2">
-            <Link className="h-4 w-4" />
-            Ideogram
           </TabsTrigger>
         </TabsList>
 
@@ -700,7 +696,6 @@ export default function DesignEngine() {
                   </Card>
                 ))}
               </div>
-              <Separator className="my-6" />
             </div>
           )}
 
@@ -799,11 +794,6 @@ export default function DesignEngine() {
               </CardContent>
             </Card>
           )}
-        </TabsContent>
-
-        {/* Ideogram Tab */}
-        <TabsContent value="ideogram">
-          <IdeogramAnalyzer />
         </TabsContent>
       </Tabs>
     </div>
