@@ -110,7 +110,7 @@ export default function DesignEngine() {
         await queryClient.refetchQueries({ queryKey: ['/api/auth/user'] });
       }
     },
-    onError: (error: any) => {
+    onError: async (error: any) => {
       console.error('Design generation error:', error);
       const errorMessage = error.message || 'Tasarım oluşturulurken bir hata oluştu.';
 
