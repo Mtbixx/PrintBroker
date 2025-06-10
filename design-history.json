@@ -1,8 +1,8 @@
 [
   {
-    "id": "3b7e2127-f360-4e02-b5a0-0b081728bc8e",
+    "id": "4ca31759-3925-4ff5-8b0d-5becb7e42890",
     "userId": "CUS-1749584324055-GDJ8XR",
-    "prompt": "Sevilay Parfüm için minimalist logo tasarımı yap",
+    "prompt": "Handmade By Cici için modern giyim sektörüne uygun sosyal medyada paylaşmak için tasarım yap \n",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
@@ -12,13 +12,13 @@
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "A minimalist logo design for Sevilay Perfume. The design features the text \"Sevilay Perfume\" in a modern, sans-serif font. Below the text is a stylized image of a perfume bottle. The bottle has a round body and a long, slender neck. The bottle is filled with a golden liquid. The overall design is in a deep blue color.",
+        "prompt": "A design for social media sharing of a handmade outfit by Cici for the modern fashion industry. The outfit consists of a beige trench coat with brown buttons and a brown belt. The coat is worn over a beige blouse and a brown skirt. The outfit is accessorized with a beige hat and brown gloves. The background is a beige wall.",
         "resolution": "1024x1024",
-        "seed": 1981643917,
+        "seed": 1289875529,
         "style_type": "GENERAL",
-        "url": "https://ideogram.ai/api/images/ephemeral/yZldEDktTV6rls0Sqi_Oug.png?exp=1749673978&sig=2854dd309af90a25420d31e729921402f2f908612cffeafef2fd0ab0af76a6d9"
+        "url": "https://ideogram.ai/api/images/ephemeral/mBsoiUTeTWWBRureZKcH6Q.png?exp=1749674671&sig=595bf084ca5995c2110129e59f502b1aaf4a08d05dd9907d6bd81130654a9498"
       },
-      "generationId": "d7a1ccec-6265-43ec-8d29-2ad826b3ddb6",
+      "generationId": "38ac6f0c-8e43-428c-b889-c92ea31a008b",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
@@ -26,7 +26,7 @@
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T20:32:58.726Z",
+    "createdAt": "2025-06-10T20:44:31.752Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false
