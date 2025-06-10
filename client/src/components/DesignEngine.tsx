@@ -217,21 +217,51 @@ export default function DesignEngine() {
 
   const downloadImage = async (url: string, filename: string) => {
     try {
-      const response = await fetch(url);
+      // CORS sorunu için proxy kullan
+      const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(url)}`;
+      const response = await fetch(proxyUrl);
+      
+      if (!response.ok) {
+        throw new Error('İndirme başarısız');
+      }
+      
       const blob = await response.blob();
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
+      const objectUrl = URL.createObjectURL(blob);
+      link.href = objectUrl;
+      link.download = filename || 'tasarim.png';
+      link.style.display = 'none';
+      
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(link.href);
-    } catch (error) {
+      
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(objectUrl);
+      }, 100);
+      
       toast({
-        title: "Hata",
-        description: "Görsel indirilemedi.",
-        variant: "destructive",
+        title: "Başarılı",
+        description: "Tasarım başarıyla indirildi.",
       });
+    } catch (error) {
+      console.error('Download error:', error);
+      
+      // Fallback: yeni pencerede aç
+      try {
+        window.open(url, '_blank');
+        toast({
+          title: "Bilgi",
+          description: "Tasarım yeni sekmede açıldı. Sağ tıklayıp 'Resmi Farklı Kaydet' seçebilirsiniz.",
+        });
+      } catch (fallbackError) {
+        toast({
+          title: "Hata",
+          description: "Görsel indirilemedi. Lütfen tekrar deneyin.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -404,7 +434,8 @@ export default function DesignEngine() {
                               <Button
                                 size="sm"
                                 variant="secondary"
-                                onClick={() => downloadImage(image.url, `design-${index + 1}.png`)}
+                                onClick={() => downloadImage(image.url, `tasarim-${Date.now()}-${index + 1}.png`)}
+                                title="Tasarımı İndir"
                               >
                                 <Download className="h-4 w-4" />
                               </Button>

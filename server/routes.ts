@@ -2011,6 +2011,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect('/payment?error=payment_failed');
   });
 
+  // Image proxy for downloads (CORS bypass)
+  app.get('/api/proxy-image', async (req, res) => {
+    try {
+      const { url } = req.query;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ error: 'URL parameter required' });
+      }
+
+      // Validate URL
+      try {
+        new URL(url);
+      } catch {
+        return res.status(400).json({ error: 'Invalid URL' });
+      }
+
+      // Fetch image
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        return res.status(response.status).json({ error: 'Failed to fetch image' });
+      }
+
+      // Get content type
+      const contentType = response.headers.get('content-type') || 'image/png';
+      
+      // Set headers for download
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Disposition', 'attachment; filename="tasarim.png"');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+
+      // Stream the image
+      response.body?.pipe(res);
+      
+    } catch (error) {
+      console.error('Image proxy error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   // System monitoring routes
   app.get('/api/admin/system/health', isAuthenticated, async (req: any, res) => {
     try {
