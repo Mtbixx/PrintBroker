@@ -1,32 +1,32 @@
 [
   {
-    "id": "dccb2251-b55c-46f9-8585-7ad30143a674",
-    "userId": "CUS-1749578585320-614JKG",
-    "prompt": "Remonla Parfüm için 50 ml etiket tasarla ",
+    "id": "48bd1c10-b344-443f-a2eb-db1df9f6a153",
+    "userId": "CUS-1749584324055-GDJ8XR",
+    "prompt": "Renola Parfüm için etiket tasarımı yap",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
-      "styleType": "AUTO",
+      "styleType": "DESIGN",
       "magicPrompt": "AUTO"
     },
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "A clean, modern, high-quality label design for a 50 ml perfume bottle. The label is white with black text and a black perfume drop graphic. The perfume brand name, \"Remonla Parfüm\", is written in bold, uppercase letters. Below the brand name, the text \"50 ml\" is written in smaller, bold letters. The perfume drop graphic is placed below the text, and it has a vector-style clean graphic. The label design is print-ready with sharp edges and follows commercial printing standards.",
+        "prompt": "A vector-style, clean and modern label design for a perfume called Renola. The label has a professional typography with clear, readable text. There is a balanced composition with proper spacing. The label is brand-focused with a graphic element of a flower. The label has a professional color scheme of black, gold, and white. The background is a light beige color.",
         "resolution": "1024x1024",
-        "seed": 1530860657,
+        "seed": 1529019033,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/lfiiqYyOTxC_eB896FaV3Q.png?exp=1749670144&sig=63a5483fc1d1a9b3590b52f41e59ed98549e765e85e05617cc0a582f7d8e5990"
+        "url": "https://ideogram.ai/api/images/ephemeral/c3BIRgqXSFifdJ7D6OdsGw.png?exp=1749671258&sig=bb4daf162fdc298cdcabbbc48bfb1f7914976d1b257763f941a245c0bbeceb3b"
       },
-      "generationId": "991010c8-65b7-40ee-8119-e5e42ce9bac6",
+      "generationId": "d9158707-1838-4499-ac84-2383f15d8461",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
-        "styleType": "AUTO",
+        "styleType": "DESIGN",
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T19:29:04.420Z",
+    "createdAt": "2025-06-10T19:47:38.246Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false

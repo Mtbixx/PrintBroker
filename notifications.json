@@ -1,14 +1,14 @@
 [
   {
-    "id": "f9d2cb52-0d6b-46a7-97aa-becfe71ec4ed",
+    "id": "b1b44065-b12c-44d0-8389-8c8dbd350626",
     "userId": "dev-user-1748981533183",
     "type": "new_quote",
     "title": "Yeni Teklif Talebi",
-    "message": "Endüstriyel Etiket - 58,452 adet - ₺7013",
+    "message": "Kozmetik - 48,906 adet - ₺13782",
     "data": {
-      "quoteId": "b75420ec-90aa-4187-99b5-45931bcc3889"
+      "quoteId": "b25cb955-3298-4b43-bc10-f7aaa03e4c6e"
     },
     "isRead": false,
-    "createdAt": "2025-06-10T19:30:35.685Z"
+    "createdAt": "2025-06-10T19:47:23.635Z"
   }
 ]
