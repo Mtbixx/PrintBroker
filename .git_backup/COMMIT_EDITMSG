@@ -1,0 +1,18 @@
+Assistant checkpoint: Fix unhandled errors and add global error handling
+
+Assistant generated file changes:
+- server/index.ts: Add global error handlers
+- client/src/lib/queryClient.ts: Add error handling for API requests
+Add error handling for API requests
+Add error handling to QueryClient
+- client/src/components/SystemMonitoring.tsx: Fix Dialog accessibility warning
+- client/src/main.tsx: Add global error boundary
+
+---
+
+User prompt:
+
+hata veriyor
+
+Replit-Commit-Author: Assistant
+Replit-Commit-Session-Id: 01c060be-a2ff-49e3-91b8-859f837fece6
