@@ -1,32 +1,32 @@
 [
   {
-    "id": "48bd1c10-b344-443f-a2eb-db1df9f6a153",
+    "id": "451025f1-03c9-4076-b71a-9c428548affb",
     "userId": "CUS-1749584324055-GDJ8XR",
-    "prompt": "Renola Parfüm için etiket tasarımı yap",
+    "prompt": "Rendoa Parfüm için siyah zemin üzerine gold etiket tasarla",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
-      "styleType": "DESIGN",
+      "styleType": "AUTO",
       "magicPrompt": "AUTO"
     },
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "A vector-style, clean and modern label design for a perfume called Renola. The label has a professional typography with clear, readable text. There is a balanced composition with proper spacing. The label is brand-focused with a graphic element of a flower. The label has a professional color scheme of black, gold, and white. The background is a light beige color.",
+        "prompt": "Flat vector label design for Rendoa Parfüm için siyah zemin üzerine gold etiket tasarla. Design requirements: FLAT 2D label design only, vector graphics style, clean typography, professional branding elements, geometric shapes, minimalist aesthetic, brand colors, high contrast text, commercial label layout. Style: flat design, vector illustration, 2D graphics, label artwork, sticker design. NO 3D elements, NO mockups, NO bottles, NO packaging, NO realistic rendering, NO shadows, NO perspective, NO product photography. Pure flat graphic design for printing on labels.",
         "resolution": "1024x1024",
-        "seed": 1529019033,
+        "seed": 2073098427,
         "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/c3BIRgqXSFifdJ7D6OdsGw.png?exp=1749671258&sig=bb4daf162fdc298cdcabbbc48bfb1f7914976d1b257763f941a245c0bbeceb3b"
+        "url": "https://ideogram.ai/api/images/ephemeral/o49LX5j8TWyustJHl24Y_A.png?exp=1749671422&sig=2d1e94e065e4d70b1dd7f1e061474802c2e460af9a1a3b6268da80334740532b"
       },
-      "generationId": "d9158707-1838-4499-ac84-2383f15d8461",
+      "generationId": "7283192c-4b83-46a1-88b7-7e0b67771f56",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
-        "styleType": "DESIGN",
+        "styleType": "AUTO",
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T19:47:38.246Z",
+    "createdAt": "2025-06-10T19:50:22.777Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false
