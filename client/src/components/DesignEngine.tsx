@@ -92,7 +92,7 @@ export default function DesignEngine() {
     mutationFn: async (data: { prompt: string; options: DesignOptions }) => {
       return await apiRequest('POST', '/api/design/generate', data);
     },
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       if (response.data && response.data.length > 0) {
         const newImages = response.data.map((item: any) => ({
           id: response.designId || Date.now() + Math.random(),

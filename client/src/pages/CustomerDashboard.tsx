@@ -57,7 +57,7 @@ export default function CustomerDashboard() {
       }, 1500);
       return;
     }
-    
+
     // Additional role check
     if (!isLoading && user && user.role !== 'customer') {
       toast({
@@ -126,7 +126,7 @@ export default function CustomerDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary to-blue-600 text-white p-6 rounded-2xl mb-8">
@@ -170,7 +170,7 @@ export default function CustomerDashboard() {
                     </div>
                   </Button>
                 </Link>
-                
+
                 <Link href="/quote/roll_label">
                   <Button variant="outline" className="flex items-center p-4 h-auto bg-orange-50 hover:bg-orange-100 border-orange-200 w-full justify-start">
                     <Disc className="text-orange-500 text-2xl mr-3" />
@@ -180,7 +180,7 @@ export default function CustomerDashboard() {
                     </div>
                   </Button>
                 </Link>
-                
+
                 <Link href="/quote/general_printing">
                   <Button variant="outline" className="flex items-center p-4 h-auto bg-green-50 hover:bg-green-100 border-green-200 w-full justify-start">
                     <Printer className="text-green-500 text-2xl mr-3" />
@@ -206,7 +206,7 @@ export default function CustomerDashboard() {
                     </div>
                   </Button>
                 </Link>
-                
+
                 <Dialog open={isDesignDialogOpen} onOpenChange={setIsDesignDialogOpen}>
                   <DialogTrigger asChild>
                     <Button variant="outline" className="flex items-center p-4 h-auto bg-purple-50 hover:bg-purple-100 border-purple-200 w-full justify-start">
@@ -226,7 +226,7 @@ export default function CustomerDashboard() {
                     </div>
                   </DialogContent>
                 </Dialog>
-                
+
                 <Link href="/quote/sheet_label">
                   <Button variant="outline" className="flex items-center p-4 h-auto bg-blue-50 hover:bg-blue-100 border-blue-200 w-full justify-start">
                     <Plus className="text-blue-500 text-2xl mr-3" />
@@ -340,7 +340,7 @@ export default function CustomerDashboard() {
                                 <ImageIcon className="h-12 w-12 text-gray-400" />
                               </div>
                             )}
-                            
+
                             {/* Overlay with actions */}
                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
                               <div className="flex gap-2">
@@ -389,7 +389,7 @@ export default function CustomerDashboard() {
                                     </div>
                                   </DialogContent>
                                 </Dialog>
-                                
+
                                 <Button 
                                   size="sm" 
                                   variant="secondary"
@@ -399,12 +399,12 @@ export default function CustomerDashboard() {
                                       : design.result && design.result.data && design.result.data[0] 
                                       ? design.result.data[0].url 
                                       : null;
-                                    
+
                                     if (imageUrl) {
                                       try {
                                         const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
                                         const response = await fetch(proxyUrl);
-                                        
+
                                         if (response.ok) {
                                           const blob = await response.blob();
                                           const link = document.createElement('a');
@@ -412,15 +412,15 @@ export default function CustomerDashboard() {
                                           link.href = objectUrl;
                                           link.download = `tasarim-${design.id}.png`;
                                           link.style.display = 'none';
-                                          
+
                                           document.body.appendChild(link);
                                           link.click();
-                                          
+
                                           setTimeout(() => {
                                             document.body.removeChild(link);
                                             URL.revokeObjectURL(objectUrl);
                                           }, 100);
-                                          
+
                                           toast({
                                             title: "Başarılı",
                                             description: "Tasarım başarıyla indirildi.",
@@ -438,7 +438,7 @@ export default function CustomerDashboard() {
                                 >
                                   <Download className="h-4 w-4" />
                                 </Button>
-                                
+
                                 <Button 
                                   size="sm" 
                                   variant="secondary"
@@ -463,7 +463,7 @@ export default function CustomerDashboard() {
                                 </Button>
                               </div>
                             </div>
-                            
+
                             {/* Status badges */}
                             <div className="absolute top-2 right-2 space-y-1">
                               {design.isBookmarked && (
@@ -479,7 +479,7 @@ export default function CustomerDashboard() {
                               )}
                             </div>
                           </div>
-                          
+
                           <CardContent className="p-4">
                             <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                               {design.prompt}
@@ -496,7 +496,7 @@ export default function CustomerDashboard() {
                         </Card>
                       ))}
                     </div>
-                    
+
                     {/* Pagination */}
                     {designHistory.totalPages > 1 && (
                       <div className="flex justify-center items-center gap-2 mt-6">
@@ -517,11 +517,11 @@ export default function CustomerDashboard() {
                         >
                           Önceki
                         </Button>
-                        
+
                         <span className="text-sm text-gray-600">
                           Sayfa {designHistory.page} / {designHistory.totalPages}
                         </span>
-                        
+
                         <Button
                           variant="outline"
                           size="sm"

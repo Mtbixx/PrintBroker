@@ -847,23 +847,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Mock design history for now - can be replaced with real data
-      const designs = [
-        {
-          id: `design_${Date.now()}_1`,
-          prompt: "Modern logo tasarımı",
-          createdAt: new Date(),
-          status: "completed",
-          result: { url: "/api/placeholder-image.png" }
-        }
-      ];
-
-      res.json({
-        designs,
-        total: designs.length,
-        page,
-        totalPages: Math.ceil(designs.length / limit)
-      });
+      // Get actual design history from storage
+      const designHistory = await storage.getDesignHistory(userId, { page, limit });
+      res.json(designHistory);
     } catch (error) {
       console.error("Design history error:", error);
       res.status(500).json({ message: "Failed to fetch design history" });
