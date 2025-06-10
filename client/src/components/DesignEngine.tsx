@@ -114,8 +114,8 @@ export default function DesignEngine() {
         });
 
         // Refresh user balance and design history
-        queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
+        await queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+        await queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
       }
     },
     onError: (error: any) => {

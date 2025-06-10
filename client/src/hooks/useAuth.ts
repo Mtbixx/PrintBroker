@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface LoginCredentials {
@@ -33,15 +32,15 @@ export const useAuth = () => {
             'Content-Type': 'application/json',
           }
         });
-        
+
         if (response.status === 401) {
           return null; // Not authenticated - this is normal
         }
-        
+
         if (!response.ok) {
           return null;
         }
-        
+
         const userData = await response.json();
         return userData;
       } catch (error) {
@@ -77,7 +76,7 @@ export const useAuth = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
-      
+
       // Redirect based on user role or provided URL
       if (data.redirectUrl) {
         setTimeout(() => {
@@ -89,7 +88,7 @@ export const useAuth = () => {
           printer: '/printer-dashboard',
           admin: '/admin-dashboard'
         };
-        
+
         const redirectUrl = redirectUrls[data.user.role as keyof typeof redirectUrls] || '/customer-dashboard';
         setTimeout(() => {
           window.location.href = redirectUrl;
@@ -121,7 +120,7 @@ export const useAuth = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
-      
+
       // Redirect based on registration success
       if (data.redirectUrl) {
         window.location.href = data.redirectUrl;

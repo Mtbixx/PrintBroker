@@ -182,7 +182,7 @@ export default function Navigation() {
             {user.role === 'customer' && (
               <div className="hidden sm:flex items-center text-sm">
                 <CreditCard className="h-4 w-4 text-gray-500 mr-1" />
-                <span className="text-gray-600">₺{user.creditBalance}</span>
+                <span className="text-gray-600">₺{parseFloat(user.creditBalance || '0').toFixed(2)}</span>
               </div>
             )}
 
@@ -226,7 +226,7 @@ export default function Navigation() {
                   <>
                     <DropdownMenuItem>
                       <CreditCard className="h-4 w-4 mr-2" />
-                      Kredi: ₺{user.creditBalance}
+                      Kredi: ₺{parseFloat(user.creditBalance || '0').toFixed(2)}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </>
@@ -322,7 +322,7 @@ export default function Navigation() {
                   {user.role === 'customer' && (
                     <div className="flex items-center px-3 py-2 text-sm text-gray-600">
                       <CreditCard className="h-4 w-4 mr-2" />
-                      Kredi: ₺{user.creditBalance}
+                      Kredi: ₺{parseFloat(user.creditBalance || '0').toFixed(2)}
                     </div>
                   )}
 
