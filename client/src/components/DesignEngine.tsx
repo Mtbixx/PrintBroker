@@ -84,6 +84,12 @@ export default function DesignEngine() {
     queryFn: () => apiRequest('GET', '/api/design/templates'),
   });
 
+  // Fetch Ideogram templates
+  const { data: ideogramTemplates = [] } = useQuery({
+    queryKey: ['/api/design/ideogram-templates'],
+    queryFn: () => apiRequest('GET', '/api/design/ideogram-templates'),
+  });
+
   // Fetch design history
   const { data: history } = useQuery({
     queryKey: ['/api/design/history'],
@@ -637,48 +643,116 @@ export default function DesignEngine() {
 
         {/* Templates Tab */}
         <TabsContent value="templates">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.isArray(templates) ? templates.map((template: DesignTemplate) => (
-              <Card key={template.id} className="hover:shadow-lg transition-shadow cursor-pointer group">
-                <CardContent className="p-0">
-                  <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg flex items-center justify-center">
-                    <Layout className="h-12 w-12 text-gray-400" />
-                  </div>
-                  <div className="p-4 space-y-3">
-                    <div>
-                      <h3 className="font-semibold text-lg">{template.name}</h3>
-                      <Badge variant="secondary" className="mt-1">
-                        {template.category}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-600 line-clamp-3">
-                      {template.prompt}
-                    </p>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => useTemplate(template)}
-                        className="flex-1"
-                      >
-                        <Wand2 className="h-4 w-4 mr-1" />
-                        Kullan
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => copyToClipboard(template.prompt)}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )) : (
-              <div className="col-span-full text-center py-8">
-                <p className="text-gray-500">Şablonlar yükleniyor...</p>
+          {/* Ideogram Templates Section */}
+          {ideogramTemplates.templates && ideogramTemplates.templates.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Link className="h-5 w-5 text-purple-500" />
+                Ideogram Örnekleri
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                {ideogramTemplates.templates.map((template: any) => (
+                  <Card key={template.id} className="hover:shadow-lg transition-shadow cursor-pointer group border-purple-200">
+                    <CardContent className="p-0">
+                      <div className="aspect-video bg-gradient-to-br from-purple-100 to-pink-100 rounded-t-lg flex items-center justify-center relative">
+                        {template.imageUrl ? (
+                          <img 
+                            src={template.imageUrl} 
+                            alt={template.name}
+                            className="w-full h-full object-cover rounded-t-lg"
+                          />
+                        ) : (
+                          <Layout className="h-12 w-12 text-purple-400" />
+                        )}
+                        <Badge variant="default" className="absolute top-2 right-2 bg-purple-600">
+                          Ideogram
+                        </Badge>
+                      </div>
+                      <div className="p-4 space-y-3">
+                        <div>
+                          <h3 className="font-semibold text-lg">{template.name}</h3>
+                          <Badge variant="outline" className="mt-1 border-purple-200 text-purple-700">
+                            Örnek Tasarım
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 line-clamp-3">
+                          {template.prompt}
+                        </p>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => useTemplate(template)}
+                            className="flex-1 bg-purple-600 hover:bg-purple-700"
+                          >
+                            <Wand2 className="h-4 w-4 mr-1" />
+                            Kullan
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => copyToClipboard(template.prompt)}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            )}
+              <Separator className="my-6" />
+            </div>
+          )}
+
+          {/* Regular Templates Section */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Layout className="h-5 w-5 text-blue-500" />
+              Standart Şablonlar
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.isArray(templates) ? templates.map((template: DesignTemplate) => (
+                <Card key={template.id} className="hover:shadow-lg transition-shadow cursor-pointer group">
+                  <CardContent className="p-0">
+                    <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg flex items-center justify-center">
+                      <Layout className="h-12 w-12 text-gray-400" />
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div>
+                        <h3 className="font-semibold text-lg">{template.name}</h3>
+                        <Badge variant="secondary" className="mt-1">
+                          {template.category}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 line-clamp-3">
+                        {template.prompt}
+                      </p>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => useTemplate(template)}
+                          className="flex-1"
+                        >
+                          <Wand2 className="h-4 w-4 mr-1" />
+                          Kullan
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyToClipboard(template.prompt)}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )) : (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-gray-500">Şablonlar yükleniyor...</p>
+                </div>
+              )}
+            </div>
           </div>
         </TabsContent>
 

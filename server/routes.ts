@@ -3028,6 +3028,88 @@ app.get('/api/python/status', async (req, res) => {
   }
 });
 
+// One-time Ideogram analysis for admin
+app.post('/api/admin/analyze-ideogram-sample', isAuthenticated, async (req: any, res) => {
+  try {
+    const userId = req.user?.claims?.sub || req.user?.id || req.session?.user?.id;
+    const user = await storage.getUser(userId);
+
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
+    const { url } = req.body;
+
+    if (!url || !url.includes('ideogram.ai/g/')) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Geçerli bir Ideogram linki gerekli' 
+      });
+    }
+
+    console.log('🔍 Admin Ideogram örnek analizi başlatılıyor:', url);
+
+    const analysisResult = await ideogramScraperService.scrapeIdeogramLink(url);
+
+    if (!analysisResult) {
+      return res.status(400).json({
+        success: false,
+        message: 'Ideogram analizi başarısız oldu'
+      });
+    }
+
+    // Prompt bilgilerini analiz et ve template olarak kaydet
+    const promptTemplate = {
+      id: `ideogram_${Date.now()}`,
+      name: analysisResult.title || 'Ideogram Örnek Tasarım',
+      prompt: analysisResult.prompt,
+      category: 'ideogram_sample',
+      source: 'ideogram',
+      extractedAt: new Date().toISOString(),
+      imageUrl: analysisResult.imageUrl,
+      aspectRatio: analysisResult.aspectRatio || 'ASPECT_1_1'
+    };
+
+    // Template'i design templates listesine ekle (session storage veya database)
+    // Burada basit bir memory cache kullanıyoruz
+    if (!global.ideogramTemplates) {
+      global.ideogramTemplates = [];
+    }
+    global.ideogramTemplates.push(promptTemplate);
+
+    res.json({
+      success: true,
+      template: promptTemplate,
+      message: 'Ideogram örnek tasarım analiz edildi ve template olarak kaydedildi'
+    });
+
+  } catch (error) {
+    console.error('❌ Admin Ideogram analysis error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Ideogram analiz hatası',
+      error: error instanceof Error ? error.message : 'Bilinmeyen hata'
+    });
+  }
+});
+
+// Get Ideogram templates for design engine
+app.get('/api/design/ideogram-templates', isAuthenticated, async (req: any, res) => {
+  try {
+    const templates = global.ideogramTemplates || [];
+    res.json({
+      success: true,
+      templates
+    });
+  } catch (error) {
+    console.error('❌ Error fetching Ideogram templates:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Template getirme hatası' 
+    });
+  }
+});
+
 // Enhanced PDF Analysis with Python Service
 app.post('/api/python/analyze-pdf', isAuthenticated, async (req: any, res) => {
   try {
