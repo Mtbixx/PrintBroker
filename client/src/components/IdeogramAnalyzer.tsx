@@ -7,7 +7,7 @@ import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { AlertCircle, ExternalLink, Copy, Download, Sparkles } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
-import { useToast } from './ui/use-toast';
+import { useToast } from '../hooks/use-toast';
 
 interface IdeogramData {
   imageUrl: string;
