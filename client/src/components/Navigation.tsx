@@ -211,142 +211,141 @@ export default function Navigation() {
 
           {/* Quick Actions & User Menu */}
           <div className="flex items-center space-x-4">
-              {user && (
-                <>
-                  {/* Notifications Dropdown */}
-                  <DropdownMenu open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                        <Bell className="h-4 w-4" />
-                        {unreadCount > 0 && (
-                          <Badge 
-                            variant="destructive" 
-                            className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+            {user && (
+              <>
+                {/* Notifications Dropdown */}
+                <DropdownMenu open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                      <Bell className="h-4 w-4" />
+                      {unreadCount > 0 && (
+                        <Badge 
+                          variant="destructive" 
+                          className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                        >
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </Badge>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-80" align="end">
+                    <DropdownMenuLabel className="font-semibold">
+                      Bildirimler
+                      {unreadCount > 0 && (
+                        <Badge variant="secondary" className="ml-2">
+                          {unreadCount} yeni
+                        </Badge>
+                      )}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-gray-500">
+                        <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">Henüz bildiriminiz yok</p>
+                      </div>
+                    ) : (
+                      <div className="max-h-96 overflow-y-auto">
+                        {notifications.slice(0, 10).map((notification: any) => (
+                          <DropdownMenuItem
+                            key={notification.id}
+                            className={`p-3 cursor-pointer border-b last:border-b-0 ${
+                              !notification.isRead ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
+                            }`}
+                            onClick={() => markAsRead(notification.id)}
                           >
-                            {unreadCount > 99 ? '99+' : unreadCount}
-                          </Badge>
-                        )}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-80" align="end">
-                      <DropdownMenuLabel className="font-semibold">
-                        Bildirimler
-                        {unreadCount > 0 && (
-                          <Badge variant="secondary" className="ml-2">
-                            {unreadCount} yeni
-                          </Badge>
-                        )}
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-
-                      {notifications.length === 0 ? (
-                        <div className="p-4 text-center text-gray-500">
-                          <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                          <p className="text-sm">Henüz bildiriminiz yok</p>
-                        </div>
-                      ) : (
-                        <div className="max-h-96 overflow-y-auto">
-                          {notifications.slice(0, 10).map((notification: any) => (
-                            <DropdownMenuItem
-                              key={notification.id}
-                              className={`p-3 cursor-pointer border-b last:border-b-0 ${
-                                !notification.isRead ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
-                              }`}
-                              onClick={() => markAsRead(notification.id)}
-                            >
-                              <div className="flex flex-col w-full">
-                                <div className="flex items-start justify-between">
-                                  <h4 className={`text-sm font-medium ${
-                                    !notification.isRead ? 'text-blue-900' : 'text-gray-900'
-                                  }`}>
-                                    {notification.title}
-                                  </h4>
-                                  {!notification.isRead && (
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" />
-                                  )}
-                                </div>
-                                <p className="text-xs text-gray-600 mt-1">
-                                  {notification.message}
-                                </p>
-                                <span className="text-xs text-gray-400 mt-1">
-                                  {new Date(notification.createdAt).toLocaleString('tr-TR')}
-                                </span>
+                            <div className="flex flex-col w-full">
+                              <div className="flex items-start justify-between">
+                                <h4 className={`text-sm font-medium ${
+                                  !notification.isRead ? 'text-blue-900' : 'text-gray-900'
+                                }`}>
+                                  {notification.title}
+                                </h4>
+                                {!notification.isRead && (
+                                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" />
+                                )}
                               </div>
-                            </DropdownMenuItem>
-                          ))}
-                        </div>
-                      )}
-
-                      {notifications.length > 10 && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="p-2 text-center text-blue-600 hover:text-blue-800">
-                            Tüm bildirimleri gör
+                              <p className="text-xs text-gray-600 mt-1">
+                                {notification.message}
+                              </p>
+                              <span className="text-xs text-gray-400 mt-1">
+                                {new Date(notification.createdAt).toLocaleString('tr-TR')}
+                              </span>
+                            </div>
                           </DropdownMenuItem>
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                        ))}
+                      </div>
+                    )}
 
-                  {/* User Dropdown */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={user.profileImageUrl || undefined} />
-                          <AvatarFallback className="text-xs">
-                            {getUserInitials()}
-                          </AvatarFallback>
-                        </Avatar>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56" align="end">
-                      <DropdownMenuLabel>
-                        <div>
-                          <p className="font-medium">{getUserDisplayName()}</p>
-                          <p className="text-sm text-gray-500">{user.email}</p>
-                        </div>
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
+                    {notifications.length > 10 && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="p-2 text-center text-blue-600 hover:text-blue-800">
+                          Tüm bildirimleri gör
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
-                      {user.role === 'customer' && (
-                        <>
-                          <DropdownMenuItem>
-                            <CreditCard className="h-4 w-4 mr-2" />
-                            Kredi: ₺{parseFloat(user.creditBalance || '0').toFixed(2)}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                        </>
-                      )}
+                {/* User Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.profileImageUrl || undefined} />
+                        <AvatarFallback className="text-xs">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end">
+                    <DropdownMenuLabel>
+                      <div>
+                        <p className="font-medium">{getUserDisplayName()}</p>
+                        <p className="text-sm text-gray-500">{user.email}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
 
-                      {user.role === 'printer' && (
-                        <>
-                          <DropdownMenuItem>
-                            <Star className="h-4 w-4 mr-2" />
-                            Puan: {user.rating || '0.0'}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Building2 className="h-4 w-4 mr-2" />
-                            {user.subscriptionStatus === 'active' ? 'Premium Üye' : 'Temel Üye'}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                        </>
-                      )}
+                    {user.role === 'customer' && (
+                      <>
+                        <DropdownMenuItem>
+                          <CreditCard className="h-4 w-4 mr-2" />
+                          Kredi: ₺{parseFloat(user.creditBalance || '0').toFixed(2)}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
 
-                      <DropdownMenuItem>
-                        <Settings className="h-4 w-4 mr-2" />
-                        Ayarlar
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                        <LogOut className="h-4 w-4 mr-2" />
-                        Çıkış Yap
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              )}
-            </div>
+                    {user.role === 'printer' && (
+                      <>
+                        <DropdownMenuItem>
+                          <Star className="h-4 w-4 mr-2" />
+                          Puan: {user.rating || '0.0'}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Building2 className="h-4 w-4 mr-2" />
+                          {user.subscriptionStatus === 'active' ? 'Premium Üye' : 'Temel Üye'}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+
+                    <DropdownMenuItem>
+                      <Settings className="h-4 w-4 mr-2" />
+                      Ayarlar
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Çıkış Yap
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
           </div>
         </div>
       </div>
