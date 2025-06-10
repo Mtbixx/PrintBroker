@@ -1,5 +1,6 @@
 import axios from 'axios';
 import FormData from 'form-data';
+import OpenAI from 'openai';
 
 interface IdeogramRequest {
   image_request: {
@@ -27,11 +28,19 @@ interface IdeogramResponse {
 class IdeogramService {
   private apiKey: string;
   private baseUrl = 'https://api.ideogram.ai/generate';
+  private openai: OpenAI | null = null;
 
   constructor() {
     this.apiKey = 'X3h2wLDuOfuJynGGclLZhLN1isGvy9oxBM-S8wcNJVTqk80lyW6pszMShoMHP8YbN7DYSfzti7eTLL-KCExqZw';
     if (!this.apiKey) {
       console.warn('IDEOGRAM_API_KEY environment variable not set - design generation will be disabled');
+    }
+
+    // OpenAI DALL-E entegrasyonu
+    if (process.env.OPENAI_API_KEY) {
+      this.openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
     }
   }
 
@@ -124,6 +133,71 @@ class IdeogramService {
 
       if (i + batchSize < requests.length) {
         await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+
+    return results;
+  }
+
+  async generateWithDALLE(prompt: string, options: {
+    size?: '1024x1024' | '1792x1024' | '1024x1792';
+    quality?: 'standard' | 'hd';
+    style?: 'vivid' | 'natural';
+  } = {}): Promise<IdeogramResponse> {
+    if (!this.openai) {
+      throw new Error('OpenAI API key not configured for DALL-E generation.');
+    }
+
+    try {
+      console.log('🎨 DALL-E API Request:', { prompt, options });
+
+      const response = await this.openai.images.generate({
+        model: 'dall-e-3',
+        prompt: prompt,
+        size: options.size || '1024x1024',
+        quality: options.quality || 'standard',
+        style: options.style || 'vivid',
+        n: 1,
+      });
+
+      const dalleResult = response.data[0];
+      
+      // Ideogram formatına dönüştür
+      const ideogramResponse: IdeogramResponse = {
+        created: new Date().toISOString(),
+        data: [{
+          url: dalleResult.url!,
+          is_image_safe: true,
+          prompt: dalleResult.revised_prompt || prompt,
+          resolution: options.size || '1024x1024',
+          seed: Math.floor(Math.random() * 1000000)
+        }]
+      };
+
+      console.log('📊 DALL-E API Response Success');
+      return ideogramResponse;
+
+    } catch (error) {
+      console.error('❌ DALL-E API Error:', error);
+      throw new Error('Failed to generate image with DALL-E API');
+    }
+  }
+
+  async generateMultiProvider(prompt: string, providers: ('ideogram' | 'dalle')[] = ['ideogram'], options: any = {}): Promise<IdeogramResponse[]> {
+    const results: IdeogramResponse[] = [];
+    
+    for (const provider of providers) {
+      try {
+        if (provider === 'ideogram') {
+          const result = await this.generateImage(prompt, options);
+          results.push(result);
+        } else if (provider === 'dalle') {
+          const result = await this.generateWithDALLE(prompt, options);
+          results.push(result);
+        }
+      } catch (error) {
+        console.error(`❌ ${provider} generation failed:`, error);
+        // Devam et, diğer provider'ları dene
       }
     }
 
