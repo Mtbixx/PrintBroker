@@ -1,0 +1,34 @@
+[
+  {
+    "id": "88f7f3d5-6509-4472-96d2-372bea89c799",
+    "userId": "CUS-1749578585320-614JKG",
+    "prompt": "Remus Auto Detailing için logo tasarla\n",
+    "options": {
+      "aspectRatio": "ASPECT_1_1",
+      "model": "V_2",
+      "styleType": "AUTO",
+      "magicPrompt": "AUTO"
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A logo design for Remus Auto Detailing. The logo features a stylized car with a shiny finish. There's a spray of water droplets coming from the car. The text \"Remus Auto Detailing\" is written in a modern, bold font. The background is white.",
+        "resolution": "1024x1024",
+        "seed": 596258199,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/02ooFRy8TsitTpFnoLISiw.png?exp=1749667324&sig=7b785ce7b7b74afb95d01f5f3ca4b0e6db0f0517ace737fd135a93c7f83d69f3"
+      },
+      "generationId": "c8fddaaa-0597-47f1-bedf-0c20fed4d8cb",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "ASPECT_1_1",
+        "styleType": "AUTO",
+        "creditCost": 35
+      }
+    },
+    "createdAt": "2025-06-10T18:42:04.856Z",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false
+  }
+]
