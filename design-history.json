@@ -1,32 +1,32 @@
 [
   {
-    "id": "1760e6a7-472d-416e-a497-d8788cfc412f",
+    "id": "3b7e2127-f360-4e02-b5a0-0b081728bc8e",
     "userId": "CUS-1749584324055-GDJ8XR",
-    "prompt": "Ürün etiketi tasarımı, Sevurg Parfüm için çekici ve bilgilendirici",
+    "prompt": "Sevilay Parfüm için minimalist logo tasarımı yap",
     "options": {
       "aspectRatio": "ASPECT_1_1",
       "model": "V_2",
-      "styleType": "AUTO",
+      "styleType": "GENERAL",
       "magicPrompt": "AUTO"
     },
     "result": {
       "0": {
         "is_image_safe": true,
-        "prompt": "IMPORTANT: FLAT LABEL DESIGN ONLY, NO MOCKUP, NO BOTTLE, NO PACKAGING, 2D GRAPHIC DESIGN, LABEL ARTWORK, STICKER DESIGN, DECAL DESIGN. Create a flat, 2D label design for: Ürün etiketi tasarımı, Sevurg Parfüm için çekici ve bilgilendirici. Requirements: professional typography, clean layout, brand identity, commercial printing quality, vector style graphics, high contrast text, balanced composition, modern aesthetic. Style: minimalist, professional, print-ready. Format: flat graphic design suitable for label printing. ABSOLUTELY NO: 3D mockups, product bottles, packaging visualization, realistic rendering, shadows, perspective views, product photography.",
+        "prompt": "A minimalist logo design for Sevilay Perfume. The design features the text \"Sevilay Perfume\" in a modern, sans-serif font. Below the text is a stylized image of a perfume bottle. The bottle has a round body and a long, slender neck. The bottle is filled with a golden liquid. The overall design is in a deep blue color.",
         "resolution": "1024x1024",
-        "seed": 229915788,
-        "style_type": "DESIGN",
-        "url": "https://ideogram.ai/api/images/ephemeral/wIygh61PTXmE6xNl1W8hbQ.png?exp=1749673383&sig=46d436984c42a00231ae678418123375edc5c919afef390b1ef6e499acdbda06"
+        "seed": 1981643917,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/yZldEDktTV6rls0Sqi_Oug.png?exp=1749673978&sig=2854dd309af90a25420d31e729921402f2f908612cffeafef2fd0ab0af76a6d9"
       },
-      "generationId": "574f8eeb-3226-4640-aef6-7de9bd85911e",
+      "generationId": "d7a1ccec-6265-43ec-8d29-2ad826b3ddb6",
       "metadata": {
         "model": "V_2",
         "aspectRatio": "ASPECT_1_1",
-        "styleType": "AUTO",
+        "styleType": "GENERAL",
         "creditCost": 35
       }
     },
-    "createdAt": "2025-06-10T20:23:03.840Z",
+    "createdAt": "2025-06-10T20:32:58.726Z",
     "status": "completed",
     "downloadCount": 0,
     "isBookmarked": false
