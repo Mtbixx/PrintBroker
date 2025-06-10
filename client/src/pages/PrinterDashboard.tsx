@@ -569,7 +569,7 @@ export default function PrinterDashboard() {
                 </div>
                 </div>
                 </div>
-                </div>
+              </CardContent>
               <CardContent className="flex-shrink-0 border-t">
                 <div className="flex space-x-2 pt-4 justify-end">
                   <Button
