@@ -40,7 +40,6 @@ import {
   Layers,
   Bell
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import Chat from "@/components/Chat";
 import BusinessIntelligence from "@/components/BusinessIntelligence";
 import ReportsAndAnalytics from "@/components/ReportsAndAnalytics";
