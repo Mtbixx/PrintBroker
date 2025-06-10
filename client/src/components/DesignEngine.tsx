@@ -95,23 +95,27 @@ export default function DesignEngine() {
     onSuccess: (response) => {
       if (response.data && response.data.length > 0) {
         const newImages = response.data.map((item: any) => ({
-          id: Date.now() + Math.random(),
+          id: response.designId || Date.now() + Math.random(),
           url: item.url,
           prompt: prompt,
           seed: item.seed,
           creditDeducted: response.creditDeducted,
-          remainingBalance: response.remainingBalance
+          remainingBalance: response.remainingBalance,
+          autoSaved: response.autoSaved
         }));
         setGeneratedImages(prev => [...newImages, ...prev]);
 
-        // Show success message with credit info
+        // Show success message with auto-save info
         toast({
           title: "Tasarım Oluşturuldu",
-          description: `${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`,
+          description: response.autoSaved 
+            ? `Tasarım otomatik kaydedildi. ${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`
+            : `${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`,
         });
 
-        // Refresh user balance
+        // Refresh user balance and design history
         queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
       }
     },
     onError: (error: any) => {

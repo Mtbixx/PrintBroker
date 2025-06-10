@@ -30,8 +30,10 @@ import {
   Eye,
   Download,
   Trash2,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Star
 } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function CustomerDashboard() {
   const { toast } = useToast();
@@ -301,6 +303,11 @@ export default function CustomerDashboard() {
                 <CardTitle className="flex items-center gap-2">
                   <ImageIcon className="h-5 w-5" />
                   Tasarım Geçmişim
+                  {designHistory && typeof designHistory === 'object' && 'total' in designHistory && (
+                    <Badge variant="secondary" className="ml-2">
+                      {designHistory.total} tasarım
+                    </Badge>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -309,42 +316,229 @@ export default function CustomerDashboard() {
                     <RollingPaperLoader size={100} color="#8B5CF6" />
                   </div>
                 ) : designHistory && typeof designHistory === 'object' && 'designs' in designHistory && Array.isArray(designHistory.designs) && designHistory.designs.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {designHistory.designs.map((design: any, index: number) => (
-                      <Card key={index} className="overflow-hidden">
-                        <div className="aspect-square relative">
-                          {design.result && design.result.data && design.result.data[0] ? (
-                            <img 
-                              src={design.result.data[0].url} 
-                              alt={design.prompt}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                              <ImageIcon className="h-12 w-12 text-gray-400" />
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {designHistory.designs.map((design: any) => (
+                        <Card key={design.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                          <div className="aspect-square relative group">
+                            {design.result && Array.isArray(design.result) && design.result[0] ? (
+                              <img 
+                                src={design.result[0].url} 
+                                alt={design.prompt}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : design.result && design.result.data && design.result.data[0] ? (
+                              <img 
+                                src={design.result.data[0].url} 
+                                alt={design.prompt}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                                <ImageIcon className="h-12 w-12 text-gray-400" />
+                              </div>
+                            )}
+                            
+                            {/* Overlay with actions */}
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                              <div className="flex gap-2">
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button size="sm" variant="secondary">
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent className="max-w-4xl">
+                                    <DialogHeader>
+                                      <DialogTitle>Tasarım Önizleme</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-4">
+                                      {design.result && Array.isArray(design.result) && design.result[0] ? (
+                                        <img 
+                                          src={design.result[0].url} 
+                                          alt={design.prompt}
+                                          className="w-full h-auto rounded-lg max-h-96 object-contain mx-auto"
+                                        />
+                                      ) : design.result && design.result.data && design.result.data[0] ? (
+                                        <img 
+                                          src={design.result.data[0].url} 
+                                          alt={design.prompt}
+                                          className="w-full h-auto rounded-lg max-h-96 object-contain mx-auto"
+                                        />
+                                      ) : null}
+                                      <div className="space-y-2">
+                                        <p className="text-sm text-gray-600"><strong>Açıklama:</strong> {design.prompt}</p>
+                                        <p className="text-sm text-gray-600"><strong>Oluşturulma:</strong> {new Date(design.createdAt).toLocaleDateString('tr-TR', {
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                          hour: '2-digit',
+                                          minute: '2-digit'
+                                        })}</p>
+                                        {design.result?.metadata && (
+                                          <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                            <p><strong>Model:</strong> {design.result.metadata.model}</p>
+                                            <p><strong>En-Boy:</strong> {design.result.metadata.aspectRatio}</p>
+                                            <p><strong>Stil:</strong> {design.result.metadata.styleType}</p>
+                                            <p><strong>Maliyet:</strong> {design.result.metadata.creditCost}₺</p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+                                
+                                <Button 
+                                  size="sm" 
+                                  variant="secondary"
+                                  onClick={async () => {
+                                    const imageUrl = design.result && Array.isArray(design.result) && design.result[0] 
+                                      ? design.result[0].url 
+                                      : design.result && design.result.data && design.result.data[0] 
+                                      ? design.result.data[0].url 
+                                      : null;
+                                    
+                                    if (imageUrl) {
+                                      try {
+                                        const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+                                        const response = await fetch(proxyUrl);
+                                        
+                                        if (response.ok) {
+                                          const blob = await response.blob();
+                                          const link = document.createElement('a');
+                                          const objectUrl = URL.createObjectURL(blob);
+                                          link.href = objectUrl;
+                                          link.download = `tasarim-${design.id}.png`;
+                                          link.style.display = 'none';
+                                          
+                                          document.body.appendChild(link);
+                                          link.click();
+                                          
+                                          setTimeout(() => {
+                                            document.body.removeChild(link);
+                                            URL.revokeObjectURL(objectUrl);
+                                          }, 100);
+                                          
+                                          toast({
+                                            title: "Başarılı",
+                                            description: "Tasarım başarıyla indirildi.",
+                                          });
+                                        }
+                                      } catch (error) {
+                                        window.open(imageUrl, '_blank');
+                                        toast({
+                                          title: "Bilgi",
+                                          description: "Tasarım yeni sekmede açıldı.",
+                                        });
+                                      }
+                                    }
+                                  }}
+                                >
+                                  <Download className="h-4 w-4" />
+                                </Button>
+                                
+                                <Button 
+                                  size="sm" 
+                                  variant="secondary"
+                                  onClick={async () => {
+                                    try {
+                                      await apiRequest('DELETE', `/api/design/${design.id}`);
+                                      queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
+                                      toast({
+                                        title: "Başarılı",
+                                        description: "Tasarım silindi.",
+                                      });
+                                    } catch (error) {
+                                      toast({
+                                        title: "Hata",
+                                        description: "Tasarım silinemedi.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
-                          )}
-                        </div>
-                        <CardContent className="p-4">
-                          <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                            {design.prompt}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-500">
-                              {new Date(design.createdAt).toLocaleDateString('tr-TR')}
-                            </span>
-                            <div className="flex gap-2">
-                              <Button size="sm" variant="outline">
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button size="sm" variant="outline">
-                                <Download className="h-4 w-4" />
-                              </Button>
+                            
+                            {/* Status badges */}
+                            <div className="absolute top-2 right-2 space-y-1">
+                              {design.isBookmarked && (
+                                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                                  <Star className="h-3 w-3 mr-1" />
+                                  Favorili
+                                </Badge>
+                              )}
+                              {design.status === 'completed' && (
+                                <Badge variant="default" className="bg-green-100 text-green-800">
+                                  Tamamlandı
+                                </Badge>
+                              )}
                             </div>
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          
+                          <CardContent className="p-4">
+                            <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                              {design.prompt}
+                            </p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-500">
+                                {new Date(design.createdAt).toLocaleDateString('tr-TR')}
+                              </span>
+                              <div className="text-xs text-gray-400">
+                                ID: {design.id.slice(-8)}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                    
+                    {/* Pagination */}
+                    {designHistory.totalPages > 1 && (
+                      <div className="flex justify-center items-center gap-2 mt-6">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={designHistory.page <= 1}
+                          onClick={() => {
+                            queryClient.invalidateQueries({ 
+                              queryKey: ['/api/design/history'],
+                              exact: false 
+                            });
+                            queryClient.refetchQueries({ 
+                              queryKey: ['/api/design/history'],
+                              exact: false 
+                            });
+                          }}
+                        >
+                          Önceki
+                        </Button>
+                        
+                        <span className="text-sm text-gray-600">
+                          Sayfa {designHistory.page} / {designHistory.totalPages}
+                        </span>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={designHistory.page >= designHistory.totalPages}
+                          onClick={() => {
+                            queryClient.invalidateQueries({ 
+                              queryKey: ['/api/design/history'],
+                              exact: false 
+                            });
+                            queryClient.refetchQueries({ 
+                              queryKey: ['/api/design/history'],
+                              exact: false 
+                            });
+                          }}
+                        >
+                          Sonraki
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="text-center py-12">

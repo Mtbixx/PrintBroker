@@ -1799,7 +1799,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Design generation routes
   app.post('/api/design/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims?.sub || req.user.id;
+      const userId = req.user.claims?.sub || req.user.id || req.session?.user?.id;
       const user = await storage.getUser(userId);
 
       if (!user) {
@@ -1833,19 +1833,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newBalance = currentBalance - designCost;
       await storage.updateUserCreditBalance(userId, newBalance.toString());
 
-      // Save generation history
-      await storage.saveDesignGeneration({
+      // Auto-save design to user's history with enhanced data
+      const savedDesign = await storage.saveDesignGeneration({
         userId,
         prompt,
         options,
-        result: result.data,
+        result: {
+          ...result.data,
+          generationId: crypto.randomUUID(),
+          metadata: {
+            model: options.model || 'V_2',
+            aspectRatio: options.aspectRatio || 'ASPECT_1_1',
+            styleType: options.styleType || 'AUTO',
+            creditCost: designCost
+          }
+        },
         createdAt: new Date(),
       });
 
+      console.log(`✅ Design auto-saved for user ${userId}: ${savedDesign.id}`);
+
       res.json({
         ...result,
+        designId: savedDesign.id,
         creditDeducted: designCost,
-        remainingBalance: newBalance
+        remainingBalance: newBalance,
+        autoSaved: true
       });
     } catch (error) {
       console.error("Error generating design:", error);
@@ -1894,12 +1907,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/design/history', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const { page = 1, limit = 20 } = req.query;
+      const userId = req.user?.claims?.sub || req.user?.id || req.session?.user?.id;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const { page = 1, limit = 12 } = req.query;
 
       const history = await storage.getDesignHistory(userId, {
-        page: parseInt(page),
-        limit: parseInt(limit)
+        page: parseInt(page as string),
+        limit: parseInt(limit as string)
       });
 
       res.json(history);
@@ -1916,6 +1934,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching design templates:", error);
       res.status(500).json({ message: "Failed to fetch design templates" });
+    }
+  });
+
+  // Get single design
+  app.get('/api/design/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id || req.session?.user?.id;
+      const designId = req.params.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const design = await storage.getDesignById(designId, userId);
+      
+      if (!design) {
+        return res.status(404).json({ message: "Design not found" });
+      }
+
+      res.json(design);
+    } catch (error) {
+      console.error("Error fetching design:", error);
+      res.status(500).json({ message: "Failed to fetch design" });
+    }
+  });
+
+  // Delete design
+  app.delete('/api/design/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id || req.session?.user?.id;
+      const designId = req.params.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const deleted = await storage.deleteDesign(designId, userId);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Design not found or unauthorized" });
+      }
+
+      res.json({ message: "Design deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting design:", error);
+      res.status(500).json({ message: "Failed to delete design" });
+    }
+  });
+
+  // Bookmark/unbookmark design
+  app.post('/api/design/:id/bookmark', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id || req.session?.user?.id;
+      const designId = req.params.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const success = await storage.bookmarkDesign(designId, userId);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Design not found" });
+      }
+
+      res.json({ message: "Bookmark status updated" });
+    } catch (error) {
+      console.error("Error updating bookmark:", error);
+      res.status(500).json({ message: "Failed to update bookmark" });
     }
   });
 

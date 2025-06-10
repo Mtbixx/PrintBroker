@@ -725,6 +725,153 @@ export class DatabaseStorage implements IStorage {
       .where(eq(contracts.id, id));
   }
 
+  // Notifications
+  async createNotification(notification: {
+    userId: string;
+    type: string;
+    title: string;
+    message: string;
+    data?: any;
+    isRead: boolean;
+    createdAt: Date;
+  }): Promise<any> {
+    // Store in memory for now - in production this would be in database
+    const notifications = this.getStoredNotifications();
+    const newNotification = {
+      id: crypto.randomUUID(),
+      ...notification
+    };
+    notifications.push(newNotification);
+    this.storeNotifications(notifications);
+    return newNotification;
+  }
+
+  async getNotifications(userId: string): Promise<any[]> {
+    const notifications = this.getStoredNotifications();
+    return notifications
+      .filter(notification => notification.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 50); // Last 50 notifications
+  }
+
+  async markNotificationAsRead(notificationId: string, userId: string): Promise<void> {
+    const notifications = this.getStoredNotifications();
+    const notification = notifications.find(n => n.id === notificationId && n.userId === userId);
+    if (notification) {
+      notification.isRead = true;
+      this.storeNotifications(notifications);
+    }
+  }
+
+  private getStoredNotifications(): any[] {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const filePath = path.join(process.cwd(), 'notifications.json');
+      if (fs.existsSync(filePath)) {
+        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  }
+
+  private storeNotifications(notifications: any[]) {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const filePath = path.join(process.cwd(), 'notifications.json');
+      fs.writeFileSync(filePath, JSON.stringify(notifications, null, 2));
+    } catch (error) {
+      console.error('Error storing notifications:', error);
+    }
+  }
+
+  // Enhanced design management
+  async saveDesignGeneration(data: {
+    userId: string;
+    prompt: string;
+    options: any;
+    result: any;
+    createdAt: Date;
+  }): Promise<any> {
+    const designHistory = this.getStoredDesigns();
+    const newDesign = {
+      id: crypto.randomUUID(),
+      ...data,
+      status: 'completed',
+      downloadCount: 0,
+      isBookmarked: false
+    };
+    
+    // Add to beginning of array (newest first)
+    designHistory.unshift(newDesign);
+    
+    // Keep only last 1000 designs per user to prevent unlimited growth
+    const userDesigns = designHistory.filter(d => d.userId === data.userId);
+    if (userDesigns.length > 1000) {
+      const designsToKeep = designHistory.filter(d => d.userId !== data.userId);
+      const limitedUserDesigns = userDesigns.slice(0, 1000);
+      this.storeDesigns([...limitedUserDesigns, ...designsToKeep]);
+    } else {
+      this.storeDesigns(designHistory);
+    }
+    
+    return newDesign;
+  }
+
+  async getDesignHistory(userId: string, options: { page: number; limit: number }): Promise<{
+    designs: any[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    const designHistory = this.getStoredDesigns();
+    const userDesigns = designHistory
+      .filter(design => design.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Newest first
+
+    const start = (options.page - 1) * options.limit;
+    const end = start + options.limit;
+
+    return {
+      designs: userDesigns.slice(start, end),
+      total: userDesigns.length,
+      page: options.page,
+      totalPages: Math.ceil(userDesigns.length / options.limit)
+    };
+  }
+
+  async getDesignById(designId: string, userId: string): Promise<any | null> {
+    const designHistory = this.getStoredDesigns();
+    return designHistory.find(design => design.id === designId && design.userId === userId) || null;
+  }
+
+  async deleteDesign(designId: string, userId: string): Promise<boolean> {
+    const designHistory = this.getStoredDesigns();
+    const designIndex = designHistory.findIndex(design => design.id === designId && design.userId === userId);
+    
+    if (designIndex !== -1) {
+      designHistory.splice(designIndex, 1);
+      this.storeDesigns(designHistory);
+      return true;
+    }
+    return false;
+  }
+
+  async bookmarkDesign(designId: string, userId: string): Promise<boolean> {
+    const designHistory = this.getStoredDesigns();
+    const design = designHistory.find(d => d.id === designId && d.userId === userId);
+    
+    if (design) {
+      design.isBookmarked = !design.isBookmarked;
+      this.storeDesigns(designHistory);
+      return true;
+    }
+    return false;
+  }
+
 
 }
 
