@@ -565,9 +565,9 @@ export default function QuoteForm() {
                     <h3 className="text-lg font-semibold mb-4">Dosya Yükleme</h3>
                     <FileUpload
                       onFileUpload={handleFileUpload}
-                      maxFiles={5}
+                      maxFiles={10}
                       maxSizeInMB={100}
-                      acceptedTypes={['.pdf', '.ai', '.psd', '.jpg', '.png']}
+                      acceptedTypes={['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/postscript', 'image/vnd.adobe.photoshop']}
                       className="mb-4"
                     />
                     
@@ -782,6 +782,7 @@ export default function QuoteForm() {
                       onFileUpload={handleFileUpload}
                       maxFiles={10}
                       maxSizeInMB={100}
+                      acceptedTypes={['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/postscript', 'image/vnd.adobe.photoshop']}
                       className="mb-4"
                     />
                     
