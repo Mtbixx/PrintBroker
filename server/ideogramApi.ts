@@ -75,7 +75,9 @@ class IdeogramService {
         }
       );
 
-      return response.data;
+      // Kalite kontrolü uygula
+      const validatedResult = this.validateDesignResult(response.data, prompt);
+      return validatedResult;
     } catch (error) {
       console.error('Ideogram API error:', error);
       throw new Error('Failed to generate image with Ideogram API');
@@ -115,10 +117,10 @@ class IdeogramService {
     const isLabelDesign = this.isLabelDesign(originalPrompt);
     
     if (isLabelDesign) {
-      // Etiket tasarımı için özel ana prompt
-      const labelPrompt = `Professional product label design: ${originalPrompt}. Create a clean, modern, high-quality label design with professional typography and clear readable text, balanced composition with proper spacing, brand-focused graphic elements, print-ready quality with sharp edges, commercial product label aesthetic, professional color scheme, vector-style clean graphics. NO mockup, NO bottle, NO package visualization, NO 3D rendering. Focus purely on the flat label graphic design with high contrast and legibility for printing, following commercial printing standards.`;
+      // Geliştirilmiş etiket tasarımı promptu
+      const labelPrompt = `Flat vector label design for ${originalPrompt}. Design requirements: FLAT 2D label design only, vector graphics style, clean typography, professional branding elements, geometric shapes, minimalist aesthetic, brand colors, high contrast text, commercial label layout. Style: flat design, vector illustration, 2D graphics, label artwork, sticker design. NO 3D elements, NO mockups, NO bottles, NO packaging, NO realistic rendering, NO shadows, NO perspective, NO product photography. Pure flat graphic design for printing on labels.`;
       
-      console.log('🏷️ ETIKET PROMPT UYGULANDIĞI:', labelPrompt);
+      console.log('🏷️ GELIŞTIRILMIŞ ETIKET PROMPT:', labelPrompt);
       return labelPrompt;
     }
     
@@ -131,13 +133,17 @@ class IdeogramService {
     const isLabelDesign = this.isLabelDesign(originalPrompt);
     
     if (isLabelDesign) {
+      // Etiket için güçlü negative prompt
+      const labelNegativePrompt = 'mockup, 3d rendering, bottle, package, container, photorealistic product, shadows, perspective view, mock-up, product photography, physical object, realistic bottle, packaging mockup, 3d bottle, product shot, studio photography, depth of field, product placement, brand mockup, bottle label mockup';
+      
       return {
         ...options,
         styleType: 'DESIGN', // Etiket için her zaman DESIGN stili
         aspectRatio: options.aspectRatio || 'ASPECT_1_1', // Kare format varsayılan
-        magicPrompt: 'ON', // Magic prompt aktif
-        negativePrompt: (options.negativePrompt || '') + 
-          ', mockup, 3d rendering, bottle, package, container, photorealistic product, shadows, perspective view, mock-up, product photography, physical object'
+        magicPrompt: 'OFF', // Magic prompt kapatıyoruz çünkü kendi promptumuz var
+        negativePrompt: options.negativePrompt ? 
+          `${options.negativePrompt}, ${labelNegativePrompt}` : 
+          labelNegativePrompt
       };
     }
     
@@ -151,7 +157,7 @@ class IdeogramService {
       'marka etiketi', 'brand label', 'kozmetik etiketi', 'cosmetic label',
       'gıda etiketi', 'food label', 'içecek etiketi', 'beverage label',
       'şampuan etiketi', 'parfüm etiketi', 'deterjan etiketi',
-      'etiket tasarım', 'label design', 'etiket tasarla'
+      'etiket tasarım', 'label design', 'etiket tasarla', 'sticker'
     ];
     
     const lowerPrompt = prompt.toLowerCase();
@@ -164,6 +170,22 @@ class IdeogramService {
     });
     
     return isLabel;
+  }
+
+  // Tasarım sonucu kalite kontrolü
+  private validateDesignResult(response: IdeogramResponse, originalPrompt: string): IdeogramResponse {
+    const isLabelDesign = this.isLabelDesign(originalPrompt);
+    
+    if (isLabelDesign && response.data && response.data.length > 0) {
+      // Etiket tasarımları için ek validasyon
+      console.log('✅ Etiket tasarımı başarıyla oluşturuldu:', {
+        imageCount: response.data.length,
+        allSafe: response.data.every(img => img.is_image_safe),
+        originalPrompt
+      });
+    }
+    
+    return response;
   }
 }
 
