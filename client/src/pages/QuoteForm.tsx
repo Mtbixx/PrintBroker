@@ -1141,41 +1141,46 @@ export default function QuoteForm() {
           </Link>
 
           {/* Header Card */}
-          
-          
-            
-              
-                
-                  {typeConfig.icon}
-                
-                
-                  
-                    Baskı Teklif Formu
-                  
-                  
-                    Kartvizit, broşür, katalog, UV DTF etiket ve daha fazlası için profesyonel baskı hizmeti
-                  
-                
-              
-              
+          <Card className="mb-8 bg-gradient-to-r from-blue-600 to-indigo-700 border-0 shadow-2xl">
+            <CardContent className="p-8">
+              <div className="flex items-start justify-between text-white">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    {typeConfig.icon}
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold mb-2">
+                      Baskı Teklif Formu
+                    </h1>
+                    <p className="text-blue-100 text-lg">
+                      Kartvizit, broşür, katalog, UV DTF etiket ve daha fazlası için profesyonel baskı hizmeti
+                    </p>
+                  </div>
+                </div>
 
-                
-                  
-                    Hızlı Teklif
-                  
-                  5 Dakika
-                
-                
-                  
-                    Matbaa Sayısı
-                  
-                   50+
-                
-                
-                  
-                    Ortalama Tasarruf
-                  
-                   %25
+                <div className="hidden lg:flex space-x-8">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">
+                      Hızlı Teklif
+                    </div>
+                    <div className="text-blue-200">5 Dakika</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">
+                      Matbaa Sayısı
+                    </div>
+                    <div className="text-blue-200">50+</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">
+                      Ortalama Tasarruf
+                    </div>
+                    <div className="text-blue-200">%25</div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
                 
               
             
