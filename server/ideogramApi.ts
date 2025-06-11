@@ -86,8 +86,15 @@ class IdeogramService {
         }
       };
 
+      // V3 modeli için yeni endpoint kullan
+      const endpoint = options.model === 'V_3' || options.model === 'V_3_TURBO' 
+        ? 'https://api.ideogram.ai/generate' 
+        : this.baseUrl;
+
+      console.log('🎯 Using V3 endpoint:', endpoint, 'for model:', options.model);
+
       const response = await axios.post<IdeogramV3Response>(
-        this.baseUrl,
+        endpoint,
         requestData,
         {
           headers: {
