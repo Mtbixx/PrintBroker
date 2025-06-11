@@ -46,13 +46,13 @@ interface GeneratedImage {
 }
 
 interface DesignOptions {
-  aspectRatio?: string;
-  model?: string;
-  styleType?: string;
-  magicPrompt?: string;
+  aspectRatio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
+  model?: 'V_2' | 'V_2_TURBO';
+  styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
+  magicPrompt?: 'AUTO' | 'ON' | 'OFF';
   negativePrompt?: string;
   seed?: number;
-  resolution?: string;
+  resolution?: 'RESOLUTION_512_1536' | 'RESOLUTION_576_1408' | 'RESOLUTION_640_1024' | 'RESOLUTION_768_1024' | 'RESOLUTION_1024_1024' | 'RESOLUTION_1152_896' | 'RESOLUTION_1216_832' | 'RESOLUTION_1344_768' | 'RESOLUTION_1536_640' | 'default';
   colorPalette?: { members: { color: string; weight: number }[] };
 }
 
@@ -62,13 +62,14 @@ export default function DesignEngine() {
   const queryClient = useQueryClient();
 
   const [prompt, setPrompt] = useState("");
-  const [designOptions, setDesignOptions] = useState({
+  const [designOptions, setDesignOptions] = useState<DesignOptions>({
     aspectRatio: "ASPECT_1_1",
     model: "V_2",
     styleType: "AUTO",
     magicPrompt: "AUTO",
     resolution: "default",
-    colorPalette: []
+    negativePrompt: "",
+    colorPalette: { members: [] }
   });
 
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
@@ -211,22 +212,19 @@ export default function DesignEngine() {
       const requests = validPrompts.map(prompt => ({ prompt, options: designOptions }));
       generateBatchMutation.mutate(requests);
     } else {
-      const requestOptions = {
+      const requestOptions: DesignOptions = {
         aspectRatio: designOptions.aspectRatio,
         model: designOptions.model,
         styleType: designOptions.styleType,
         magicPrompt: designOptions.magicPrompt,
-        ...(designOptions.resolution && { resolution: designOptions.resolution }),
+        negativePrompt: designOptions.negativePrompt,
+        resolution: designOptions.resolution === 'default' ? undefined : designOptions.resolution,
         ...(selectedColors.length > 0 && {
           colorPalette: {
             members: selectedColors.map(color => ({ color, weight: 1 }))
           }
         })
       };
-          const finalOptions = {
-      ...designOptions,
-      resolution: designOptions.resolution === 'default' ? undefined : designOptions.resolution
-    };
       generateMutation.mutate({ prompt, options: requestOptions });
     }
   };
