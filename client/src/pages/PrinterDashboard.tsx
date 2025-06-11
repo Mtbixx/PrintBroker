@@ -604,7 +604,7 @@ export default function PrinterDashboard() {
 
   const handleSubmitQuote = (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     if (!quoteResponse.price || !quoteResponse.estimatedDays) {
       toast({
         title: "Eksik Bilgi",
@@ -1191,7 +1191,7 @@ export default function PrinterDashboard() {
           </TabsContent>
         </Tabs>
 
-        
+
 
         {/* Chat Modal */}
         <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
@@ -1279,9 +1279,9 @@ export default function PrinterDashboard() {
                                       'printType': 'Baskı Türü',
                                       'notes': 'Özel Notlar'
                                     };
-                                    
+
                                     const displayName = fieldNames[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                                    
+
                                     return (
                                       <div key={key} className="bg-white p-3 rounded border">
                                         <span className="font-medium text-blue-700 block">
@@ -1295,7 +1295,7 @@ export default function PrinterDashboard() {
                                   }
                                   return null;
                                 })}
-                                
+
                                 {/* Adet ve boyut bilgileri özel gösterim */}
                                 {(selectedQuote.specifications?.quantity || selectedQuote.quantity) && (
                                   <div className="bg-green-50 p-3 rounded border border-green-200">
@@ -1305,7 +1305,7 @@ export default function PrinterDashboard() {
                                     </span>
                                   </div>
                                 )}
-                                
+
                                 {/* Boyut bilgileri özel gösterim */}
                                 {(selectedQuote.specifications?.width && selectedQuote.specifications?.height) && (
                                   <div className="bg-purple-50 p-3 rounded border border-purple-200">
@@ -1315,7 +1315,7 @@ export default function PrinterDashboard() {
                                     </span>
                                   </div>
                                 )}
-                                
+
                                 {/* Özel işlemler */}
                                 {(selectedQuote.specifications?.gilding || selectedQuote.specifications?.embossing) && (
                                   <div className="bg-yellow-50 p-3 rounded border border-yellow-200">
@@ -1423,8 +1423,7 @@ export default function PrinterDashboard() {
                                     ...prev,
                                     price: e.target.value
                                   }))}
-                                  placeholder="Örn: 1250.00"
-                                  required
+                                  placeholder="Örn: 1250.00"Fixes React rendering issues by removing redundant console log statement.                                  required
                                 />
                               </div>
                               <div>

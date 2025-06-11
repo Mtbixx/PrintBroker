@@ -83,7 +83,11 @@ async function initializePythonServices() {
 
   // Global unhandled promise rejection handler
   process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    console.error('🔥 Unhandled Rejection at:', promise, 'reason:', reason);
+    // Log stack trace if available
+    if (reason instanceof Error) {
+      console.error('Stack:', reason.stack);
+    }
   });
 
   // Global uncaught exception handler

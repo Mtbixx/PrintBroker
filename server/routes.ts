@@ -438,10 +438,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // User authentication endpoint for dashboard access
   app.get('/api/auth/user', async (req, res) => {
-    console.log('Auth check - Session:', !!req.session, 'User:', !!(req.session as any)?.user);
-    
     if (!req.session || !(req.session as any).user) {
-      console.log('No session or user, returning 401');
       return res.status(401).json({ 
         message: "Unauthorized", 
         code: "AUTH_REQUIRED",
@@ -1074,9 +1071,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Cache for live feed (5 minutes)
+  let liveFeedCache: { data: any; timestamp: number } | null = null;
+  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
   // Enhanced live feed endpoint with realistic business volumes
   app.get('/api/quotes/live-feed', async (req, res) => {
     try {
+      // Check cache first
+      if (liveFeedCache && (Date.now() - liveFeedCache.timestamp) < CACHE_DURATION) {
+        return res.json(liveFeedCache.data);
+      }
+
       // Gerçek sisteme verilerini çek
       const realQuotes = await storage.getRecentQuotes ? await storage.getRecentQuotes(20) : [];
       
@@ -1282,7 +1288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         event: combinedQuotes.filter(q => q.category === 'event').length
       };
 
-      res.json({ 
+      const responseData = { 
         quotes: displayQuotes,
         totalReal: realQuotes.length,
         totalMock: mockJobs.length,
@@ -1294,7 +1300,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           categoryDistribution: categoryStats
         },
         lastUpdated: now.toISOString()
-      });
+      };
+
+      // Update cache
+      liveFeedCache = {
+        data: responseData,
+        timestamp: Date.now()
+      };
+
+      res.json(responseData);
     } catch (error) {
       console.error("Error fetching live feed:", error);
       res.status(500).json({ message: "Failed to fetch live feed" });
