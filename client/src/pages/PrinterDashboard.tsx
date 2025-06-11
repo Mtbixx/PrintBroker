@@ -38,7 +38,26 @@ import {
   Wrench,
   Target,
   Layers,
-  Bell
+  Bell,
+  Edit,
+  Trash2,
+  Search,
+  MessageSquare,
+  Star,
+  Award,
+  Factory,
+  Sparkles,
+  ArrowRight,
+  Globe,
+  Shield,
+  Truck,
+  Calculator,
+  Palette,
+  Building2,
+  Check,
+  X,
+  File,
+  FileImage
 } from "lucide-react";
 import Chat from "@/components/Chat";
 import BusinessIntelligence from "@/components/BusinessIntelligence";
@@ -56,43 +75,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import {
-  Package,
-  Users,
-  DollarSign,
-  TrendingUp,
-  Calendar,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Eye,
-  Edit,
-  Trash2,
-  Plus,
-  Search,
-  Filter,
-  Download,
-  BarChart3,
-  Settings,
-  Bell,
-  MessageSquare,
-  Star,
-  Award,
-  Target,
-  Zap,
-  Factory,
-  Layers,
-  Sparkles,
-  ArrowRight,
-  Globe,
-  Shield,
-  Truck,
-  FileText,
-  Calculator,
-  Palette,
-  Printer,
-  Building2
-} from "lucide-react";
 
 export default function PrinterDashboard() {
   const { toast } = useToast();
