@@ -161,7 +161,7 @@ export default function QuoteForm() {
           description: "AI tasarımınız başarıyla oluşturuldu!",
         });
       }
-    } catch (error: any) => {
+    } catch (error: any) {
       if (error.message.includes("401") || error.message.includes("403")) {
         setHasApiKey(false);
         toast({
