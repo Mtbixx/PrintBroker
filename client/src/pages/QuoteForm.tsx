@@ -602,22 +602,7 @@ export default function QuoteForm() {
       <div>
         <h3 className="text-lg font-semibold mb-4 text-gray-900">Etiket Özellikleri</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">Etiket Türü *</Label>
-            <Select onValueChange={(value) => updateFormData('labelType', value)}>
-              <SelectTrigger className="h-12">
-                <SelectValue placeholder="Tür seçin" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="thermal-direct">Direkt Termal</SelectItem>
-                <SelectItem value="thermal-transfer">Termal Transfer</SelectItem>
-                <SelectItem value="adhesive-permanent">Kalıcı Yapışkanlı</SelectItem>
-                <SelectItem value="adhesive-removable">Çıkarılabilir Yapışkanlı</SelectItem>
-                <SelectItem value="security">Güvenlik Etiketi</SelectItem>
-                <SelectItem value="food-grade">Gıda Uyumlu</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          
 
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">Etiket Boyutu *</Label>
