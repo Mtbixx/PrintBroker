@@ -1382,6 +1382,7 @@ export default function QuoteForm() {
             </Tabs>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );
