@@ -629,12 +629,15 @@ export default function QuoteForm() {
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
                 <Input
-                  type="number"
-                  min="5000"
+                  type="text"
                   placeholder="Minimum 5.000 adet"
                   onChange={(e) => {
-                    const value = parseInt(e.target.value) || 0;
-                    updateFormData('totalQuantity', e.target.value);
+                    // Sadece sayı girişine izin ver
+                    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+                    e.target.value = numericValue;
+                    
+                    const value = parseInt(numericValue) || 0;
+                    updateFormData('totalQuantity', numericValue);
                     
                     if (value > 0 && value < 5000) {
                       toast({
@@ -644,7 +647,7 @@ export default function QuoteForm() {
                       });
                     }
                   }}
-                  className="h-12"
+                  className="h-12 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                 />
               </div>
             </div>
