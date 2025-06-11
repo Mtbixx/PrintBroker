@@ -792,49 +792,97 @@ export default function QuoteForm() {
         requiredFields: ['size', 'paper', 'quantity', 'color'],
         optionalFields: ['finish', 'cutting'],
         sizeOptions: ['85x55', '90x50', '85x54', 'custom'],
-        paperOptions: ['coated-300', 'coated-350', 'bristol-300', 'textured']
+        paperOptions: ['coated-300', 'coated-350', 'bristol-300', 'textured'],
+        finishOptions: ['mat-cellophane', 'gloss-cellophane', 'uv-spot', 'gold-foil', 'silver-foil'],
+        colorOptions: ['4-0', '4-4', '1-0', '1-1', 'pantone'],
+        cuttingOptions: ['straight', 'round-corner', 'die-cut'],
+        quantityOptions: ['100', '250', '500', '1000', '2500', '5000']
       },
       'brochure': {
         requiredFields: ['size', 'paper', 'quantity', 'color', 'pages', 'folding'],
         optionalFields: ['finish', 'binding'],
         sizeOptions: ['a4', 'a5', 'a6', 'custom'],
-        paperOptions: ['coated-120', 'coated-150', 'coated-200', 'offset-90']
+        paperOptions: ['coated-115', 'coated-135', 'coated-150', 'coated-200'],
+        finishOptions: ['mat-cellophane', 'gloss-cellophane', 'uv-total'],
+        colorOptions: ['4-0', '4-4', '1-0'],
+        foldingOptions: ['none', 'half', 'tri-fold', 'z-fold', 'gate-fold', 'roll-fold'],
+        bindingOptions: ['saddle-stitch', 'perfect-binding'],
+        quantityOptions: ['100', '250', '500', '1000', '2500', '5000'],
+        pageOptions: ['4', '6', '8', '12', '16', '20', '24', '32']
       },
       'catalog': {
         requiredFields: ['size', 'paper', 'quantity', 'color', 'pages', 'binding'],
         optionalFields: ['finish', 'cover'],
         sizeOptions: ['a4', 'a5', '21x21', 'custom'],
-        paperOptions: ['coated-120', 'coated-150', 'coated-200']
+        paperOptions: ['coated-115', 'coated-135', 'coated-150', 'coated-200'],
+        finishOptions: ['mat-cellophane', 'gloss-cellophane', 'uv-total'],
+        colorOptions: ['4-4', '4-0'],
+        bindingOptions: ['saddle-stitch', 'perfect-binding', 'spiral', 'wire-o'],
+        coverOptions: ['same-paper', 'coated-250', 'coated-300', 'bristol-300'],
+        quantityOptions: ['50', '100', '250', '500', '1000', '2500'],
+        pageOptions: ['16', '20', '24', '32', '48', '64', '80', '96', '128']
       },
       'magazine': {
         requiredFields: ['size', 'paper', 'quantity', 'color', 'pages', 'binding'],
         optionalFields: ['finish', 'cover'],
         sizeOptions: ['a4', '21x28', '19x27', 'custom'],
-        paperOptions: ['coated-90', 'coated-120', 'coated-150']
+        paperOptions: ['coated-90', 'coated-115', 'coated-135', 'offset-80'],
+        finishOptions: ['mat-cellophane', 'gloss-cellophane'],
+        colorOptions: ['4-4', '4-0', '1-1'],
+        bindingOptions: ['saddle-stitch', 'perfect-binding'],
+        coverOptions: ['coated-200', 'coated-250', 'coated-300'],
+        quantityOptions: ['100', '250', '500', '1000', '2500', '5000'],
+        pageOptions: ['16', '20', '24', '32', '48', '64', '80', '96']
       },
       'flyer': {
         requiredFields: ['size', 'paper', 'quantity', 'color'],
         optionalFields: ['finish'],
-        sizeOptions: ['a4', 'a5', 'a6', '21x21', 'custom'],
-        paperOptions: ['coated-120', 'coated-150', 'coated-200']
+        sizeOptions: ['a4', 'a5', 'a6', '21x21', '10x21', 'custom'],
+        paperOptions: ['coated-115', 'coated-135', 'coated-150', 'coated-200'],
+        finishOptions: ['none', 'mat-cellophane', 'gloss-cellophane', 'uv-total'],
+        colorOptions: ['4-0', '4-4', '1-0'],
+        quantityOptions: ['100', '250', '500', '1000', '2500', '5000', '10000']
       },
       'poster': {
         requiredFields: ['size', 'paper', 'quantity', 'color'],
         optionalFields: ['finish'],
-        sizeOptions: ['a3', 'a2', 'a1', '50x70', '70x100', 'custom'],
-        paperOptions: ['coated-150', 'coated-200', 'poster-paper']
+        sizeOptions: ['a3', 'a2', 'a1', 'a0', '50x70', '70x100', '100x140', 'custom'],
+        paperOptions: ['coated-135', 'coated-150', 'coated-200', 'poster-paper', 'blueback'],
+        finishOptions: ['none', 'mat-cellophane', 'gloss-cellophane'],
+        colorOptions: ['4-0', '4-4'],
+        quantityOptions: ['1', '5', '10', '25', '50', '100', '250', '500']
       },
       'book': {
         requiredFields: ['size', 'paper', 'quantity', 'color', 'pages', 'binding', 'cover'],
         optionalFields: ['finish'],
-        sizeOptions: ['a4', 'a5', '13.5x21', '16x24', 'custom'],
-        paperOptions: ['offset-80', 'offset-90', 'book-paper']
+        sizeOptions: ['a4', 'a5', '13.5x21', '16x24', '14x20', 'custom'],
+        paperOptions: ['offset-70', 'offset-80', 'offset-90', 'book-paper'],
+        finishOptions: ['none', 'mat-cellophane', 'gloss-cellophane'],
+        colorOptions: ['1-1', '4-4', '4-0'],
+        bindingOptions: ['perfect-binding', 'saddle-stitch', 'hardcover', 'spiral'],
+        coverOptions: ['coated-250', 'coated-300', 'bristol-300', 'kraft'],
+        quantityOptions: ['25', '50', '100', '250', '500', '1000'],
+        pageOptions: ['32', '48', '64', '80', '96', '128', '160', '192', '224', '256']
       },
       'packaging': {
         requiredFields: ['type', 'size', 'material', 'quantity', 'color'],
         optionalFields: ['finish', 'handle'],
         sizeOptions: ['custom'],
-        paperOptions: ['kraft', 'bristol-250', 'corrugated']
+        materialOptions: ['kraft-200', 'kraft-250', 'bristol-250', 'bristol-300', 'corrugated-3mm', 'corrugated-5mm'],
+        finishOptions: ['none', 'mat-cellophane', 'gloss-cellophane', 'uv-spot'],
+        colorOptions: ['4-0', '4-4', '1-0', '2-0'],
+        typeOptions: ['bag', 'box', 'envelope', 'sleeve'],
+        handleOptions: ['none', 'rope', 'ribbon', 'die-cut'],
+        quantityOptions: ['50', '100', '250', '500', '1000', '2500']
+      },
+      'uv-dtf': {
+        requiredFields: ['size', 'quantity', 'material'],
+        optionalFields: ['cutting'],
+        sizeOptions: ['custom'],
+        materialOptions: ['transparent-pet', 'white-pet', 'clear-vinyl'],
+        cuttingOptions: ['straight', 'die-cut', 'kiss-cut'],
+        quantityOptions: ['50', '100', '250', '500', '1000', '2500'],
+        features: ['UV dayanıklı', 'Su geçirmez', 'Çıkarılabilir', 'Şeffaf taşıyıcı film']
       }
     };
 
@@ -854,7 +902,8 @@ export default function QuoteForm() {
               'flyer': { label: 'Flyer', desc: 'Reklam flyerleri' },
               'poster': { label: 'Poster', desc: 'Büyük boy posterler' },
               'book': { label: 'Kitap', desc: 'Kitap ve yayın' },
-              'packaging': { label: 'Ambalaj', desc: 'Özel ambalajlar' }
+              'packaging': { label: 'Ambalaj', desc: 'Özel ambalajlar' },
+              'uv-dtf': { label: 'UV DTF Etiket', desc: 'Soğuk transfer etiketler' }
             }).map(([value, config]) => (
               <Button
                 key={value}
@@ -893,18 +942,25 @@ export default function QuoteForm() {
                         {selectedType.sizeOptions.map(size => {
                           const sizeLabels: Record<string, string> = {
                             '85x55': '85 x 55 mm (Standart Kartvizit)',
-                            '90x50': '90 x 50 mm (Avrupa Kartvizit)', 
+                            '90x50': '90 x 50 mm (Avrupa Kartvizit)',
+                            '85x54': '85 x 54 mm (Kredi Kartı)',
                             'a6': 'A6 (105 x 148 mm)',
                             'a5': 'A5 (148 x 210 mm)',
                             'a4': 'A4 (210 x 297 mm)',
                             'a3': 'A3 (297 x 420 mm)',
                             'a2': 'A2 (420 x 594 mm)',
                             'a1': 'A1 (594 x 841 mm)',
+                            'a0': 'A0 (841 x 1189 mm)',
                             '21x21': '21 x 21 cm (Kare)',
                             '21x28': '21 x 28 cm (Dergi)',
                             '19x27': '19 x 27 cm (Küçük Dergi)',
-                            '50x70': '50 x 70 cm',
-                            '70x100': '70 x 100 cm',
+                            '13.5x21': '13.5 x 21 cm (Kitap)',
+                            '16x24': '16 x 24 cm (Büyük Kitap)',
+                            '14x20': '14 x 20 cm (Roman)',
+                            '10x21': '10 x 21 cm (Flyer)',
+                            '50x70': '50 x 70 cm (Poster)',
+                            '70x100': '70 x 100 cm (Poster)',
+                            '100x140': '100 x 140 cm (Büyük Poster)',
                             'custom': 'Özel Boyut'
                           };
                           return (
@@ -929,12 +985,11 @@ export default function QuoteForm() {
                         <SelectValue placeholder="Miktar seçin" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="100">100 Adet</SelectItem>
-                        <SelectItem value="250">250 Adet</SelectItem>
-                        <SelectItem value="500">500 Adet</SelectItem>
-                        <SelectItem value="1000">1.000 Adet</SelectItem>
-                        <SelectItem value="2500">2.500 Adet</SelectItem>
-                        <SelectItem value="5000">5.000 Adet</SelectItem>
+                        {selectedType.quantityOptions?.map(qty => (
+                          <SelectItem key={qty} value={qty}>
+                            {qty} Adet
+                          </SelectItem>
+                        ))}
                         <SelectItem value="custom">Özel Miktar</SelectItem>
                       </SelectContent>
                     </Select>
@@ -952,11 +1007,78 @@ export default function QuoteForm() {
                         <SelectValue placeholder="Renk seçin" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="4-0">4+0 (Tek Yüz Renkli)</SelectItem>
-                        <SelectItem value="4-4">4+4 (Çift Yüz Renkli)</SelectItem>
-                        <SelectItem value="1-0">1+0 (Tek Yüz Siyah)</SelectItem>
-                        <SelectItem value="1-1">1+1 (Çift Yüz Siyah)</SelectItem>
-                        <SelectItem value="pantone">Pantone Renk</SelectItem>
+                        {selectedType.colorOptions?.map(color => {
+                          const colorLabels: Record<string, string> = {
+                            '4-0': '4+0 (Tek Yüz Renkli)',
+                            '4-4': '4+4 (Çift Yüz Renkli)',
+                            '1-0': '1+0 (Tek Yüz Siyah)',
+                            '1-1': '1+1 (Çift Yüz Siyah)',
+                            '2-0': '2+0 (İki Renk)',
+                            'pantone': 'Pantone Renk'
+                          };
+                          return (
+                            <SelectItem key={color} value={color}>
+                              {colorLabels[color] || color}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Malzeme (UV DTF için) */}
+                {selectedType.requiredFields.includes('material') && formData.printType === 'uv-dtf' && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700 flex items-center">
+                      Malzeme <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <Select onValueChange={(value) => updateFormData('uvdtfMaterial', value)}>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Malzeme seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selectedType.materialOptions?.map(material => {
+                          const materialLabels: Record<string, string> = {
+                            'transparent-pet': 'Şeffaf PET Film',
+                            'white-pet': 'Beyaz PET Film',
+                            'clear-vinyl': 'Şeffaf Vinil'
+                          };
+                          return (
+                            <SelectItem key={material} value={material}>
+                              {materialLabels[material] || material}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Ambalaj Tipi (packaging için) */}
+                {selectedType.requiredFields.includes('type') && formData.printType === 'packaging' && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700 flex items-center">
+                      Ambalaj Tipi <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <Select onValueChange={(value) => updateFormData('packagingType', value)}>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Tip seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selectedType.typeOptions?.map(type => {
+                          const typeLabels: Record<string, string> = {
+                            'bag': 'Çanta/Torba',
+                            'box': 'Kutu',
+                            'envelope': 'Zarf',
+                            'sleeve': 'Kılıf'
+                          };
+                          return (
+                            <SelectItem key={type} value={type}>
+                              {typeLabels[type] || type}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </div>
@@ -976,10 +1098,19 @@ export default function QuoteForm() {
                         <Label className="text-sm font-medium text-gray-700 flex items-center">
                           Sayfa Sayısı <span className="text-red-500 ml-1">*</span>
                         </Label>
-                        <Input 
-                          placeholder="Örn: 24"
-                          onChange={(e) => updateFormData('pageCount', e.target.value)}
-                        />
+                        <Select onValueChange={(value) => updateFormData('pageCount', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sayfa sayısı seçin" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {selectedType.pageOptions?.map(page => (
+                              <SelectItem key={page} value={page}>
+                                {page} Sayfa
+                              </SelectItem>
+                            ))}
+                            <SelectItem value="custom">Özel Sayfa Sayısı</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     )}
 
@@ -993,11 +1124,20 @@ export default function QuoteForm() {
                             <SelectValue placeholder="Ciltleme seçin" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="saddle-stitch">Tel Dikiş</SelectItem>
-                            <SelectItem value="perfect-binding">Termal Cilt</SelectItem>
-                            <SelectItem value="spiral">Spiral Cilt</SelectItem>
-                            <SelectItem value="wire-o">Wire-O Cilt</SelectItem>
-                            <SelectItem value="hardcover">Sert Kapak</SelectItem>
+                            {selectedType.bindingOptions?.map(binding => {
+                              const bindingLabels: Record<string, string> = {
+                                'saddle-stitch': 'Tel Dikiş (16-64 sayfa)',
+                                'perfect-binding': 'Termal Cilt (32+ sayfa)',
+                                'spiral': 'Spiral Cilt',
+                                'wire-o': 'Wire-O Cilt',
+                                'hardcover': 'Sert Kapak Cilt'
+                              };
+                              return (
+                                <SelectItem key={binding} value={binding}>
+                                  {bindingLabels[binding] || binding}
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
@@ -1013,15 +1153,202 @@ export default function QuoteForm() {
                             <SelectValue placeholder="Katlama seçin" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="none">Katlama Yok</SelectItem>
-                            <SelectItem value="half">Yarı Katlama</SelectItem>
-                            <SelectItem value="tri-fold">Üç Katlama</SelectItem>
-                            <SelectItem value="z-fold">Z Katlama</SelectItem>
-                            <SelectItem value="gate-fold">Kapı Katlama</SelectItem>
+                            {selectedType.foldingOptions?.map(folding => {
+                              const foldingLabels: Record<string, string> = {
+                                'none': 'Katlama Yok',
+                                'half': 'Yarı Katlama (1 kat)',
+                                'tri-fold': 'Üç Katlama (2 kat)',
+                                'z-fold': 'Z Katlama (Zigzag)',
+                                'gate-fold': 'Kapı Katlama',
+                                'roll-fold': 'Rulo Katlama'
+                              };
+                              return (
+                                <SelectItem key={folding} value={folding}>
+                                  {foldingLabels[folding] || folding}
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
                     )}
+
+                    {/* Kapak Seçimi */}
+                    {selectedType.requiredFields.includes('cover') && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700 flex items-center">
+                          Kapak <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <Select onValueChange={(value) => updateFormData('cover', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Kapak seçin" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {selectedType.coverOptions?.map(cover => {
+                              const coverLabels: Record<string, string> = {
+                                'same-paper': 'Aynı Kağıt',
+                                'coated-200': 'Kuşe 200gr',
+                                'coated-250': 'Kuşe 250gr',
+                                'coated-300': 'Kuşe 300gr',
+                                'bristol-300': 'Bristol 300gr',
+                                'kraft': 'Kraft Kağıt'
+                              };
+                              return (
+                                <SelectItem key={cover} value={cover}>
+                                  {coverLabels[cover] || cover}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* UV DTF Özel Özellikler */}
+            {formData.printType === 'uv-dtf' && (
+              <>
+                <Separator />
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900">UV DTF Özellikleri</h3>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">Kesim Türü</Label>
+                        <Select onValueChange={(value) => updateFormData('uvdtfCutting', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Kesim türü seçin" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {selectedType.cuttingOptions?.map(cutting => {
+                              const cuttingLabels: Record<string, string> = {
+                                'straight': 'Düz Kesim',
+                                'die-cut': 'Şekilli Kesim (Kalıp)',
+                                'kiss-cut': 'Kiss Cut (Yarı Kesim)'
+                              };
+                              return (
+                                <SelectItem key={cutting} value={cutting}>
+                                  {cuttingLabels[cutting] || cutting}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">Özel Boyut</Label>
+                        <div className="grid grid-cols-2 gap-4">
+                          <Input 
+                            placeholder="Genişlik (mm)" 
+                            onChange={(e) => updateFormData('uvdtfWidth', e.target.value)}
+                          />
+                          <Input 
+                            placeholder="Yükseklik (mm)" 
+                            onChange={(e) => updateFormData('uvdtfHeight', e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* UV DTF Avantajları */}
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">UV DTF Etiket Avantajları:</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-blue-800">
+                        {selectedType.features?.map((feature, index) => (
+                          <div key={index} className="flex items-center">
+                            <CheckCircle className="h-4 w-4 text-blue-600 mr-2" />
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Ambalaj Özel Seçenekleri */}
+            {formData.printType === 'packaging' && (
+              <>
+                <Separator />
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900">Ambalaj Özellikleri</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-gray-700 flex items-center">
+                        Malzeme <span className="text-red-500 ml-1">*</span>
+                      </Label>
+                      <Select onValueChange={(value) => updateFormData('packagingMaterial', value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Malzeme seçin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {selectedType.materialOptions?.map(material => {
+                            const materialLabels: Record<string, string> = {
+                              'kraft-200': 'Kraft 200gr',
+                              'kraft-250': 'Kraft 250gr',
+                              'bristol-250': 'Bristol 250gr',
+                              'bristol-300': 'Bristol 300gr',
+                              'corrugated-3mm': 'Oluklu Karton 3mm',
+                              'corrugated-5mm': 'Oluklu Karton 5mm'
+                            };
+                            return (
+                              <SelectItem key={material} value={material}>
+                                {materialLabels[material] || material}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {selectedType.optionalFields?.includes('handle') && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">Sap/Tutacak</Label>
+                        <Select onValueChange={(value) => updateFormData('packagingHandle', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sap türü seçin" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {selectedType.handleOptions?.map(handle => {
+                              const handleLabels: Record<string, string> = {
+                                'none': 'Sap Yok',
+                                'rope': 'İp Sap',
+                                'ribbon': 'Kurdele Sap',
+                                'die-cut': 'Kesme Sap'
+                              };
+                              return (
+                                <SelectItem key={handle} value={handle}>
+                                  {handleLabels[handle] || handle}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-gray-700">Özel Boyutlar</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Input 
+                          placeholder="En (cm)" 
+                          onChange={(e) => updateFormData('packagingWidth', e.target.value)}
+                        />
+                        <Input 
+                          placeholder="Boy (cm)" 
+                          onChange={(e) => updateFormData('packagingHeight', e.target.value)}
+                        />
+                        <Input 
+                          placeholder="Derinlik (cm)" 
+                          onChange={(e) => updateFormData('packagingDepth', e.target.value)}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </>
@@ -1033,22 +1360,29 @@ export default function QuoteForm() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-gray-900">Malzeme Seçimi</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {selectedType.paperOptions.map((paper) => {
+                {selectedType.paperOptions?.map((paper) => {
                   const paperLabels: Record<string, { label: string, desc: string }> = {
-                    'coated-90': { label: 'Kuşe 90gr', desc: 'Ekonomik, günlük kullanım' },
-                    'coated-120': { label: 'Kuşe 120gr', desc: 'Standart kalite' },
-                    'coated-150': { label: 'Kuşe 150gr', desc: 'İyi kalite' },
-                    'coated-200': { label: 'Kuşe 200gr', desc: 'Yüksek kalite' },
-                    'coated-300': { label: 'Kuşe 300gr', desc: 'Premium kalite' },
-                    'coated-350': { label: 'Kuşe 350gr', desc: 'Ultra kalite' },
-                    'bristol-300': { label: 'Bristol 300gr', desc: 'Kalın, dayanıklı' },
-                    'offset-80': { label: 'Offset 80gr', desc: 'Hafif, ekonomik' },
-                    'offset-90': { label: 'Offset 90gr', desc: 'Standart iç sayfa' },
-                    'textured': { label: 'Dokulu Kağıt', desc: 'Premium doku' },
-                    'kraft': { label: 'Kraft Kağıt', desc: 'Doğal, çevre dostu' },
-                    'poster-paper': { label: 'Poster Kağıdı', desc: 'Büyük boy baskılar' },
-                    'book-paper': { label: 'Kitap Kağıdı', desc: 'Okuma dostu' },
-                    'corrugated': { label: 'Oluklu Karton', desc: 'Ambalaj için' }
+                    'coated-90': { label: 'Kuşe 90gr', desc: 'Dergi iç sayfası, ekonomik' },
+                    'coated-115': { label: 'Kuşe 115gr', desc: 'Broşür, flyer için ideal' },
+                    'coated-135': { label: 'Kuşe 135gr', desc: 'Yüksek kalite broşür' },
+                    'coated-150': { label: 'Kuşe 150gr', desc: 'Premium broşür, katalog' },
+                    'coated-200': { label: 'Kuşe 200gr', desc: 'Kapak, poster için' },
+                    'coated-250': { label: 'Kuşe 250gr', desc: 'Kalın kapak malzemesi' },
+                    'coated-300': { label: 'Kuşe 300gr', desc: 'Kartvizit, premium kalite' },
+                    'coated-350': { label: 'Kuşe 350gr', desc: 'Ultra kalite kartvizit' },
+                    'bristol-250': { label: 'Bristol 250gr', desc: 'Ambalaj için dayanıklı' },
+                    'bristol-300': { label: 'Bristol 300gr', desc: 'Kartvizit, sert kapak' },
+                    'offset-70': { label: 'Offset 70gr', desc: 'Kitap iç sayfası, hafif' },
+                    'offset-80': { label: 'Offset 80gr', desc: 'Kitap iç sayfası, standart' },
+                    'offset-90': { label: 'Offset 90gr', desc: 'Kitap iç sayfası, kaliteli' },
+                    'textured': { label: 'Dokulu Kağıt', desc: 'Premium doku, özel hissiyat' },
+                    'kraft-200': { label: 'Kraft 200gr', desc: 'Doğal, çevre dostu ambalaj' },
+                    'kraft-250': { label: 'Kraft 250gr', desc: 'Kalın kraft ambalaj' },
+                    'poster-paper': { label: 'Poster Kağıdı', desc: 'Büyük boy baskılar için' },
+                    'blueback': { label: 'Blueback', desc: 'Dış mekan posteri' },
+                    'book-paper': { label: 'Kitap Kağıdı', desc: 'Okuma dostu, göz yormaz' },
+                    'corrugated-3mm': { label: 'Oluklu 3mm', desc: 'Hafif ambalaj kutusu' },
+                    'corrugated-5mm': { label: 'Oluklu 5mm', desc: 'Dayanıklı ambalaj kutusu' }
                   };
 
                   const paperInfo = paperLabels[paper] || { label: paper, desc: '' };
@@ -1072,8 +1406,76 @@ export default function QuoteForm() {
 
             <Separator />
 
-            {/* Yüzey İşlemleri */}
-            {selectedType.optionalFields.includes('finish') && renderSurfaceProcessingOptions()}
+            {/* Yüzey İşlemleri - Sadece geleneksel baskı kategorileri için */}
+            {selectedType.optionalFields?.includes('finish') && formData.printType !== 'uv-dtf' && (
+              <div>
+                <h3 className="text-lg font-semibold mb-4 text-gray-900">Yüzey İşlemleri</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {selectedType.finishOptions?.map((finish) => {
+                    const finishLabels: Record<string, { label: string, desc: string }> = {
+                      'none': { label: 'Yüzey İşlem Yok', desc: 'Standart baskı' },
+                      'mat-cellophane': { label: 'Mat Selefon', desc: 'Pürüzsüz, yansımasız' },
+                      'gloss-cellophane': { label: 'Parlak Selefon', desc: 'Parlak, canlı renkler' },
+                      'uv-total': { label: 'Tam UV Vernik', desc: 'Tüm yüzey parlak' },
+                      'uv-spot': { label: 'Nokta UV Vernik', desc: 'Seçili alanlar parlak' },
+                      'gold-foil': { label: 'Altın Yaldız', desc: 'Prestijli altın görünüm' },
+                      'silver-foil': { label: 'Gümüş Yaldız', desc: 'Modern gümüş görünüm' }
+                    };
+
+                    const finishInfo = finishLabels[finish] || { label: finish, desc: '' };
+
+                    return (
+                      <Button
+                        key={finish}
+                        variant={formData.printFinish === finish ? 'default' : 'outline'}
+                        onClick={() => updateFormData('printFinish', finish)}
+                        className="h-auto p-4 justify-start"
+                      >
+                        <div className="text-left">
+                          <div className="font-medium">{finishInfo.label}</div>
+                          <div className="text-sm text-gray-500">{finishInfo.desc}</div>
+                        </div>
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Kesim Seçenekleri - Kartvizit için */}
+            {selectedType.optionalFields?.includes('cutting') && formData.printType === 'business-card' && (
+              <>
+                <Separator />
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900">Kesim Seçenekleri</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {selectedType.cuttingOptions?.map((cutting) => {
+                      const cuttingLabels: Record<string, { label: string, desc: string }> = {
+                        'straight': { label: 'Düz Kesim', desc: 'Standart köşeli kesim' },
+                        'round-corner': { label: 'Köşe Yuvarlama', desc: 'Yuvarlatılmış köşeler' },
+                        'die-cut': { label: 'Özel Kesim', desc: 'Kalıp ile özel şekil' }
+                      };
+
+                      const cuttingInfo = cuttingLabels[cutting] || { label: cutting, desc: '' };
+
+                      return (
+                        <Button
+                          key={cutting}
+                          variant={formData.printCutting === cutting ? 'default' : 'outline'}
+                          onClick={() => updateFormData('printCutting', cutting)}
+                          className="h-auto p-4 justify-start"
+                        >
+                          <div className="text-left">
+                            <div className="font-medium">{cuttingInfo.label}</div>
+                            <div className="text-sm text-gray-500">{cuttingInfo.desc}</div>
+                          </div>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
