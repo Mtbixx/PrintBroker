@@ -592,14 +592,64 @@ export default function PrinterDashboard() {
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
                   <Building2 className="h-5 w-5 text-blue-600" />
-                  Firma Profili
+                  Firma Bilgileri
                 </CardTitle>
                 <CardDescription className="text-sm md:text-base">
-                  Firma bilgilerinizi güncelleyin ve doğrulama sürecini tamamlayın
+                  Kayıtlı firma bilgileriniz ve doğrulama durumu
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-4 md:p-6">
-                <FirmVerificationPanel />
+              <CardContent className="p-4 md:p-6 space-y-6">
+                {/* Existing Company Information Display */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">Firma Adı</Label>
+                      <div className="p-3 bg-gray-50 rounded-lg border">
+                        {user?.companyName || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">E-posta</Label>
+                      <div className="p-3 bg-gray-50 rounded-lg border">
+                        {user?.email || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">Telefon</Label>
+                      <div className="p-3 bg-gray-50 rounded-lg border">
+                        {user?.phone || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">Vergi Numarası</Label>
+                      <div className="p-3 bg-gray-50 rounded-lg border">
+                        {user?.taxNumber || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">Adres</Label>
+                      <div className="p-3 bg-gray-50 rounded-lg border">
+                        {user?.companyAddress || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-gray-600">Web Sitesi</Label>
+                      <div className="p-3 bg-gray-50 rounded-lg border">
+                        {user?.website || 'Belirtilmemiş'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Verification Section */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Firma Doğrulama</h3>
+                  <FirmVerificationPanel />
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

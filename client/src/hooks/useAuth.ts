@@ -19,6 +19,22 @@ interface RegisterData {
   taxNumber?: string;
 }
 
+interface User {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  role: 'customer' | 'printer' | 'admin';
+  companyName?: string;
+  companyAddress?: string;
+  phone?: string;
+  taxNumber?: string;
+  website?: string;
+  profileImageUrl?: string;
+  creditBalance?: string;
+  subscriptionStatus?: 'active' | 'inactive' | 'suspended';
+}
+
 export const useAuth = () => {
   const queryClient = useQueryClient();
 
