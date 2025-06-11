@@ -730,7 +730,7 @@ export default function PrinterDashboard() {
                       type="number"
                       placeholder="Teslim süresi"
                       value={quoteResponse.estimatedDays}
-                      onChange{(e) => setQuoteResponse(prev => ({
+                      onChange={(e) => setQuoteResponse(prev => ({
                         ...prev,
                         estimatedDays: e.target.value
                       }))}
