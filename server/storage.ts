@@ -857,7 +857,7 @@ export class DatabaseStorage implements IStorage {
       // Get all existing designs from file
       let allDesigns = await this.getAllStoredDesigns();
 
-      // Enhanced design object with proper URL extraction
+      // Enhanced design object with proper URL extraction for Ideogram V3
       const extractImageUrl = (result: any) => {
         if (!result) return null;
         
@@ -872,6 +872,11 @@ export class DatabaseStorage implements IStorage {
         // Ideogram V3 response format: data array
         if (result.data && Array.isArray(result.data) && result.data[0]?.url) {
           return result.data[0].url;
+        }
+        
+        // Ideogram V3 numbered format (0, 1, 2...)
+        if (result['0'] && result['0'].url) {
+          return result['0'].url;
         }
         
         // Legacy format support
