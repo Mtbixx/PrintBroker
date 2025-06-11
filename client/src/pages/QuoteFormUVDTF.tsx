@@ -247,31 +247,25 @@ export default function QuoteFormUVDTF() {
       packaging: ""
     };
     
-    const currentSpecs = form.getValues('specifications');
-    const mergedSpecs = { ...defaultSpecs, ...currentSpecs };
-    
-    setFormData(mergedSpecs);
-    
-    // Update form with default values if empty
-    form.setValue('specifications', mergedSpecs);
-  }, []);
+    setFormData(defaultSpecs);
+    form.setValue('specifications', defaultSpecs);
+  }, [form]);
 
   const updateFormData = (key: string, value: any) => {
     // Update both local state and form
     setFormData((prev: any) => {
       const updated = { ...prev, [key]: value };
-      console.log('Updated formData:', updated); // Debug log
       return updated;
     });
     
-    // Update form registry
-    form.setValue(`specifications.${key}` as any, value, { 
+    // Update form registry with proper path
+    const currentSpecs = form.getValues('specifications') || {};
+    const updatedSpecs = { ...currentSpecs, [key]: value };
+    
+    form.setValue('specifications', updatedSpecs, { 
       shouldValidate: true, 
       shouldDirty: true 
     });
-    
-    // Force re-render by triggering watch
-    form.trigger(`specifications.${key}` as any);
   };
 
   if (isLoading) {
@@ -435,11 +429,6 @@ export default function QuoteFormUVDTF() {
                 </TabsContent>
 
                 <TabsContent value="specifications" className="space-y-8">
-                  {/* Debug Panel - Remove this after fixing */}
-                  <div className="mb-4 p-3 bg-gray-100 rounded text-xs">
-                    <strong>Debug - Current formData:</strong> {JSON.stringify(formData, null, 2)}
-                  </div>
-                  
                   {/* UV DTF Etiket Boyutu */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
@@ -454,7 +443,7 @@ export default function QuoteFormUVDTF() {
                             <Label className="text-xs text-gray-500">Genişlik (mm)</Label>
                             <Input 
                               placeholder="Örn: 50" 
-                              value={formData.width || ''}
+                              value={formData?.width || ''}
                               onChange={(e) => updateFormData('width', e.target.value)}
                               className="h-12"
                             />
@@ -463,7 +452,7 @@ export default function QuoteFormUVDTF() {
                             <Label className="text-xs text-gray-500">Yükseklik (mm)</Label>
                             <Input 
                               placeholder="Örn: 30" 
-                              value={formData.height || ''}
+                              value={formData?.height || ''}
                               onChange={(e) => updateFormData('height', e.target.value)}
                               className="h-12"
                             />
@@ -505,7 +494,7 @@ export default function QuoteFormUVDTF() {
                           type="number"
                           min="100"
                           placeholder="Minimum 100 adet"
-                          value={formData.quantity || ''}
+                          value={formData?.quantity || ''}
                           onChange={(e) => {
                             const value = parseInt(e.target.value) || 0;
                             updateFormData('quantity', e.target.value);
@@ -520,7 +509,7 @@ export default function QuoteFormUVDTF() {
                           }}
                           className="h-12"
                         />
-                        {formData.quantity && parseInt(formData.quantity) < 100 && parseInt(formData.quantity) > 0 && (
+                        {formData?.quantity && parseInt(formData.quantity) < 100 && parseInt(formData.quantity) > 0 && (
                           <p className="text-sm text-red-500">Minimum sipariş miktarı 100 adettir.</p>
                         )}
                       </div>
@@ -566,7 +555,7 @@ export default function QuoteFormUVDTF() {
                               <Button
                                 key={material.value}
                                 type="button"
-                                variant={formData.material === material.value ? 'default' : 'outline'}
+                                variant={formData?.material === material.value ? 'default' : 'outline'}
                                 onClick={() => updateFormData('material', material.value)}
                                 className="h-auto p-4 justify-start"
                               >
