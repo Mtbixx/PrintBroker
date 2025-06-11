@@ -1,23 +1,13 @@
 import axios from 'axios';
 
 interface IdeogramV3Request {
-  image_request: {
-    prompt: string;
-    aspect_ratio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
-    model: 'V_3';
-    magic_prompt_option?: 'AUTO' | 'ON' | 'OFF';
-    seed?: number;
-    style_type?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
-    negative_prompt?: string;
-    resolution?: 'RESOLUTION_512_1536' | 'RESOLUTION_576_1408' | 'RESOLUTION_640_1024' | 'RESOLUTION_768_1024' | 'RESOLUTION_1024_1024' | 'RESOLUTION_1152_896' | 'RESOLUTION_1216_832' | 'RESOLUTION_1344_768' | 'RESOLUTION_1536_640';
-    color_palette?: {
-      name?: string;
-      members?: Array<{
-        color: string;
-        weight?: number;
-      }>;
-    };
-  };
+  prompt: string;
+  aspect_ratio?: '1:1' | '10:16' | '16:10' | '9:16' | '16:9' | '3:2' | '2:3' | '4:3' | '3:4';
+  rendering_speed?: 'TURBO' | 'STANDARD';
+  magic_prompt_option?: 'AUTO' | 'ON' | 'OFF';
+  seed?: number;
+  style_type?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
+  negative_prompt?: string;
 }
 
 interface IdeogramV3Response {
@@ -45,19 +35,11 @@ class IdeogramService {
   }
 
   async generateImage(prompt: string, options: {
-    aspectRatio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
+    aspectRatio?: '1:1' | '10:16' | '16:10' | '9:16' | '16:9' | '3:2' | '2:3' | '4:3' | '3:4';
     styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
     magicPrompt?: 'AUTO' | 'ON' | 'OFF';
     negativePrompt?: string;
     seed?: number;
-    resolution?: 'RESOLUTION_512_1536' | 'RESOLUTION_576_1408' | 'RESOLUTION_640_1024' | 'RESOLUTION_768_1024' | 'RESOLUTION_1024_1024' | 'RESOLUTION_1152_896' | 'RESOLUTION_1216_832' | 'RESOLUTION_1344_768' | 'RESOLUTION_1536_640';
-    colorPalette?: {
-      name?: string;
-      members?: Array<{
-        color: string;
-        weight?: number;
-      }>;
-    };
   } = {}): Promise<IdeogramV3Response> {
     if (!this.apiKey) {
       throw new Error('Ideogram API key not configured. Please contact administrator.');
@@ -69,18 +51,14 @@ class IdeogramService {
         options
       });
 
-      const requestData: IdeogramV3Request = {
-        image_request: {
-          prompt: prompt,
-          aspect_ratio: options.aspectRatio || 'ASPECT_1_1',
-          model: 'V_3',
-          style_type: options.styleType || 'AUTO',
-          magic_prompt_option: options.magicPrompt || 'AUTO',
-          negative_prompt: options.negativePrompt,
-          seed: options.seed,
-          resolution: options.resolution,
-          color_palette: options.colorPalette,
-        }
+      const requestData = {
+        prompt: prompt,
+        aspect_ratio: options.aspectRatio || '1:1',
+        rendering_speed: 'TURBO',
+        style_type: options.styleType || 'DESIGN',
+        magic_prompt_option: options.magicPrompt || 'AUTO',
+        negative_prompt: options.negativePrompt,
+        seed: options.seed
       };
 
       console.log('🚀 V3 API Request Data:', JSON.stringify(requestData, null, 2));
