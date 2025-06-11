@@ -66,8 +66,76 @@ export default function QuoteForm() {
   const queryClient = useQueryClient();
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [currentTab, setCurrentTab] = useState("details");
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState({
+    // Basic form fields
+    title: '',
+    description: '',
+    quantity: '',
+    deadline: '',
+    budget: '',
+
+    // Sheet label fields
+    labelSize: '',
+    material: '',
+    printColor: '',
+    finish: '',
+    lamination: '',
+    cutting: '',
+
+    // Roll label fields
+    rollWidth: '',
+    rollLength: '',
+    labelSpacing: '',
+    windingDirection: '',
+    coreSize: '',
+
+    // General printing fields
+    printType: '',
+    printSize: '',
+    printPaper: '',
+    printFinish: '',
+    printBinding: '',
+    printPages: '',
+    printCover: '',
+
+    // UV DTF specific fields
+    adhesiveType: '',
+    transferType: '',
+    cuttingType: '',
+    backing: ''
+  });
   const [surfaceProcessingTab, setSurfaceProcessingTab] = useState("cellophane");
+  const printingTypes = {
+    'sheet_label': {
+      requiredFields: ['size', 'material', 'quantity'],
+      optionalFields: ['finish', 'lamination', 'cutting'],
+      sizeOptions: ['custom'],
+      paperOptions: ['transparent', 'opaque', 'kraft', 'metallic', 'textured']
+    },
+    'roll_label': {
+      requiredFields: ['rollWidth', 'rollLength', 'quantity', 'material', 'adhesive'],
+      optionalFields: ['windingDirection', 'coreSize', 'perforationGap'],
+      sizeOptions: ['custom'],
+      materialOptions: ['pp-white', 'pp-transparent', 'pe-white', 'paper-white', 'polyester'],
+      adhesiveOptions: ['permanent', 'removable', 'ultra-removable', 'freezer', 'high-temp']
+    },
+    'general_printing': {
+      requiredFields: ['type', 'size', 'material', 'quantity', 'color'],
+      optionalFields: ['finish', 'handle'],
+      sizeOptions: ['custom'],
+      paperOptions: ['kraft', 'bristol-250', 'corrugated']
+    },
+    'uv_dtf_label': {
+        requiredFields: ['size', 'material', 'quantity', 'adhesiveType', 'transferType'],
+        optionalFields: ['cuttingType', 'backing'],
+        sizeOptions: ['50x30', '60x40', '70x50', '100x70', '150x100', 'custom'],
+        materialOptions: ['transparent_film', 'white_film', 'clear_film', 'holographic_film'],
+        adhesiveOptions: ['permanent', 'removable', 'repositionable', 'high_tack'],
+        transferOptions: ['cold_peel', 'hot_peel', 'warm_peel'],
+        cuttingOptions: ['kiss_cut', 'through_cut', 'perforation_cut'],
+        backingOptions: ['paper_backing', 'pet_backing', 'no_backing']
+      }
+  };
 
   const form = useForm<QuoteFormData>({
     resolver: zodResolver(quoteSchema),
@@ -227,6 +295,18 @@ export default function QuoteForm() {
           color: 'green',
           bgGradient: 'from-green-500 to-emerald-600'
         };
+        case 'uv_dtf_label':
+        return {
+          title: 'UV DTF Etiket Teklifi',
+          description: 'Yüksek kaliteli UV DTF etiket baskısı',
+          icon: <Sparkles className="h-8 w-8 text-white" />,
+          color: 'purple',
+          bgGradient: 'from-purple-500 to-pink-600',
+          adhesiveOptions: ['permanent', 'removable', 'repositionable', 'high_tack'],
+          transferOptions: ['cold_peel', 'hot_peel', 'warm_peel'],
+          cuttingOptions: ['kiss_cut', 'through_cut', 'perforation_cut'],
+          backingOptions: ['paper_backing', 'pet_backing', 'no_backing']
+        };
       default:
         return {
           title: 'Teklif Talebi',
@@ -239,6 +319,31 @@ export default function QuoteForm() {
   };
 
   const typeConfig = getTypeConfig();
+
+  const getFieldOptions = (field: string) => {
+    const typeConfig = printingTypes[type];
+    switch (field) {
+      case 'size':
+        return typeConfig?.sizeOptions || [];
+      case 'paper':
+        return typeConfig?.paperOptions || [];
+      case 'material':
+        if (type === 'uv_dtf_label') {
+          return typeConfig?.materialOptions || [];
+        }
+        return typeConfig?.paperOptions || [];
+      case 'adhesive':
+        return typeConfig?.adhesiveOptions || [];
+      case 'transfer':
+        return typeConfig?.transferOptions || [];
+      case 'cutting':
+        return typeConfig?.cuttingOptions || [];
+      case 'backing':
+        return typeConfig?.backingOptions || [];
+      default:
+        return [];
+    }
+  };
 
   const renderSurfaceProcessingOptions = () => (
     <div className="space-y-4">
@@ -681,7 +786,7 @@ export default function QuoteForm() {
                 <SelectValue placeholder="Yön seçin" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="out">Dışarı Sarım</SelectItem>
+                <SelectItem value="out">Dışarı Sarım</SelectItem>```text
                 <SelectItem value="in">İçeri Sarım</SelectItem>
               </SelectContent>
             </Select>
@@ -837,14 +942,234 @@ export default function QuoteForm() {
         paperOptions: ['kraft', 'bristol-250', 'corrugated']
       },
       'uv_dtf_label': {
-        requiredFields: ['size', 'material', 'quantity', 'color'],
-        optionalFields: ['finish'],
-        sizeOptions: ['20x20', '30x30', '40x40', '50x50', '60x60', '70x70', 'custom'],
-        materialOptions: ['premium-uv-dtf', 'standard-uv-dtf', 'ultra-thin-uv-dtf']
+        requiredFields: ['size', 'material', 'quantity', 'adhesiveType', 'transferType'],
+        optionalFields: ['cuttingType', 'backing'],
+        sizeOptions: ['50x30', '60x40', '70x50', '100x70', '150x100', 'custom'],
+        materialOptions: ['transparent_film', 'white_film', 'clear_film', 'holographic_film'],
+        adhesiveOptions: ['permanent', 'removable', 'repositionable', 'high_tack'],
+        transferOptions: ['cold_peel', 'hot_peel', 'warm_peel'],
+        cuttingOptions: ['kiss_cut', 'through_cut', 'perforation_cut'],
+        backingOptions: ['paper_backing', 'pet_backing', 'no_backing']
       }
     };
 
     const selectedType = formData.printType ? printTypes[formData.printType as keyof typeof printTypes] : null;
+
+    const renderUVDTFLabelForm = () => (
+    <div className="space-y-6">
+      {/* Size Selection */}
+      <div className="space-y-4">
+        <Label className="text-base font-semibold text-gray-900">
+          Etiket Boyutu *
+        </Label>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {getFieldOptions('size').map((size) => {
+            const sizeLabels = {
+              '50x30': '50x30mm (Küçük)',
+              '60x40': '60x40mm (Orta)',
+              '70x50': '70x50mm (Standart)',
+              '100x70': '100x70mm (Büyük)',
+              '150x100': '150x100mm (XL)',
+              'custom': 'Özel Boyut'
+            };
+            return (
+              <Button
+                key={size}
+                variant={formData.labelSize === size ? 'default' : 'outline'}
+                onClick={() => updateFormData('labelSize', size)}
+                className="h-auto p-4 justify-start"
+              >
+                <div className="text-left">
+                  <div className="font-medium">{sizeLabels[size] || size}</div>
+                </div>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Material Selection */}
+      <div className="space-y-4">
+        <Label className="text-base font-semibold text-gray-900">
+          Film Türü *
+        </Label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {getFieldOptions('material').map((material) => {
+            const materialLabels = {
+              'transparent_film': 'Şeffaf Film',
+              'white_film': 'Beyaz Film',
+              'clear_film': 'Berrak Film',
+              'holographic_film': 'Holografik Film'
+            };
+            const materialDesc = {
+              'transparent_film': 'Saydam zemin, renkli baskı',
+              'white_film': 'Beyaz zemin, opak kaplama',
+              'clear_film': 'Ultra berrak, premium kalite',
+              'holographic_film': 'Işıltılı hologram efekti'
+            };
+            return (
+              <Button
+                key={material}
+                variant={formData.material === material ? 'default' : 'outline'}
+                onClick={() => updateFormData('material', material)}
+                className="h-auto p-4 justify-start"
+              >
+                <div className="text-left">
+                  <div className="font-medium">{materialLabels[material] || material}</div>
+                  <div className="text-sm text-gray-500">{materialDesc[material]}</div>
+                </div>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Adhesive Type */}
+      <div className="space-y-4">
+        <Label className="text-base font-semibold text-gray-900">
+          Yapışkan Türü *
+        </Label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {typeConfig.adhesiveOptions?.map((adhesive) => {
+            const adhesiveLabels = {
+              'permanent': 'Kalıcı Yapışkan',
+              'removable': 'Çıkarılabilir',
+              'repositionable': 'Yeniden Konumlandırılabilir',
+              'high_tack': 'Güçlü Yapışkan'
+            };
+            const adhesiveDesc = {
+              'permanent': 'Kalıcı uygulama için',
+              'removable': 'Hasar vermeden çıkarılabilir',
+              'repositionable': 'Tekrar yapıştırılabilir',
+              'high_tack': 'Zor yüzeyler için extra güçlü'
+            };
+            return (
+              <Button
+                key={adhesive}
+                variant={formData.adhesiveType === adhesive ? 'default' : 'outline'}
+                onClick={() => updateFormData('adhesiveType', adhesive)}
+                className="h-auto p-4 justify-start"
+              >
+                <div className="text-left">
+                  <div className="font-medium">{adhesiveLabels[adhesive] || adhesive}</div>
+                  <div className="text-sm text-gray-500">{adhesiveDesc[adhesive]}</div>
+                </div>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Transfer Type */}
+      <div className="space-y-4">
+        <Label className="text-base font-semibold text-gray-900">
+          Transfer Tekniği *
+        </Label>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {typeConfig.transferOptions?.map((transfer) => {
+            const transferLabels = {
+              'cold_peel': 'Soğuk Soyma',
+              'hot_peel': 'Sıcak Soyma',
+              'warm_peel': 'Ilık Soyma'
+            };
+            const transferDesc = {
+              'cold_peel': 'Soğukken film soyulur',
+              'hot_peel': 'Sıcakken hemen soyulur',
+              'warm_peel': 'Ilık halde soyulur'
+            };
+            return (
+              <Button
+                key={transfer}
+                variant={formData.transferType === transfer ? 'default' : 'outline'}
+                onClick={() => updateFormData('transferType', transfer)}
+                className="h-auto p-4 justify-start"
+              >
+                <div className="text-left">
+                  <div className="font-medium">{transferLabels[transfer] || transfer}</div>
+                  <div className="text-sm text-gray-500">{transferDesc[transfer]}</div>
+                </div>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Cutting Type */}
+      <div className="space-y-4">
+        <Label className="text-base font-semibold text-gray-900">
+          Kesim Türü
+        </Label>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {typeConfig.cuttingOptions?.map((cutting) => {
+            const cuttingLabels = {
+              'kiss_cut': 'Kiss Cut',
+              'through_cut': 'Tam Kesim',
+              'perforation_cut': 'Perforeli Kesim'
+            };
+            const cuttingDesc = {
+              'kiss_cut': 'Sadece etiket kesilir',
+              'through_cut': 'Tamamı kesilir',
+              'perforation_cut': 'Perfore edilir'
+            };
+            return (
+              <Button
+                key={cutting}
+                variant={formData.cuttingType === cutting ? 'default' : 'outline'}
+                onClick={() => updateFormData('cuttingType', cutting)}
+                className="h-auto p-4 justify-start"
+              >
+                <div className="text-left">
+                  <div className="font-medium">{cuttingLabels[cutting] || cutting}</div>
+                  <div className="text-sm text-gray-500">{cuttingDesc[cutting]}</div>
+                </div>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Print Colors */}
+      <div className="space-y-4">
+        <Label className="text-base font-semibold text-gray-900">
+          Baskı Rengi (UV DTF Otomatik Vernikli + Kabartmalı) *
+        </Label>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {['1 Renk', '2 Renk', '3 Renk', '4 Renk (CMYK)', '5+ Renk', 'Beyaz + Renkli'].map((color) => (
+            <Button
+              key={color}
+              variant={formData.printColor === color ? 'default' : 'outline'}
+              onClick={() => updateFormData('printColor', color)}
+              className="h-auto p-3"
+            >
+              {color}
+            </Button>
+          ))}
+        </div>
+        <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
+          <strong>UV DTF Özelliği:</strong> Otomatik UV vernik ve kabartma efekti dahildir. Ekstra yüzey işlemi gerekmez.
+        </div>
+      </div>
+
+      {/* Quantity */}
+      <div className="space-y-2">
+        <Label htmlFor="quantity" className="text-base font-semibold text-gray-900">
+          Miktar (Adet) *
+        </Label>
+        <Input
+          id="quantity"
+          type="number"
+          min="1"
+          value={formData.quantity}
+          onChange={(e) => updateFormData('quantity', e.target.value)}
+          placeholder="Minimum: 100 adet"
+          className="border-gray-300 focus:border-blue-500"
+        />
+        <div className="text-sm text-gray-600">
+          UV DTF etiketler minimum 100 adet üretilir. Ekonomik fiyat için 500+ adet önerilir.
+        </div>
+      </div>
+    </div>
+  );
 
     return (
       <div className="space-y-8">
@@ -1085,36 +1410,7 @@ export default function QuoteForm() {
 
                 {/* UV DTF Malzeme Seçimi */}
                 {selectedType.requiredFields.includes('material') && formData.printType === 'uv_dtf_label' && (
-                  <div className="space-y-4">
-                    <Label className="text-sm font-medium text-gray-700 flex items-center">
-                      UV DTF Film Türü <span className="text-red-500 ml-1">*</span>
-                    </Label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {selectedType.materialOptions?.map((material) => {
-                        const materialLabels: Record<string, { label: string; desc: string }> = {
-                          'premium-uv-dtf': { label: 'Premium UV DTF Film', desc: '0.7mm kalınlık, yüksek dayanıklılık' },
-                          'standard-uv-dtf': { label: 'Standart UV DTF Film', desc: '0.5mm kalınlık, ekonomik seçenek' },
-                          'ultra-thin-uv-dtf': { label: 'Ultra İnce UV DTF Film', desc: '0.3mm kalınlık, hassas uygulamalar' }
-                        };
-
-                        const materialInfo = materialLabels[material] || { label: material, desc: '' };
-
-                        return (
-                          <Button
-                            key={material}
-                            variant={formData.uvdtfMaterial === material ? 'default' : 'outline'}
-                            onClick={() => updateFormData('uvdtfMaterial', material)}
-                            className="h-auto p-4 justify-start"
-                          >
-                            <div className="text-left">
-                              <div className="font-medium">{materialInfo.label}</div>
-                              <div className="text-sm text-gray-500">{materialInfo.desc}</div>
-                            </div>
-                          </Button>
-                        );
-                      })}
-                    </div>
-                  </div>
+                  renderUVDTFLabelForm()
                 )}
 
             <Separator />
