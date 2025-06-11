@@ -175,14 +175,14 @@ export class DatabaseStorage implements IStorage {
 
   async updateUserCreditBalance(userId: string, newBalance: string): Promise<void> {
     console.log(`💳 Updating credit balance for user ${userId}: ${newBalance}₺`);
-    
+
     await db.update(users)
       .set({ 
         creditBalance: newBalance,
         updatedAt: new Date()
       })
       .where(eq(users.id, userId));
-      
+
     // Verify the update
     const updatedUser = await this.getUser(userId);
     console.log(`✅ Credit balance updated successfully. New balance: ${updatedUser?.creditBalance}₺`);
@@ -443,34 +443,73 @@ export class DatabaseStorage implements IStorage {
     options: any;
     result: any;
     createdAt: Date;
-  }) {
-    // Since we don't have a designs table, we'll store in a JSON file or memory
-    // In production, you'd want to create a proper database table
-    const designHistory = this.getStoredDesigns();
-    const newDesign = {
-      id: crypto.randomUUID(),
-      ...data
-    };
-    designHistory.push(newDesign);
-    this.storeDesigns(designHistory);
-    return newDesign;
+  }): Promise<any> {
+    try {
+      // Get existing designs for this user
+      const existingDesigns = await this.getStoredDesigns(data.userId);
+      console.log('Saving new design:', data.result.generationId || 'unknown-id', 'for user:', data.userId);
+
+      const designEntry = {
+        id: data.result.generationId || crypto.randomUUID(),
+        userId: data.userId,
+        prompt: data.prompt,
+        options: data.options,
+        result: data.result,
+        createdAt: data.createdAt.toISOString(),
+        url: data.result.url || (data.result.data && data.result.data[0] && data.result.data[0].url),
+        metadata: data.result.metadata || {}
+      };
+
+      // Add new design to the beginning of array
+      const allDesigns = [...existingDesigns, designEntry];
+
+      // Store all designs
+      await this.storeDesigns(allDesigns);
+
+      console.log('Design saved successfully. Total designs:', allDesigns.length);
+
+      return designEntry;
+    } catch (error) {
+      console.error('Error saving design generation:', error);
+      throw error;
+    }
   }
 
-  async getDesignHistory(userId: string, options: { page: number; limit: number }) {
-    const designHistory = this.getStoredDesigns();
-    const userDesigns = designHistory
-      .filter(design => design.userId === userId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  async getDesignHistory(userId: string, options: { page: number; limit: number }): Promise<any> {
+    try {
+      const designs = await this.getStoredDesigns(userId);
 
-    const start = (options.page - 1) * options.limit;
-    const end = start + options.limit;
+      // Sort by creation date (newest first)
+      const sortedDesigns = designs.sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
 
-    return {
-      designs: userDesigns.slice(start, end),
-      total: userDesigns.length,
-      page: options.page,
-      totalPages: Math.ceil(userDesigns.length / options.limit)
-    };
+      // Pagination
+      const startIndex = (options.page - 1) * options.limit;
+      const endIndex = startIndex + options.limit;
+      const paginatedDesigns = sortedDesigns.slice(startIndex, endIndex);
+
+      return {
+        designs: paginatedDesigns,
+        pagination: {
+          page: options.page,
+          limit: options.limit,
+          total: sortedDesigns.length,
+          pages: Math.ceil(sortedDesigns.length / options.limit)
+        }
+      };
+    } catch (error) {
+      console.error('Error fetching design history:', error);
+      return {
+        designs: [],
+        pagination: {
+          page: options.page,
+          limit: options.limit,
+          total: 0,
+          pages: 0
+        }
+      };
+    }
   }
 
   async getDesignTemplates() {
@@ -513,14 +552,16 @@ export class DatabaseStorage implements IStorage {
     ];
   }
 
-  private getStoredDesigns(): any[] {
+  private async getStoredDesigns(userId: string): Promise<any[]> {
     try {
-      // Use dynamic import for ES modules compatibility
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(process.cwd(), 'design-history.json');
-      if (fs.existsSync(filePath)) {
-        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      const fs = await import('fs');
+      const path = await import('path');
+      const designsPath = path.join(process.cwd(), 'design-history.json');
+
+      if (fs.existsSync(designsPath)) {
+        const data = fs.readFileSync(designsPath, 'utf8');
+        const allDesigns = JSON.parse(data);
+        return allDesigns.filter((design: any) => design.userId === userId) || [];
       }
       return [];
     } catch (error) {
@@ -529,12 +570,13 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  private storeDesigns(designs: any[]) {
+  private async storeDesigns(designs: any[]): Promise<void> {
     try {
-      const fs = require('fs');
-      const path = require('path');
-      const filePath = path.join(process.cwd(), 'design-history.json');
-      fs.writeFileSync(filePath, JSON.stringify(designs, null, 2));
+      const fs = await import('fs');
+      const path = await import('path');
+      const designsPath = path.join(process.cwd(), 'design-history.json');
+
+      fs.writeFileSync(designsPath, JSON.stringify(designs, null, 2));
     } catch (error) {
       console.error('Error storing designs:', error);
     }
@@ -814,12 +856,12 @@ export class DatabaseStorage implements IStorage {
         isBookmarked: false,
         createdAt: data.createdAt.toISOString()
       };
-      
+
       console.log('Saving new design:', newDesign.id, 'for user:', data.userId);
-      
+
       // Add to beginning of array (newest first)
       designHistory.unshift(newDesign);
-      
+
       // Keep only last 1000 designs per user to prevent unlimited growth
       const userDesigns = designHistory.filter(d => d.userId === data.userId);
       if (userDesigns.length > 1000) {
@@ -829,7 +871,7 @@ export class DatabaseStorage implements IStorage {
       } else {
         this.storeDesigns(designHistory);
       }
-      
+
       console.log('Design saved successfully. Total designs:', designHistory.length);
       return newDesign;
     } catch (error) {
@@ -868,7 +910,7 @@ export class DatabaseStorage implements IStorage {
   async deleteDesign(designId: string, userId: string): Promise<boolean> {
     const designHistory = this.getStoredDesigns();
     const designIndex = designHistory.findIndex(design => design.id === designId && design.userId === userId);
-    
+
     if (designIndex !== -1) {
       designHistory.splice(designIndex, 1);
       this.storeDesigns(designHistory);
@@ -880,7 +922,7 @@ export class DatabaseStorage implements IStorage {
   async bookmarkDesign(designId: string, userId: string): Promise<boolean> {
     const designHistory = this.getStoredDesigns();
     const design = designHistory.find(d => d.id === designId && d.userId === userId);
-    
+
     if (design) {
       design.isBookmarked = !design.isBookmarked;
       this.storeDesigns(designHistory);
