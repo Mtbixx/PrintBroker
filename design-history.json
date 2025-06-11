@@ -1,5 +1,69 @@
 [
   {
+    "id": "6f287028-2ebd-4379-b727-2c4b5526cbfa",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ecesu & Batuhan 16.06.2026 düğün etiketi",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A sophisticated wedding label card featuring a stylized intertwining olive branch and laurel wreath design framing the names \"Ecesu & Batuhan\" in elegant, flowing script. The olive branch and laurel are rendered in soft gold tones against a background of creamy ivory linen texture, subtly suggesting prosperity and enduring love, with delicate sprigs of white jasmine adding a touch of romance. The date \"16.06.2026\" is displayed in a clean, modern sans-serif font below the names, ensuring readability, while the overall design evokes a feeling of timeless elegance and understated joy, leaving ample space for a brief personalized message on the card's interior.",
+        "resolution": "1024x1024",
+        "seed": 51216170,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/ARq41oL9Tf2kcMGwjB9Nsw.png?exp=1749738305&sig=b6b24bc6477da9af7c9949f19b3a7853937f5d41ab7d461b37f2f9f23d8cd4fa"
+      },
+      "generationId": "0c12c8d9-e2af-4ffa-917b-2a225c74ce5a",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T14:25:05.668Z"
+  },
+  {
+    "id": "c62e7517-8bec-4a33-8479-c8aa22226090",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Burcu Bebek için doğum günü etiketi",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A vibrant birthday greeting card featuring a whimsical hot air balloon carrying Burcu Bebek's name in playful, swirling script against a backdrop of a pastel rainbow and fluffy clouds. The hot air balloon is decorated with colorful confetti, oversized polka dots, and shimmering stars, all rendered in a soft, watercolor style with hues of pink, yellow, and sky blue that evoke a sense of joy and celebration. The text \"Happy Birthday, Burcu Bebek!\" is displayed prominently below the balloon in a bold, cheerful font, and the interior of the card offers a clean, white space for a personalized message with a subtle pattern of tiny stars and confetti. The overall design conveys a lighthearted and celebratory tone, perfect for a beloved friend or family member's birthday.",
+        "resolution": "1024x1024",
+        "seed": 257503598,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/gYD7B0D3QOysx5ZKnz1BZQ.png?exp=1749738262&sig=4cd90035989abf864899deb3a7cef9fde1c1af158930807cc822395d05d3a147"
+      },
+      "generationId": "92ae2bf9-880a-4ab6-b75e-b269cf1b23e2",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T14:24:22.982Z"
+  },
+  {
     "id": "13f448c8-9265-41d5-b12f-94b0bf114121",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Doğum Günün Kutlu Olsun Burcu Bebek",
