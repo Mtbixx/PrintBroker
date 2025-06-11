@@ -599,10 +599,12 @@ export default function PrinterDashboard() {
       estimatedDays: "",
       notes: ""
     });
-    setIsQuoteModalOpen(true);
+    // Gelişmiş modal için selectedQuote'u set ediyoruz, basit modal yerine
   };
 
-  const handleSubmitQuote = () => {
+  const handleSubmitQuote = (event: React.FormEvent) => {
+    event.preventDefault();
+    
     if (!quoteResponse.price || !quoteResponse.estimatedDays) {
       toast({
         title: "Eksik Bilgi",
@@ -827,7 +829,7 @@ export default function PrinterDashboard() {
                           {quote.status === 'pending' && (
                             <Button 
                               size="sm" 
-                              onClick={() => handleQuoteResponse(quote)}
+                              onClick={() => setSelectedQuote(quote)}
                               className="bg-blue-600 hover:bg-blue-700 text-white self-start md:self-center"
                             >
                               Teklif Ver
@@ -1189,117 +1191,7 @@ export default function PrinterDashboard() {
           </TabsContent>
         </Tabs>
 
-        {/* Teklif Verme Modal */}
-        <Dialog open={isQuoteModalOpen} onOpenChange={setIsQuoteModalOpen}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Teklif Ver</DialogTitle>
-              <DialogDescription>
-                "{selectedQuote?.title}" için teklif verin
-              </DialogDescription>
-            </DialogHeader>
-
-            {selectedQuote && (
-              <div className="space-y-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-semibold mb-2">Teklif Detayları</h3>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-600">Proje:</span>
-                      <p className="font-medium">{selectedQuote.title}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Adet:</span>
-                      <p className="font-medium">{selectedQuote.quantity}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Bütçe:</span>
-                      <p className="font-medium">₺{selectedQuote.estimatedBudget || selectedQuote.budget || 'Belirtilmemiş'}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Tarih:</span>
-                      <p className="font-medium">{new Date(selectedQuote.createdAt).toLocaleDateString('tr-TR')}</p>
-                    </div>
-                  </div>
-                  {selectedQuote.description && (
-                    <div className="mt-3">
-                      <span className="text-gray-600">Açıklama:</span>
-                      <p className="text-sm mt-1">{selectedQuote.description}</p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="price">Fiyat (₺) *</Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      placeholder="Teklif fiyatınız"
-                      value={quoteResponse.price}
-                      onChange={(e) => setQuoteResponse(prev => ({
-                        ...prev,
-                        price: e.target.value
-                      }))}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="estimatedDays">Tahmini Süre (Gün) *</Label>
-                    <Input
-                      id="estimatedDays"
-                      type="number"
-                      placeholder="Teslim süresi"
-                      value={quoteResponse.estimatedDays}
-                      onChange={(e) => setQuoteResponse(prev => ({
-                        ...prev,
-                        estimatedDays: e.target.value
-                      }))}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="notes">Notlar</Label>
-                  <Textarea
-                    id="notes"
-                    placeholder="Teklif detayları, özel şartlar vb."
-                    value={quoteResponse.notes}
-                    onChange={(e) => setQuoteResponse(prev => ({
-                      ...prev,
-                      notes: e.target.value
-                    }))}
-                    rows={3}
-                  />
-                </div>
-
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setIsQuoteModalOpen(false)}
-                  >
-                    İptal
-                  </Button>
-                  <Button 
-                    onClick={handleSubmitQuote}
-                    disabled={submitQuoteMutation.isPending}
-                  >
-                    {submitQuoteMutation.isPending ? (
-                      <>
-                        <InkDropletsLoader size={16} color="white" />
-                        Gönderiliyor...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Teklif Gönder
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+        
 
         {/* Chat Modal */}
         <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
