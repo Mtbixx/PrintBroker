@@ -50,20 +50,30 @@ export const useAuth = () => {
         });
 
         if (response.status === 401) {
+          console.log('Authentication failed: Unauthorized');
           return null; // Not authenticated - this is normal
         }
 
         if (!response.ok) {
+          console.error(`Authentication failed: HTTP ${response.status}`);
           return null;
         }
 
         const userData = await response.json();
         return userData;
       } catch (error) {
+        console.error('Authentication request failed:', error);
         return null;
       }
     },
-    retry: false, // Don't retry auth requests
+    retry: (failureCount, error) => {
+      console.log('Auth query retry:', { failureCount, error });
+      if (error instanceof Error && error.message === 'Unauthorized') {
+        console.log('Unauthorized error, not retrying');
+        return false;
+      }
+      return failureCount < 2;
+    },
     staleTime: 2 * 60 * 1000, // 2 minutes
     gcTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false, // Don't refetch on window focus
@@ -165,6 +175,14 @@ export const useAuth = () => {
   });
 
   const isAuthenticated = !!user && !error;
+
+    // Log authentication state
+    console.log('useAuth state:', {
+        user,
+        isLoading,
+        error,
+        isAuthenticated
+    });
 
   // Session check function
   const checkSession = async () => {

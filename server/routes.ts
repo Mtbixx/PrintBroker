@@ -438,7 +438,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // User authentication endpoint for dashboard access
   app.get('/api/auth/user', async (req, res) => {
+    console.log('Auth check - Session:', !!req.session, 'User:', !!(req.session as any)?.user);
+    
     if (!req.session || !(req.session as any).user) {
+      console.log('No session or user, returning 401');
       return res.status(401).json({ 
         message: "Unauthorized", 
         code: "AUTH_REQUIRED",
@@ -448,11 +451,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       const sessionUser = (req.session as any).user;
+      console.log('Session user:', sessionUser.id, sessionUser.role);
       
       // Get fresh user data from database to ensure current balance
       const freshUser = await storage.getUser(sessionUser.id);
       
       if (!freshUser) {
+        console.log('User not found in database:', sessionUser.id);
         return res.status(404).json({ message: "User not found" });
       }
 
@@ -463,7 +468,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         subscriptionStatus: freshUser.subscriptionStatus
       };
 
-      res.json({
+      const responseData = {
         id: freshUser.id,
         email: freshUser.email,
         firstName: freshUser.firstName,
@@ -473,7 +478,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         profileImageUrl: freshUser.profileImageUrl,
         creditBalance: freshUser.creditBalance,
         subscriptionStatus: freshUser.subscriptionStatus
-      });
+      };
+
+      console.log('Returning user data:', responseData.id, responseData.role);
+      res.json(responseData);
     } catch (error) {
       console.error("Error fetching fresh user data:", error);
       res.status(500).json({ message: "Failed to fetch user data" });

@@ -163,7 +163,10 @@ export default function PrinterDashboard() {
 
   // Enhanced authentication handling
   useEffect(() => {
+    console.log('Auth effect:', { isLoading, isAuthenticated, user });
+
     if (!isLoading && !isAuthenticated) {
+      console.log('Not authenticated, redirecting...');
       toast({
         title: "Oturum Sonlandı",
         description: "Lütfen tekrar giriş yapın",
@@ -175,9 +178,11 @@ export default function PrinterDashboard() {
       return;
     }
 
-    if (!isLoading && user && user.role !== 'printer') {
+    // Additional role check
+    if (!isLoading && isAuthenticated && user && user.role !== 'printer') {
+      console.log('Wrong role:', user.role);
       toast({
-        title: "Erişim Hatası",
+        title: "Erişim Hatası", 
         description: "Bu sayfaya erişim yetkiniz bulunmuyor",
         variant: "destructive",
       });
@@ -287,20 +292,69 @@ export default function PrinterDashboard() {
     },
   });
 
+  // Show loading while checking auth
   if (isLoading) {
+    console.log('Showing loading state');
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <InkDropletsLoader size={80} color="#8B5CF6" />
-          <p className="mt-4 text-gray-600">Matbaa paneli yükleniyor...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  if (!isAuthenticated || !user) {
-    return null;
+  // Show login required if not authenticated
+  if (!isAuthenticated) {
+    console.log('Not authenticated, showing login required');
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md mx-4">
+          <CardContent className="pt-6">
+            <div className="flex mb-4 gap-2">
+              <AlertCircle className="h-8 w-8 text-yellow-500" />
+              <h1 className="text-2xl font-bold text-gray-900">Giriş Gerekli</h1>
+            </div>
+            <p className="mt-4 text-sm text-gray-600">
+              Bu sayfaya erişim için giriş yapmanız gerekiyor.
+            </p>
+            <Button 
+              className="mt-4 w-full"
+              onClick={() => window.location.href = "/?login=true"}
+            >
+              Giriş Yap
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
+
+  // Show access denied if wrong role
+  if (user?.role !== 'printer') {
+    console.log('Wrong role, showing access denied');
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md mx-4">
+          <CardContent className="pt-6">
+            <div className="flex mb-4 gap-2">
+              <AlertCircle className="h-8 w-8 text-red-500" />
+              <h1 className="text-2xl font-bold text-gray-900">Erişim Reddedildi</h1>
+            </div>
+            <p className="mt-4 text-sm text-gray-600">
+              Bu sayfa sadece matbaa firmaları için erişilebilir.
+            </p>
+            <Button 
+              className="mt-4 w-full"
+              onClick={() => window.location.href = "/"}
+            >
+              Ana Sayfa
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  console.log('Rendering main dashboard content');
 
   const allQuotes = quotes || [];
   const allOrders = orders || [];
@@ -890,7 +944,7 @@ export default function PrinterDashboard() {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold mb-3 text-gray-800">Kategori Bazlı Analiz</h4>
                     <div className="space-y-3">
