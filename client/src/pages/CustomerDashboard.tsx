@@ -41,6 +41,13 @@ export default function CustomerDashboard() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isDesignDialogOpen, setIsDesignDialogOpen] = useState(false);
+  
+  // Reset to first page when new designs are created
+  useEffect(() => {
+    if (currentPage > 1) {
+      setCurrentPage(1);
+    }
+  }, [designHistory?.total]);
   const [activeTab, setActiveTab] = useState("overview");
   const queryClient = useQueryClient();
 
@@ -88,8 +95,10 @@ export default function CustomerDashboard() {
     enabled: isAuthenticated && user?.role === 'customer',
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
   const { data: designHistory, isLoading: designsLoading } = useQuery({
-    queryKey: ["/api/designs/history"],
+    queryKey: ["/api/designs/history", currentPage],
+    queryFn: () => apiRequest('GET', `/api/designs/history?page=${currentPage}&limit=12`),
     enabled: isAuthenticated && user?.role === 'customer',
   });
 
@@ -548,14 +557,7 @@ export default function CustomerDashboard() {
                           size="sm"
                           disabled={designHistory.page <= 1}
                           onClick={() => {
-                            queryClient.invalidateQueries({ 
-                              queryKey: ['/api/designs/history'],
-                              exact: false 
-                            });
-                            queryClient.refetchQueries({ 
-                              queryKey: ['/api/designs/history'],
-                              exact: false 
-                            });
+                            setCurrentPage(prev => Math.max(1, prev - 1));
                           }}
                         >
                           Önceki
@@ -570,14 +572,7 @@ export default function CustomerDashboard() {
                           size="sm"
                           disabled={designHistory.page >= designHistory.totalPages}
                           onClick={() => {
-                            queryClient.invalidateQueries({ 
-                              queryKey: ['/api/designs/history'],
-                              exact: false 
-                            });
-                            queryClient.refetchQueries({ 
-                              queryKey: ['/api/designs/history'],
-                              exact: false 
-                            });
+                            setCurrentPage(prev => Math.min(designHistory.totalPages, prev + 1));
                           }}
                         >
                           Sonraki
