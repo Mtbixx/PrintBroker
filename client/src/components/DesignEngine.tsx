@@ -322,6 +322,7 @@ export default function DesignEngine() {
       setBatchPrompts(batchPrompts.filter((_, i) => i !== index));
     }
   };
+  const [styleType, setStyleType] = useState('GENERAL');
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">

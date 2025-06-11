@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Link } from "wouter";
 import { 
   Plus, 
@@ -226,6 +226,9 @@ export default function CustomerDashboard() {
                   <DialogContent className="max-w-6xl h-[90vh] overflow-hidden">
                     <DialogHeader>
                       <DialogTitle>AI Tasarım Motoru</DialogTitle>
+                      <DialogDescription>
+                        Yapay zeka ile profesyonel tasarımlar oluşturun
+                      </DialogDescription>
                     </DialogHeader>
                     <div className="h-full overflow-y-auto">
                       <DesignEngine />
@@ -610,6 +613,9 @@ export default function CustomerDashboard() {
                       <DialogContent className="max-w-6xl h-[90vh] overflow-hidden">
                         <DialogHeader>
                           <DialogTitle>AI Tasarım Motoru</DialogTitle>
+                          <DialogDescription>
+                            Yapay zeka ile profesyonel tasarımlar oluşturun
+                          </DialogDescription>
                         </DialogHeader>
                         <div className="h-full overflow-y-auto">
                           <DesignEngine />
