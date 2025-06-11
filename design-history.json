@@ -1,5 +1,104 @@
 [
   {
+    "id": "281c2d09-b83c-4689-9c63-2c9e1fdab833",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Fuat Kaya Elektrik firması için modern logo tasarımı ",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A logo design featuring the text \"Fuat Kaya Elektrik\" in a sleek sans-serif font, rendered in a gradient from deep blue to electric blue. The company name is centered above a stylized lightning bolt composed of interconnected circuit paths, giving a sense of technological sophistication and energy. The background is a clean, crisp white to highlight the logo and create a modern, professional aesthetic. Subtle shadowing adds depth and dimension to the design.",
+        "resolution": "1024x1024",
+        "seed": 1581807210,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/hN2ZAIqQR-2BNTf26MumGA.png?exp=1749738809&sig=be70745076c5bfa0848f1d0d05bce625cf397a8bd81e38fdaa64f602ce3ea64d"
+      },
+      "generationId": "57652a3b-a43d-4ac1-bdf1-68609b5bf140",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": null,
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T14:33:29.932Z"
+  },
+  {
+    "id": "60a033c9-f7e7-4687-b656-f700d996d217",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ecesu & Batuhan 06.06.2026 düğün etiketi",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A sophisticated wedding card celebrating the union of Ecesu & Batuhan on 06.06.2026, featuring an elegant watercolor painting of intertwined olive branches and laurel leaves forming a heart shape in the center. The color palette consists of soft sage greens, warm ivory tones, and touches of antique gold, evoking a sense of timeless romance and natural beauty, with the text \"Ecesu & Batuhan 06.06.2026\" displayed in a classic serif font beneath the heart. The card has a clean, minimalist layout with ample space for a personal message inside, and the overall tone is one of understated elegance and heartfelt joy, complemented by a subtle gold foil border around the card's edges.",
+        "resolution": "1024x1024",
+        "seed": 343107400,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/QtLsc_CRQ_67dxdOiXtP_w.png?exp=1749738725&sig=527fc665ac977ab5fde8966bdd9bdc04fe9b235228f96505a666b451a89bce6c"
+      },
+      "generationId": "74e1b3bc-e14e-427d-a734-851ce440a470",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": null,
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T14:32:05.542Z"
+  },
+  {
+    "id": "183e07fc-4469-4f44-8270-c96b2aa1a06c",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ecesu & Batuhan 06.06.2026 düğün etiketi",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A sophisticated wedding card featuring an intricately detailed, stylized Turkish Kilim rug pattern as the primary visual element, symbolizing tradition and connection. The rug's geometric motifs incorporate a color palette of deep burgundy, dusty rose, gold, and cream, subtly woven together to create a rich, textured background with the text \"Ecesu & Batuhan\" elegantly displayed across the center in a classic serif font. Below the names, the date \"06.06.2026\" is presented in a smaller, complementary script, surrounded by delicate gold leaf accents and floral details inspired by traditional Turkish ceramics. The card’s layout is clean and balanced, conveying a sense of timeless elegance and heartfelt celebration, with the interior offering ample space for a personalized message and a subtle, repeated Kilim pattern in the background.",
+        "resolution": "1024x1024",
+        "seed": 1833559343,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/yfMu5RD3QjWwVdn0E8fJRQ.png?exp=1749738663&sig=654c15f0fc19e1f705c18b99f14041087fd8c3b5d815b5375361c02f5033af40"
+      },
+      "generationId": "e943ec18-ae80-492b-880e-76fd1e96e7a9",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": null,
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T14:31:04.035Z"
+  },
+  {
     "id": "6f287028-2ebd-4379-b727-2c4b5526cbfa",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Ecesu & Batuhan 16.06.2026 düğün etiketi",
