@@ -64,7 +64,7 @@ export default function DesignEngine() {
   const [prompt, setPrompt] = useState("");
   const [designOptions, setDesignOptions] = useState<DesignOptions>({
     aspectRatio: "ASPECT_1_1",
-    model: "V_3",
+    model: "V_2",
     styleType: "DESIGN",
     magicPrompt: "ON",
     resolution: "default",
