@@ -1,5 +1,38 @@
 [
   {
+    "id": "1a27ea07-943d-4a8f-bbb9-9516db51ded8",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Burcu Bebek için doğum günü etiketi",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A charming birthday tag for Burcu Bebek features a whimsical hot air balloon adorned with pastel rainbow stripes, gently floating above a field of stylized Turkish tulips, creating a celebratory and joyful scene. The balloon’s basket holds a teddy bear wearing a tiny party hat, and delicate confetti in shades of pink, lavender, and gold drifts around the balloon, enhancing the festive atmosphere. The text “Mutlu Doğum Günü Burcu Bebek!” is written in a playful, handwritten-style font across a banner trailing from the balloon, with a soft, watercolor-inspired background adding a touch of warmth and elegance. The tag design balances visual appeal with functionality, ensuring ample space for a handwritten message while maintaining a cheerful and memorable aesthetic for Burcu Bebek’s special day.",
+        "resolution": "1024x1024",
+        "seed": 1051159686,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/95O4vqi8QrezqoJwBZ0kAA.png?exp=1749749643&sig=0a479e3b37443d57cf2f613556eba7cc94ef4fa92c6222492476c4e0d6262c00"
+      },
+      "generationId": "cbc297cf-5fad-4504-94dd-75b7c2096927",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/95O4vqi8QrezqoJwBZ0kAA.png?exp=1749749643&sig=0a479e3b37443d57cf2f613556eba7cc94ef4fa92c6222492476c4e0d6262c00",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T17:34:04.012Z"
+  },
+  {
     "id": "bea5750a-8c78-436d-b5af-152a91f84b06",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Matbixx için modern logo tasarımı ",
