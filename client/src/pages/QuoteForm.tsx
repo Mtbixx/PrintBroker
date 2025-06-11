@@ -474,22 +474,25 @@ export default function QuoteForm() {
         <h3 className="text-lg font-semibold mb-4 text-gray-900">Temel Özellikler</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">Etiket Boyutu *</Label>
-            <Select onValueChange={(value) => updateFormData('size', value)}>
-              <SelectTrigger className="h-12">
-                <SelectValue placeholder="Boyut seçin" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10x15">10 x 15 mm</SelectItem>
-                <SelectItem value="15x20">15 x 20 mm</SelectItem>
-                <SelectItem value="20x30">20 x 30 mm</SelectItem>
-                <SelectItem value="30x40">30 x 40 mm</SelectItem>
-                <SelectItem value="40x60">40 x 60 mm</SelectItem>
-                <SelectItem value="50x70">50 x 70 mm</SelectItem>
-                <SelectItem value="70x100">70 x 100 mm</SelectItem>
-                <SelectItem value="custom">Özel Boyut</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label className="text-sm font-medium text-gray-700">Özel Etiket Boyutu *</Label>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-xs text-gray-500">Genişlik (mm)</Label>
+                <Input 
+                  placeholder="Örn: 45" 
+                  onChange={(e) => updateFormData('customWidth', e.target.value)}
+                  className="h-12"
+                />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-500">Yükseklik (mm)</Label>
+                <Input 
+                  placeholder="Örn: 65" 
+                  onChange={(e) => updateFormData('customHeight', e.target.value)}
+                  className="h-12"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -600,28 +603,7 @@ export default function QuoteForm() {
         </div>
       </div>
 
-      {/* Özel Boyut Girişi */}
-      {formData.size === 'custom' && (
-        <div className="p-6 bg-blue-50 rounded-lg border border-blue-200">
-          <h4 className="font-semibold mb-4">Özel Boyut Bilgileri</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Genişlik (mm)</Label>
-              <Input 
-                placeholder="Örn: 45" 
-                onChange={(e) => updateFormData('customWidth', e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Yükseklik (mm)</Label>
-              <Input 
-                placeholder="Örn: 65" 
-                onChange={(e) => updateFormData('customHeight', e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      
 
       {/* Özel Miktar Girişi */}
       {formData.quantity === 'custom' && (
