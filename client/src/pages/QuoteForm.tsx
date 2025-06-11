@@ -520,21 +520,7 @@ export default function QuoteForm() {
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">Renk Seçenekleri *</Label>
-            <Select onValueChange={(value) => updateFormData('color', value)}>
-              <SelectTrigger className="h-12">
-                <SelectValue placeholder="Renk seçin" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="4-0">4+0 (Tek Yüz Renkli)</SelectItem>
-                <SelectItem value="4-4">4+4 (Çift Yüz Renkli)</SelectItem>
-                <SelectItem value="1-0">1+0 (Tek Yüz Siyah)</SelectItem>
-                <SelectItem value="1-1">1+1 (Çift Yüz Siyah)</SelectItem>
-                <SelectItem value="pantone">Pantone Renk</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          
         </div>
       </div>
 
