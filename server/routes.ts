@@ -437,7 +437,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User authentication endpoint for dashboard access
-  app.get('/api/auth/user', (req, res) => {
+  app.get('/api/auth/user', async (req, res) => {
     if (!req.session || !(req.session as any).user) {
       return res.status(401).json({ 
         message: "Unauthorized", 
@@ -446,18 +446,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
 
-    const user = (req.session as any).user;
-    res.json({
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role,
-      companyName: user.companyName,
-      profileImageUrl: user.profileImageUrl,
-      creditBalance: user.creditBalance,
-      subscriptionStatus: user.subscriptionStatus
-    });
+    try {
+      const sessionUser = (req.session as any).user;
+      
+      // Get fresh user data from database to ensure current balance
+      const freshUser = await storage.getUser(sessionUser.id);
+      
+      if (!freshUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Update session with fresh data
+      (req.session as any).user = {
+        ...sessionUser,
+        creditBalance: freshUser.creditBalance,
+        subscriptionStatus: freshUser.subscriptionStatus
+      };
+
+      res.json({
+        id: freshUser.id,
+        email: freshUser.email,
+        firstName: freshUser.firstName,
+        lastName: freshUser.lastName,
+        role: freshUser.role,
+        companyName: freshUser.companyName,
+        profileImageUrl: freshUser.profileImageUrl,
+        creditBalance: freshUser.creditBalance,
+        subscriptionStatus: freshUser.subscriptionStatus
+      });
+    } catch (error) {
+      console.error("Error fetching fresh user data:", error);
+      res.status(500).json({ message: "Failed to fetch user data" });
+    }
   });
 
   // Multer error handling middleware
@@ -1831,9 +1851,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newBalance = currentBalance - designCost;
       await storage.updateUserCreditBalance(userId, newBalance.toString());
       
-      // Update session with new balance
+      // Force session update and save
       if (req.session && req.session.user) {
         req.session.user.creditBalance = newBalance.toString();
+        await new Promise<void>((resolve, reject) => {
+          req.session.save((err: any) => {
+            if (err) {
+              console.error('Session save error after credit deduction:', err);
+              reject(err);
+            } else {
+              console.log(`💾 Session updated with new balance: ${newBalance}₺`);
+              resolve();
+            }
+          });
+        });
       }
       
       console.log(`💳 Credit deducted: ${designCost}₺, New balance: ${newBalance}₺`);
