@@ -339,6 +339,7 @@ export default function QuoteFormUVDTF() {
                             <Label className="text-xs text-gray-500">Genişlik (mm)</Label>
                             <Input 
                               placeholder="Örn: 50" 
+                              value={formData.width || ''}
                               onChange={(e) => updateFormData('width', e.target.value)}
                               className="h-12"
                             />
@@ -347,6 +348,7 @@ export default function QuoteFormUVDTF() {
                             <Label className="text-xs text-gray-500">Yükseklik (mm)</Label>
                             <Input 
                               placeholder="Örn: 30" 
+                              value={formData.height || ''}
                               onChange={(e) => updateFormData('height', e.target.value)}
                               className="h-12"
                             />
@@ -361,6 +363,7 @@ export default function QuoteFormUVDTF() {
                           type="number"
                           min="100"
                           placeholder="Minimum 100 adet"
+                          value={formData.quantity || ''}
                           onChange={(e) => {
                             const value = parseInt(e.target.value) || 0;
                             updateFormData('quantity', e.target.value);
@@ -396,6 +399,7 @@ export default function QuoteFormUVDTF() {
                       ].map((material) => (
                         <Button
                           key={material.value}
+                          type="button"
                           variant={formData.material === material.value ? 'default' : 'outline'}
                           onClick={() => updateFormData('material', material.value)}
                           className="h-auto p-4 justify-start"
@@ -461,6 +465,7 @@ export default function QuoteFormUVDTF() {
                       ].map((application) => (
                         <Button
                           key={application.value}
+                          type="button"
                           variant={formData.applicationType === application.value ? 'default' : 'outline'}
                           onClick={() => updateFormData('applicationType', application.value)}
                           className="h-auto p-4 justify-start"
