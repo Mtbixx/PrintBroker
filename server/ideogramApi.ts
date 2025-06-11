@@ -180,6 +180,7 @@ class IdeogramService {
       styleType
     });
   }
+}
 
 export const ideogramService = new IdeogramService();
 export type { IdeogramV3Request, IdeogramV3Response };
