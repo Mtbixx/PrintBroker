@@ -1,5 +1,38 @@
 [
   {
+    "id": "759379db-4c10-403d-8ece-4fb39551881c",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Matbixx firması için modern logo tasarımı",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A minimalist logo design showcasing the text \"Matbixx\" in a clean sans-serif font with rounded edges, rendered in a deep teal color. Below the company name, a stylized, abstract geometric shape resembling a network or interconnected nodes sits, colored in a complementary shade of vibrant orange. The background is a soft, gradient blend of white and light gray, ensuring the logo stands out with clarity and modern appeal. This logo is perfect for a forward-thinking firm.",
+        "resolution": "1024x1024",
+        "seed": 754858845,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/jOBoUt7sQjOr6BW3cqpslA.png?exp=1749739215&sig=06c0e6e0a2dc4e4ac1ff69c3a1924185e82289a1e03360b00f676af3f10bce78"
+      },
+      "generationId": "51440290-1abd-41de-ab72-63a3411eadb9",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": null,
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T14:40:15.809Z"
+  },
+  {
     "id": "281c2d09-b83c-4689-9c63-2c9e1fdab833",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Fuat Kaya Elektrik firması için modern logo tasarımı ",
