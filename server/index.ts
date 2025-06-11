@@ -1,12 +1,26 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from 'cors';
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { pythonAnalyzerService } from './pythonAnalyzerService';
 import { execSync } from 'child_process';
+import { corsOptions, securityHeaders } from './corsConfig';
+import { generalLimiter } from './rateLimiter';
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+// Security ve CORS middleware'leri ilk sırada
+app.use(cors(corsOptions));
+app.use(securityHeaders);
+
+// Trust proxy for rate limiting (Replit için gerekli)
+app.set('trust proxy', 1);
+
+// Global rate limiting
+app.use('/api/', generalLimiter);
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 app.use((req, res, next) => {
   const start = Date.now();
