@@ -1,5 +1,38 @@
 [
   {
+    "id": "9bffe328-84b8-4624-aa16-50e3c1e22ae8",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ecesu & Batuhan 06.06.2026 Düğün Hatırası etiketi",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A romantic wedding portrait capturing \"Ecesu & Batuhan 06.06.2026 Düğün Hatırası etiketi\". The couple is standing close together, bathed in soft golden light, with Ecesu wearing an elegant white dress and Batuhan in a sharp suit. Behind them is a blurred, picturesque vineyard at sunset, with rows of grapevines stretching into the distance and a warm, hazy glow. The overall feeling is one of timeless love and joyful celebration.",
+        "resolution": "1024x1024",
+        "seed": 2123410668,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/5coMwKc8TYetDh6BUufDHg.png?exp=1749764828&sig=b21f3b99e50deb3faf8825978876f8c70f712458bce4875de96eb93cc73fd33c"
+      },
+      "generationId": "efd07572-b008-477a-8b78-d8e000a84afe",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/5coMwKc8TYetDh6BUufDHg.png?exp=1749764828&sig=b21f3b99e50deb3faf8825978876f8c70f712458bce4875de96eb93cc73fd33c",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T21:47:08.259Z"
+  },
+  {
     "id": "1a27ea07-943d-4a8f-bbb9-9516db51ded8",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Burcu Bebek için doğum günü etiketi",
