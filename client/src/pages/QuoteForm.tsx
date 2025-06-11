@@ -472,7 +472,7 @@ export default function QuoteForm() {
       {/* Temel Özellikler */}
       <div>
         <h3 className="text-lg font-semibold mb-4 text-gray-900">Temel Özellikler</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">Özel Etiket Boyutu *</Label>
             <div className="grid grid-cols-2 gap-4">
