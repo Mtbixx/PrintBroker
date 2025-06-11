@@ -989,7 +989,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDesignById(designId: string, userId: string): Promise<any | null> {
-    const designHistory = this.getStoredDesigns();
+    const designHistory = await this.getStoredDesigns(userId);
     return designHistory.find(design => design.id === designId && design.userId === userId) || null;
   }
 
