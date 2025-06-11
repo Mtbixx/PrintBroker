@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -45,7 +44,7 @@ interface GeneratedImage {
 }
 
 interface DesignOptions {
-  aspectRatio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
+  aspectRatio?: '1x1' | '10x16' | '16x10' | '9x16' | '16x9' | '3x2' | '2x3' | '4x3' | '3x4';
   styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
   magicPrompt?: 'AUTO' | 'ON' | 'OFF';
   negativePrompt?: string;
@@ -61,7 +60,7 @@ export default function DesignEngine() {
 
   const [prompt, setPrompt] = useState("");
   const [designOptions, setDesignOptions] = useState<DesignOptions>({
-    aspectRatio: "ASPECT_1_1",
+    aspectRatio: "1x1",
     styleType: "DESIGN",
     magicPrompt: "ON",
     resolution: "default",
@@ -519,15 +518,12 @@ export default function DesignEngine() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="ASPECT_1_1">Kare (1:1)</SelectItem>
-                        <SelectItem value="ASPECT_16_9">Geniş (16:9)</SelectItem>
-                        <SelectItem value="ASPECT_9_16">Dikey (9:16)</SelectItem>
-                        <SelectItem value="ASPECT_16_10">Bilgisayar (16:10)</SelectItem>
-                        <SelectItem value="ASPECT_10_16">Telefon (10:16)</SelectItem>
-                        <SelectItem value="ASPECT_3_2">Fotoğraf (3:2)</SelectItem>
-                        <SelectItem value="ASPECT_2_3">Dikey Fotoğraf (2:3)</SelectItem>
-                        <SelectItem value="ASPECT_4_3">Klasik (4:3)</SelectItem>
-                        <SelectItem value="ASPECT_3_4">Dikey Klasik (3:4)</SelectItem>
+                        <SelectItem value="1x1">Kare (1:1)</SelectItem>
+                        <SelectItem value="9x16">Dikey (9:16)</SelectItem>
+                        <SelectItem value="16x9">Yatay (16:9)</SelectItem>
+                        <SelectItem value="3x2">Fotoğraf (3:2)</SelectItem>
+                        <SelectItem value="2x3">Dikey Fotoğraf (2:3)</SelectItem>
+                        <SelectItem value="4x3">Klasik (4:3)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
