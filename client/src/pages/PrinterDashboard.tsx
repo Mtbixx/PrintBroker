@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { InkDropletsLoader, StackedPapersLoader } from "@/components/PrintingLoaders";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import Navigation from "@/components/Navigation";
@@ -56,6 +56,43 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Package,
+  Users,
+  DollarSign,
+  TrendingUp,
+  Calendar,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+  Edit,
+  Trash2,
+  Plus,
+  Search,
+  Filter,
+  Download,
+  BarChart3,
+  Settings,
+  Bell,
+  MessageSquare,
+  Star,
+  Award,
+  Target,
+  Zap,
+  Factory,
+  Layers,
+  Sparkles,
+  ArrowRight,
+  Globe,
+  Shield,
+  Truck,
+  FileText,
+  Calculator,
+  Palette,
+  Printer,
+  Building2
+} from "lucide-react";
 
 export default function PrinterDashboard() {
   const { toast } = useToast();
