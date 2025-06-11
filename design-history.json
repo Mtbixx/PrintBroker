@@ -1,5 +1,37 @@
 [
   {
+    "id": "6d75b6dc-f177-4600-9de1-2c36e5efcf8f",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "A cheerful birthday tag designed for Burcu Bebek, featuring a whimsical illustration of a fluffy pink bunny wearing a party hat and holding a bunch of colorful balloons. The bunny is set against a background of pastel rainbow stripes and scattered confetti in shades of pink, yellow, and mint green, creating a vibrant and celebratory feel. \"Doğum Günün Kutlu Olsun Burcu Bebek!\" appears in a playful, rounded font at the top, while the bottom of the tag features a decorative border of stylized stars and polka dots. The overall design is bright, playful, and personalized, perfect for adding a touch of joy to a birthday celebration.",
+    "options": {
+      "aspectRatio": "ASPECT_1_1",
+      "model": "V_2",
+      "styleType": "GENERAL",
+      "magicPrompt": "AUTO"
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A cheerful birthday tag designed for Burcu Bebek, featuring a whimsical illustration of a fluffy pink bunny wearing a party hat and holding a bunch of colorful balloons. The bunny is set against a background of pastel rainbow stripes and scattered confetti in shades of pink, yellow, and mint green, creating a vibrant and celebratory feel. \"Doğum Günün Kutlu Olsun Burcu Bebek!\" appears in a playful, rounded font at the top, while the bottom of the tag features a decorative border of stylized stars and polka dots. The overall design is bright, playful, and personalized, perfect for adding a touch of joy to a birthday celebration.",
+        "resolution": "1024x1024",
+        "seed": 812815157,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/1bnbyH_FRQKZbQZg5ZmDkg.png?exp=1749728828&sig=e4915fd62618f585fd3d34209dd7c7ebc7422eb511a781c51aa633848ef81d34"
+      },
+      "generationId": "b7c56ac6-1cfb-4407-a8a2-32c49380191e",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "ASPECT_1_1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T11:47:08.709Z"
+  },
+  {
     "id": "4ca31759-3925-4ff5-8b0d-5becb7e42890",
     "userId": "CUS-1749584324055-GDJ8XR",
     "prompt": "Handmade By Cici için modern giyim sektörüne uygun sosyal medyada paylaşmak için tasarım yap \n",
