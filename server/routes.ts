@@ -240,11 +240,11 @@ async function createTestUsers() {
       {
         id: 'ADM-TEST-001',
         email: 'admin@test.com',
-        firstName: 'Test',
-        lastName: 'Admin',
+        firstName: 'Admin',
+        lastName: 'User',
         phone: '+90 555 987 6543',
         role: 'admin',
-        password: 'demo123',
+        password: 'admin123',
         isActive: true,
         creditBalance: '999999.00',
         subscriptionStatus: 'active',
@@ -2454,6 +2454,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error loading credit:", error);
       res.status(500).json({ message: "Failed to load credit" });
+    }
+  });
+
+  // Manual admin creation (development only)
+  app.post('/api/create-admin', async (req, res) => {
+    try {
+      const { email, password, firstName, lastName } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password required" });
+      }
+
+      const adminData = {
+        id: `ADM-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+        email,
+        firstName: firstName || 'Admin',
+        lastName: lastName || 'User',
+        phone: '+90 555 000 0000',
+        role: 'admin',
+        password,
+        isActive: true,
+        creditBalance: '999999.00',
+        subscriptionStatus: 'active',
+        companyName: 'Matbixx Admin',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      await storage.upsertUser(adminData);
+      
+      res.json({ 
+        success: true, 
+        message: "Admin user created successfully",
+        email: adminData.email 
+      });
+    } catch (error) {
+      console.error("Error creating admin:", error);
+      res.status(500).json({ message: "Failed to create admin user" });
     }
   });
 
