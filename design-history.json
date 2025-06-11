@@ -1,5 +1,38 @@
 [
   {
+    "id": "bea5750a-8c78-436d-b5af-152a91f84b06",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Matbixx için modern logo tasarımı ",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A minimalist logo design featuring the word \"Matbixx\" in a clean sans-serif font, colored in a gradient of teal and deep blue. The lettering is presented on a stark white background with a subtle shadow to give it depth. A single, stylized hexagon is positioned slightly above and to the left of the text, hinting at technological innovation and a modern aesthetic. The overall design evokes a sense of trust and stability, suitable for a contemporary brand identity.",
+        "resolution": "1024x1024",
+        "seed": 1791850265,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/4cx1XzIjRl65Kmt0Pvp0lw.png?exp=1749739715&sig=bf93a2ef70d2b6bd6c42f152bdaab79e09fe2b6294e055383cdd03e4bdbad910"
+      },
+      "generationId": "92188bb1-0a45-4efb-876a-7b8257318adc",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/4cx1XzIjRl65Kmt0Pvp0lw.png?exp=1749739715&sig=bf93a2ef70d2b6bd6c42f152bdaab79e09fe2b6294e055383cdd03e4bdbad910",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T14:48:35.147Z"
+  },
+  {
     "id": "759379db-4c10-403d-8ece-4fb39551881c",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Matbixx firması için modern logo tasarımı",
