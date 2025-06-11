@@ -36,7 +36,7 @@ interface IdeogramV3Response {
 
 class IdeogramService {
   private apiKey: string;
-  private baseUrl = 'https://api.ideogram.ai/generate';
+  private baseUrl = 'https://api.ideogram.ai/v3/generate';
 
   constructor() {
     this.apiKey = 'X3h2wLDuOfuJynGGclLZhLN1isGvy9oxBM-S8wcNJVTqk80lyW6pszMShoMHP8YbN7DYSfzti7eTLL-KCExqZw';
