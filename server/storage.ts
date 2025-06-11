@@ -857,19 +857,52 @@ export class DatabaseStorage implements IStorage {
       // Get all existing designs from file
       let allDesigns = await this.getAllStoredDesigns();
 
+      // Enhanced design object with proper URL extraction
+      const extractImageUrl = (result: any) => {
+        if (!result) return null;
+        
+        // Direct URL
+        if (typeof result === 'string' && result.startsWith('http')) {
+          return result;
+        }
+        
+        // Check url property
+        if (result.url) return result.url;
+        
+        // Ideogram V3 response format: data array
+        if (result.data && Array.isArray(result.data) && result.data[0]?.url) {
+          return result.data[0].url;
+        }
+        
+        // Legacy format support
+        if (Array.isArray(result) && result[0]?.url) {
+          return result[0].url;
+        }
+        
+        return null;
+      };
+
+      const imageUrl = extractImageUrl(data.result);
+      
       const newDesign = {
         id: (await import('crypto')).randomUUID(),
         userId: data.userId,
         prompt: data.prompt,
         options: data.options,
         result: data.result,
+        url: imageUrl, // Store extracted URL for easy access
         status: 'completed',
         downloadCount: 0,
         isBookmarked: false,
         createdAt: data.createdAt.toISOString()
       };
 
-      console.log('Saving new design:', newDesign.id, 'for user:', data.userId);
+      console.log('💾 Saving new design:', {
+        id: newDesign.id,
+        userId: data.userId,
+        imageUrl: imageUrl,
+        resultFormat: typeof data.result
+      });
 
       // Add to beginning of array (newest first)
       allDesigns.unshift(newDesign);
@@ -885,10 +918,10 @@ export class DatabaseStorage implements IStorage {
       // Store all designs back to file
       await this.storeDesigns(allDesigns);
 
-      console.log('Design saved successfully. Total designs:', allDesigns.length);
+      console.log('✅ Design saved successfully. Total designs:', allDesigns.length);
       return newDesign;
     } catch (error) {
-      console.error('Error saving design generation:', error);
+      console.error('❌ Error saving design generation:', error);
       throw error;
     }
   }

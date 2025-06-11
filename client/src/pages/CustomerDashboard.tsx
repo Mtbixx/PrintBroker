@@ -374,38 +374,76 @@ export default function CustomerDashboard() {
                         <Card key={design.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                           <div className="aspect-square relative group">
                             {(() => {
-                              // Extract image URL from various data structures
+                              // Enhanced image URL extraction with debug logging
                               const getImageUrl = (designData: any) => {
-                                if (!designData) return null;
+                                console.log('🖼️ Processing design data for image URL:', designData);
+                                
+                                if (!designData) {
+                                  console.log('❌ No design data');
+                                  return null;
+                                }
                                 
                                 // Direct URL
                                 if (typeof designData === 'string' && designData.startsWith('http')) {
+                                  console.log('✅ Found direct URL:', designData);
                                   return designData;
                                 }
                                 
                                 // Check url property
-                                if (designData.url) return designData.url;
+                                if (designData.url) {
+                                  console.log('✅ Found URL property:', designData.url);
+                                  return designData.url;
+                                }
                                 
-                                // Check result object
+                                // Check result object - Enhanced for Ideogram V3 response
                                 if (designData.result) {
-                                  if (typeof designData.result === 'string') return designData.result;
-                                  if (designData.result.url) return designData.result.url;
+                                  console.log('🔍 Checking result object:', designData.result);
                                   
-                                  // Array format
+                                  // String result
+                                  if (typeof designData.result === 'string' && designData.result.startsWith('http')) {
+                                    console.log('✅ Found string result URL:', designData.result);
+                                    return designData.result;
+                                  }
+                                  
+                                  // Direct result.url
+                                  if (designData.result.url) {
+                                    console.log('✅ Found result.url:', designData.result.url);
+                                    return designData.result.url;
+                                  }
+                                  
+                                  // Array format in result
                                   if (Array.isArray(designData.result) && designData.result[0]?.url) {
+                                    console.log('✅ Found array result URL:', designData.result[0].url);
                                     return designData.result[0].url;
                                   }
                                   
-                                  // Data array format
-                                  if (designData.result.data && Array.isArray(designData.result.data) && designData.result.data[0]?.url) {
-                                    return designData.result.data[0].url;
+                                  // Ideogram V3 specific: result.data array
+                                  if (designData.result.data && Array.isArray(designData.result.data)) {
+                                    if (designData.result.data[0]?.url) {
+                                      console.log('✅ Found Ideogram data URL:', designData.result.data[0].url);
+                                      return designData.result.data[0].url;
+                                    }
+                                  }
+                                  
+                                  // Check if result itself has data array (Ideogram response format)
+                                  if (Array.isArray(designData.result) && designData.result[0]?.data?.[0]?.url) {
+                                    console.log('✅ Found nested Ideogram URL:', designData.result[0].data[0].url);
+                                    return designData.result[0].data[0].url;
                                   }
                                 }
                                 
+                                // Check if design data itself is Ideogram format
+                                if (designData.data && Array.isArray(designData.data) && designData.data[0]?.url) {
+                                  console.log('✅ Found direct data array URL:', designData.data[0].url);
+                                  return designData.data[0].url;
+                                }
+                                
+                                console.log('❌ No URL found in design data');
                                 return null;
                               };
 
                               const imageUrl = getImageUrl(design);
+                              console.log('🎯 Final image URL for design', design.id, ':', imageUrl);
 
                               return imageUrl ? (
                                 <div className="relative w-full h-full">
@@ -414,13 +452,14 @@ export default function CustomerDashboard() {
                                     alt={design.prompt || 'Tasarım'}
                                     className="w-full h-full object-cover rounded-lg transition-all duration-200"
                                     onError={(e) => {
-                                      console.error('Image failed to load:', imageUrl);
+                                      console.error('❌ Image failed to load:', imageUrl);
                                       const target = e.currentTarget as HTMLImageElement;
                                       target.style.display = 'none';
                                       const fallback = target.parentElement?.querySelector('.fallback-icon') as HTMLElement;
                                       if (fallback) fallback.classList.remove('hidden');
                                     }}
                                     onLoad={(e) => {
+                                      console.log('✅ Image loaded successfully:', imageUrl);
                                       const target = e.currentTarget as HTMLImageElement;
                                       target.style.opacity = '1';
                                     }}
@@ -435,6 +474,9 @@ export default function CustomerDashboard() {
                                 <div className="w-full h-full bg-gray-100 flex items-center justify-center rounded-lg">
                                   <ImageIcon className="h-12 w-12 text-gray-400" />
                                   <span className="text-sm text-gray-500 ml-2">Görsel bulunamadı</span>
+                                  <div className="text-xs text-gray-400 mt-1">
+                                    Debug: {JSON.stringify(design, null, 2).substring(0, 100)}...
+                                  </div>
                                 </div>
                               );
                             })()}
@@ -460,23 +502,38 @@ export default function CustomerDashboard() {
                                         const getImageUrl = (designData: any) => {
                                           if (!designData) return null;
                                           
+                                          // Direct URL
                                           if (typeof designData === 'string' && designData.startsWith('http')) {
                                             return designData;
                                           }
                                           
+                                          // Check url property
                                           if (designData.url) return designData.url;
                                           
+                                          // Check result object - Enhanced for Ideogram V3
                                           if (designData.result) {
-                                            if (typeof designData.result === 'string') return designData.result;
+                                            // String result
+                                            if (typeof designData.result === 'string' && designData.result.startsWith('http')) {
+                                              return designData.result;
+                                            }
+                                            
+                                            // Direct result.url
                                             if (designData.result.url) return designData.result.url;
                                             
+                                            // Array format in result
                                             if (Array.isArray(designData.result) && designData.result[0]?.url) {
                                               return designData.result[0].url;
                                             }
                                             
+                                            // Ideogram V3 specific: result.data array
                                             if (designData.result.data && Array.isArray(designData.result.data) && designData.result.data[0]?.url) {
                                               return designData.result.data[0].url;
                                             }
+                                          }
+                                          
+                                          // Check if design data itself is Ideogram format
+                                          if (designData.data && Array.isArray(designData.data) && designData.data[0]?.url) {
+                                            return designData.data[0].url;
                                           }
                                           
                                           return null;
@@ -544,23 +601,38 @@ export default function CustomerDashboard() {
                                     const getImageUrl = (designData: any) => {
                                       if (!designData) return null;
                                       
+                                      // Direct URL
                                       if (typeof designData === 'string' && designData.startsWith('http')) {
                                         return designData;
                                       }
                                       
+                                      // Check url property
                                       if (designData.url) return designData.url;
                                       
+                                      // Check result object - Enhanced for Ideogram V3
                                       if (designData.result) {
-                                        if (typeof designData.result === 'string') return designData.result;
+                                        // String result
+                                        if (typeof designData.result === 'string' && designData.result.startsWith('http')) {
+                                          return designData.result;
+                                        }
+                                        
+                                        // Direct result.url
                                         if (designData.result.url) return designData.result.url;
                                         
+                                        // Array format in result
                                         if (Array.isArray(designData.result) && designData.result[0]?.url) {
                                           return designData.result[0].url;
                                         }
                                         
+                                        // Ideogram V3 specific: result.data array
                                         if (designData.result.data && Array.isArray(designData.result.data) && designData.result.data[0]?.url) {
                                           return designData.result.data[0].url;
                                         }
+                                      }
+                                      
+                                      // Check if design data itself is Ideogram format
+                                      if (designData.data && Array.isArray(designData.data) && designData.data[0]?.url) {
+                                        return designData.data[0].url;
                                       }
                                       
                                       return null;
