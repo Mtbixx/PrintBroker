@@ -112,8 +112,8 @@ export default function DesignEngine() {
         toast({
           title: "Tasarım Oluşturuldu ✅",
           description: response.autoSaved 
-            ? `V3 model ile tasarım otomatik kaydedildi. ${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`
-            : `V3 model ile tasarım oluşturuldu. ${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`,
+            ? `Matbixx AI ile tasarım otomatik kaydedildi. ${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`
+            : `Matbixx AI ile tasarım oluşturuldu. ${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`,
         });
 
         // Immediately refresh user balance and design history for real-time updates
@@ -134,13 +134,13 @@ export default function DesignEngine() {
 
         toast({
           title: "Yetersiz Kredi 💳",
-          description: "V3 tasarım oluşturmak için yeterli krediniz yok. Lütfen kredi yükleyin (35₺ gerekli).",
+          description: "Tasarım oluşturmak için yeterli krediniz yok. Lütfen kredi yükleyin (35₺ gerekli).",
           variant: "destructive",
         });
       } else if (errorMessage.includes('API key') || errorMessage.includes('401') || errorMessage.includes('403')) {
         toast({
           title: "API Hatası",
-          description: "V3 tasarım servisi yapılandırıldı ve çalışıyor. Tekrar deneyin.",
+          description: "Tasarım servisi yapılandırıldı ve çalışıyor. Tekrar deneyin.",
           variant: "destructive",
         });
       } else if (errorMessage.includes('Rate limit') || errorMessage.includes('429')) {
@@ -151,7 +151,7 @@ export default function DesignEngine() {
         });
       } else {
         toast({
-          title: "V3 Model Hatası",
+          title: "Tasarım Hatası",
           description: errorMessage,
           variant: "destructive",
         });
@@ -172,14 +172,14 @@ export default function DesignEngine() {
       setGeneratedImages(allImages);
       toast({
         title: "Başarılı",
-        description: `${results.length} V3 tasarım başarıyla oluşturuldu!`,
+        description: `${results.length} tasarım başarıyla oluşturuldu!`,
       });
       queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
     },
     onError: (error) => {
       toast({
         title: "Hata",
-        description: "V3 toplu tasarım oluşturulurken bir hata oluştu.",
+        description: "Toplu tasarım oluşturulurken bir hata oluştu.",
         variant: "destructive",
       });
     },
@@ -247,7 +247,7 @@ export default function DesignEngine() {
       // Simple and reliable download method
       const link = document.createElement('a');
       link.href = url;
-      link.download = filename || `v3-tasarim-${Date.now()}.png`;
+      link.download = filename || `matbixx-tasarim-${Date.now()}.png`;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
 
@@ -258,7 +258,7 @@ export default function DesignEngine() {
 
       toast({
         title: "İndirme Başlatıldı",
-        description: "V3 tasarım indiriliyor. İndirme klasörünüzü kontrol edin.",
+        description: "Tasarım indiriliyor. İndirme klasörünüzü kontrol edin.",
       });
     } catch (error) {
       console.error('Download error:', error);
@@ -295,14 +295,14 @@ export default function DesignEngine() {
             <Wand2 className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            V3 Tasarım Motoru
+            Matbixx Tasarım Motoru
           </h1>
         </div>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Ideogram V3 AI modeli ile profesyonel tasarım oluşturma platformu. En gelişmiş yapay zeka ile logo, etiket, kartvizit ve daha fazlası.
+          Matbixx AI ile profesyonel tasarım oluşturma platformu. En gelişmiş yapay zeka ile logo, etiket, kartvizit ve daha fazlası.
         </p>
         <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-          ✨ Ideogram V3 - En Gelişmiş Model
+          ✨ Matbixx AI - En Gelişmiş Model
         </Badge>
       </div>
 
@@ -310,7 +310,7 @@ export default function DesignEngine() {
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="create" className="flex items-center gap-2">
             <Wand2 className="h-4 w-4" />
-            V3 Tasarım Oluştur
+            Tasarım Oluştur
           </TabsTrigger>
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
@@ -327,7 +327,7 @@ export default function DesignEngine() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Palette className="h-5 w-5" />
-                    V3 Tasarım Açıklaması
+                    Tasarım Açıklaması
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -372,7 +372,7 @@ export default function DesignEngine() {
                           <Textarea
                             value={prompt}
                             onChange={(e) => updateBatchPrompt(index, e.target.value)}
-                            placeholder={`V3 Tasarım ${index + 1} açıklaması...`}
+                            placeholder={`Tasarım ${index + 1} açıklaması...`}
                             rows={2}
                             className="flex-1"
                           />
@@ -405,7 +405,7 @@ export default function DesignEngine() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <ImageIcon className="h-5 w-5" />
-                      V3 Oluşturulan Tasarımlar
+                      Oluşturulan Tasarımlar
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -414,7 +414,7 @@ export default function DesignEngine() {
                         <div key={`${image.url}-${index}`} className="relative group">
                           <img
                             src={image.url}
-                            alt={`V3 Generated design ${index + 1}`}
+                            alt={`Generated design ${index + 1}`}
                             className="w-full h-64 object-cover rounded-lg border"
                             onError={(e) => {
                               console.error('Image failed to load:', image.url);
@@ -426,8 +426,8 @@ export default function DesignEngine() {
                               <Button
                                 size="sm"
                                 variant="secondary"
-                                onClick={() => downloadImage(image.url, `v3-tasarim-${Date.now()}-${index + 1}.png`)}
-                                title="V3 Tasarımı İndir"
+                                onClick={() => downloadImage(image.url, `matbixx-tasarim-${Date.now()}-${index + 1}.png`)}
+                                title="Tasarımı İndir"
                               >
                                 <Download className="h-4 w-4" />
                               </Button>
@@ -439,18 +439,18 @@ export default function DesignEngine() {
                                 </DialogTrigger>
                                 <DialogContent className="max-w-4xl">
                                   <DialogHeader>
-                                    <DialogTitle>V3 Tasarım Önizleme</DialogTitle>
+                                    <DialogTitle>Tasarım Önizleme</DialogTitle>
                                     <DialogDescription>
-                                      V3 model ile oluşturulan tasarımınızın detaylı görünümü
+                                      Matbixx AI ile oluşturulan tasarımınızın detaylı görünümü
                                     </DialogDescription>
                                   </DialogHeader>
                                   <img
                                     src={image.url}
-                                    alt={`V3 Design preview ${index + 1}`}
+                                    alt={`Design preview ${index + 1}`}
                                     className="w-full h-auto rounded-lg"
                                   />
                                   <div className="space-y-2">
-                                    <p className="text-sm text-gray-600"><strong>Model:</strong> Ideogram V3</p>
+                                    <p className="text-sm text-gray-600"><strong>Model:</strong> Matbixx AI</p>
                                     <p className="text-sm text-gray-600"><strong>Açıklama:</strong> {image.prompt}</p>
                                     <p className="text-sm text-gray-600"><strong>Çözünürlük:</strong> {image.resolution || 'Varsayılan'}</p>
                                     <p className="text-sm text-gray-600"><strong>Seed:</strong> {image.seed}</p>
@@ -469,7 +469,7 @@ export default function DesignEngine() {
                                   const designData = {
                                     imageUrl: image.url,
                                     prompt: image.prompt,
-                                    model: 'V3',
+                                    model: 'Matbixx AI',
                                     timestamp: Date.now()
                                   };
                                   localStorage.setItem('selectedDesign', JSON.stringify(designData));
@@ -488,7 +488,7 @@ export default function DesignEngine() {
                           </div>
                           <div className="absolute top-2 left-2">
                             <Badge className="bg-purple-600 text-white">
-                              V3
+                              AI
                             </Badge>
                           </div>
                         </div>
@@ -505,7 +505,7 @@ export default function DesignEngine() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Settings className="h-5 w-5" />
-                    V3 Tasarım Ayarları
+                    Tasarım Ayarları
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -611,12 +611,12 @@ export default function DesignEngine() {
                     {(generateMutation.isPending || generateBatchMutation.isPending) ? (
                       <>
                         <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                        V3 Oluşturuluyor...
+                        Oluşturuluyor...
                       </>
                     ) : (
                       <>
                         <Zap className="h-5 w-5 mr-2" />
-                        V3 Tasarım Oluştur
+                        Tasarım Oluştur
                       </>
                     )}
                   </Button>
@@ -639,7 +639,7 @@ export default function DesignEngine() {
                         <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
                           <Clock className="h-4 w-4" />
                           {new Date(design.createdAt).toLocaleDateString('tr-TR')}
-                          <Badge className="bg-purple-100 text-purple-800 ml-2">V3</Badge>
+                          <Badge className="bg-purple-100 text-purple-800 ml-2">AI</Badge>
                         </div>
                       </div>
                       <div className="flex gap-2">
@@ -647,7 +647,7 @@ export default function DesignEngine() {
                           <img
                             key={imgIndex}
                             src={image.url}
-                            alt={`V3 History ${index}-${imgIndex}`}
+                            alt={`History ${index}-${imgIndex}`}
                             className="w-16 h-16 object-cover rounded border"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
@@ -665,10 +665,10 @@ export default function DesignEngine() {
               <CardContent className="text-center py-12">
                 <History className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-600 mb-2">
-                  Henüz V3 tasarım geçmişiniz yok
+                  Henüz tasarım geçmişiniz yok
                 </h3>
                 <p className="text-gray-500">
-                  İlk V3 tasarımınızı oluşturun ve burada görün
+                  İlk tasarımınızı oluşturun ve burada görün
                 </p>
               </CardContent>
             </Card>
