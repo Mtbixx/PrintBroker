@@ -358,9 +358,12 @@ export default function QuoteFormUVDTF() {
                 </TabsContent>
 
                 <TabsContent value="specifications" className="space-y-8">
-                  {/* UV DTF Özellikler */}
+                  {/* UV DTF Etiket Boyutu */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900">UV DTF Etiket Özellikleri</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
+                      <Target className="h-5 w-5 text-purple-600 mr-2" />
+                      UV DTF Etiket Boyutu
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label className="text-sm font-medium text-gray-700">Etiket Boyutu *</Label>
@@ -387,8 +390,35 @@ export default function QuoteFormUVDTF() {
                       </div>
 
                       <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">Hazır Boyutlar</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { label: '20x20mm', width: '20', height: '20' },
+                            { label: '30x30mm', width: '30', height: '30' },
+                            { label: '40x40mm', width: '40', height: '40' },
+                            { label: '50x50mm', width: '50', height: '50' },
+                            { label: '60x60mm', width: '60', height: '60' },
+                            { label: '70x70mm', width: '70', height: '70' },
+                          ].map((size) => (
+                            <Button
+                              key={size.label}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                updateFormData('width', size.width);
+                                updateFormData('height', size.height);
+                              }}
+                              className="text-xs"
+                            >
+                              {size.label}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
                         <Label className="text-sm font-medium text-gray-700">Miktar (Adet) *</Label>
-                        <div className="h-[20px]"></div>
                         <Input
                           type="number"
                           min="100"
@@ -412,100 +442,320 @@ export default function QuoteFormUVDTF() {
                           <p className="text-sm text-red-500">Minimum sipariş miktarı 100 adettir.</p>
                         )}
                       </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">Hızlı Miktar Seçimi</Label>
+                        <div className="grid grid-cols-3 gap-2">
+                          {['100', '250', '500', '1000', '2500', '5000'].map((qty) => (
+                            <Button
+                              key={qty}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => updateFormData('quantity', qty)}
+                              className="text-xs"
+                            >
+                              {qty} adet
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   <Separator />
 
-                  {/* Malzeme Özellikleri */}
+                  {/* UV DTF Malzeme ve Film Özellikleri */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900">Malzeme Özellikleri</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {[
-                        { value: 'premium-uv-dtf', label: 'Premium UV DTF', desc: 'Yüksek kalite, uzun ömür' },
-                        { value: 'standard-uv-dtf', label: 'Standart UV DTF', desc: 'Ekonomik, kaliteli' },
-                        { value: 'waterproof-uv-dtf', label: 'Su Geçirmez UV DTF', desc: 'Dış mekan kullanımı' },
-                        { value: 'transparent-uv-dtf', label: 'Şeffaf UV DTF', desc: 'Görünmez arka plan' },
-                      ].map((material) => (
-                        <Button
-                          key={material.value}
-                          type="button"
-                          variant={formData.material === material.value ? 'default' : 'outline'}
-                          onClick={() => updateFormData('material', material.value)}
-                          className="h-auto p-4 justify-start"
-                        >
-                          <div className="text-left">
-                            <div className="font-medium">{material.label}</div>
-                            <div className="text-sm text-gray-500">{material.desc}</div>
-                          </div>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  {/* Renk ve Finish */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900">Renk ve Finish</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
+                      <Layers className="h-5 w-5 text-purple-600 mr-2" />
+                      UV DTF Malzeme ve Film Özellikleri
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">Renk Seçeneği</Label>
-                        <Select onValueChange={(value) => updateFormData('colorOption', value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Renk seçin" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="full-color">Full Color (CMYK)</SelectItem>
-                            <SelectItem value="spot-color">Spot Renk</SelectItem>
-                            <SelectItem value="white-ink">Beyaz Mürekkep</SelectItem>
-                            <SelectItem value="metallic">Metalik Renk</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Film Türü</Label>
+                          <div className="grid grid-cols-1 gap-3">
+                            {[
+                              { value: 'premium-uv-dtf', label: 'Premium UV DTF Film', desc: '0.7mm kalınlık, yüksek dayanıklılık', price: '+%30' },
+                              { value: 'standard-uv-dtf', label: 'Standart UV DTF Film', desc: '0.5mm kalınlık, ekonomik seçenek', price: 'Standart' },
+                              { value: 'ultra-thin-uv-dtf', label: 'Ultra İnce UV DTF Film', desc: '0.3mm kalınlık, hassas uygulamalar', price: '+%15' },
+                            ].map((material) => (
+                              <Button
+                                key={material.value}
+                                type="button"
+                                variant={formData.material === material.value ? 'default' : 'outline'}
+                                onClick={() => updateFormData('material', material.value)}
+                                className="h-auto p-4 justify-start"
+                              >
+                                <div className="text-left w-full">
+                                  <div className="flex justify-between items-start">
+                                    <div className="font-medium">{material.label}</div>
+                                    <Badge variant="secondary" className="text-xs">{material.price}</Badge>
+                                  </div>
+                                  <div className="text-sm text-gray-500 mt-1">{material.desc}</div>
+                                </div>
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Yapışkanlık Türü</Label>
+                          <Select onValueChange={(value) => updateFormData('adhesiveType', value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Yapışkanlık seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="permanent">Permanent (Kalıcı)</SelectItem>
+                              <SelectItem value="removable">Removable (Çıkarılabilir)</SelectItem>
+                              <SelectItem value="repositionable">Repositionable (Yeniden Konumlandırılabilir)</SelectItem>
+                              <SelectItem value="ultra-removable">Ultra Removable (Hasar Bırakmaz)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">Finish Türü</Label>
-                        <Select onValueChange={(value) => updateFormData('finishType', value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Finish seçin" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="gloss">Parlak</SelectItem>
-                            <SelectItem value="matte">Mat</SelectItem>
-                            <SelectItem value="satin">Saten</SelectItem>
-                            <SelectItem value="textured">Dokulu</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Şeffaflık Derecesi</Label>
+                          <div className="grid grid-cols-1 gap-2">
+                            {[
+                              { value: 'opaque', label: 'Opak (Tamamen Kapalı)', desc: 'Arka plan tamamen gizlenir' },
+                              { value: 'semi-transparent', label: 'Yarı Şeffaf', desc: 'Hafif geçirgenlik' },
+                              { value: 'transparent', label: 'Şeffaf', desc: 'Arka plan görünür' },
+                            ].map((transparency) => (
+                              <Button
+                                key={transparency.value}
+                                type="button"
+                                variant={formData.transparency === transparency.value ? 'default' : 'outline'}
+                                onClick={() => updateFormData('transparency', transparency.value)}
+                                className="h-auto p-3 justify-start"
+                              >
+                                <div className="text-left">
+                                  <div className="font-medium text-sm">{transparency.label}</div>
+                                  <div className="text-xs text-gray-500">{transparency.desc}</div>
+                                </div>
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Dayanıklılık</Label>
+                          <Select onValueChange={(value) => updateFormData('durability', value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Dayanıklılık seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="indoor-1-year">İç Mekan - 1 Yıl</SelectItem>
+                              <SelectItem value="indoor-3-years">İç Mekan - 3 Yıl</SelectItem>
+                              <SelectItem value="outdoor-2-years">Dış Mekan - 2 Yıl</SelectItem>
+                              <SelectItem value="outdoor-5-years">Dış Mekan - 5 Yıl</SelectItem>
+                              <SelectItem value="marine-grade">Denizcilik Kalitesi - 7 Yıl</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <Separator />
 
-                  {/* Uygulama Türü */}
+                  {/* Baskı ve Renk Özellikleri */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900">Uygulama Türü</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {[
-                        { value: 'transfer-tape', label: 'Transfer Tape ile', desc: 'Kolay uygulama' },
-                        { value: 'direct-apply', label: 'Direkt Uygulama', desc: 'Hızlı yapıştırma' },
-                        { value: 'wet-apply', label: 'Islak Uygulama', desc: 'Profesyonel sonuç' },
-                        { value: 'heat-apply', label: 'Sıcak Uygulama', desc: 'Güçlü yapışma' },
-                      ].map((application) => (
-                        <Button
-                          key={application.value}
-                          type="button"
-                          variant={formData.applicationType === application.value ? 'default' : 'outline'}
-                          onClick={() => updateFormData('applicationType', application.value)}
-                          className="h-auto p-4 justify-start"
-                        >
-                          <div className="text-left">
-                            <div className="font-medium">{application.label}</div>
-                            <div className="text-sm text-gray-500">{application.desc}</div>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
+                      <Palette className="h-5 w-5 text-purple-600 mr-2" />
+                      Baskı ve Renk Özellikleri
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Renk Modeli</Label>
+                          <div className="grid grid-cols-1 gap-2">
+                            {[
+                              { value: 'cmyk', label: 'CMYK (4 Renk)', desc: 'Standart renkli baskı', price: 'Standart' },
+                              { value: 'cmyk-white', label: 'CMYK + Beyaz', desc: 'Şeffaf yüzeylerde kullanım', price: '+%20' },
+                              { value: 'cmyk-spot', label: 'CMYK + Spot Renk', desc: 'Özel renk ekleme', price: '+%35' },
+                              { value: 'spot-colors', label: 'Sadece Spot Renkler', desc: '1-4 özel renk', price: '+%25' },
+                            ].map((color) => (
+                              <Button
+                                key={color.value}
+                                type="button"
+                                variant={formData.colorOption === color.value ? 'default' : 'outline'}
+                                onClick={() => updateFormData('colorOption', color.value)}
+                                className="h-auto p-3 justify-start"
+                              >
+                                <div className="text-left w-full">
+                                  <div className="flex justify-between items-start">
+                                    <div className="font-medium text-sm">{color.label}</div>
+                                    <Badge variant="secondary" className="text-xs">{color.price}</Badge>
+                                  </div>
+                                  <div className="text-xs text-gray-500 mt-1">{color.desc}</div>
+                                </div>
+                              </Button>
+                            ))}
                           </div>
-                        </Button>
-                      ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Yüzey Finish</Label>
+                          <div className="grid grid-cols-1 gap-2">
+                            {[
+                              { value: 'gloss', label: 'Parlak (Gloss)', desc: 'Yüksek parlaklık, canlı renkler' },
+                              { value: 'semi-gloss', label: 'Yarı Parlak', desc: 'Orta parlaklık, dengeli görünüm' },
+                              { value: 'satin', label: 'Saten', desc: 'Yumuşak parlaklık, premium görünüm' },
+                              { value: 'matte', label: 'Mat', desc: 'Parlaksız, şık görünüm' },
+                            ].map((finish) => (
+                              <Button
+                                key={finish.value}
+                                type="button"
+                                variant={formData.finishType === finish.value ? 'default' : 'outline'}
+                                onClick={() => updateFormData('finishType', finish.value)}
+                                className="h-auto p-3 justify-start"
+                              >
+                                <div className="text-left">
+                                  <div className="font-medium text-sm">{finish.label}</div>
+                                  <div className="text-xs text-gray-500">{finish.desc}</div>
+                                </div>
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Özel Efektler</Label>
+                          <div className="grid grid-cols-1 gap-2">
+                            {[
+                              { value: 'none', label: 'Efekt Yok', checked: !formData.specialEffects },
+                              { value: 'uv-varnish', label: 'UV Vernik', checked: formData.specialEffects?.includes('uv-varnish') },
+                              { value: 'metallic', label: 'Metalik Efekt', checked: formData.specialEffects?.includes('metallic') },
+                              { value: 'holographic', label: 'Holografik', checked: formData.specialEffects?.includes('holographic') },
+                            ].map((effect) => (
+                              <div key={effect.value} className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id={effect.value}
+                                  checked={effect.checked || false}
+                                  onChange={(e) => {
+                                    if (effect.value === 'none') {
+                                      updateFormData('specialEffects', []);
+                                    } else {
+                                      const current = formData.specialEffects || [];
+                                      if (e.target.checked) {
+                                        updateFormData('specialEffects', [...current, effect.value]);
+                                      } else {
+                                        updateFormData('specialEffects', current.filter(item => item !== effect.value));
+                                      }
+                                    }
+                                  }}
+                                  className="rounded border-gray-300"
+                                />
+                                <Label htmlFor={effect.value} className="text-sm cursor-pointer">{effect.label}</Label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Uygulama ve Transfer Özellikleri */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
+                      <Zap className="h-5 w-5 text-purple-600 mr-2" />
+                      Uygulama ve Transfer Özellikleri
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Transfer Yöntemi</Label>
+                          <div className="grid grid-cols-1 gap-3">
+                            {[
+                              { value: 'dry-transfer', label: 'Kuru Transfer', desc: 'Transfer tape ile kolay uygulama', temp: 'Oda sıcaklığı' },
+                              { value: 'wet-transfer', label: 'Islak Transfer', desc: 'Sabunlu su ile hassas uygulama', temp: 'Oda sıcaklığı' },
+                              { value: 'heat-transfer', label: 'Sıcak Transfer', desc: 'Isı ile güçlü yapışma', temp: '60-80°C' },
+                            ].map((transfer) => (
+                              <Button
+                                key={transfer.value}
+                                type="button"
+                                variant={formData.applicationType === transfer.value ? 'default' : 'outline'}
+                                onClick={() => updateFormData('applicationType', transfer.value)}
+                                className="h-auto p-4 justify-start"
+                              >
+                                <div className="text-left w-full">
+                                  <div className="flex justify-between items-start">
+                                    <div className="font-medium">{transfer.label}</div>
+                                    <Badge variant="outline" className="text-xs">{transfer.temp}</Badge>
+                                  </div>
+                                  <div className="text-sm text-gray-500 mt-1">{transfer.desc}</div>
+                                </div>
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Kesim Özellikleri</Label>
+                          <div className="grid grid-cols-1 gap-2">
+                            {[
+                              { value: 'kiss-cut', label: 'Kiss Cut', desc: 'Sadece etiket kesilir, arka kağıt kesilmez' },
+                              { value: 'through-cut', label: 'Through Cut', desc: 'Etiket ve arka kağıt tamamen kesilir' },
+                              { value: 'perforated', label: 'Perforeli', desc: 'Kolay ayırma için perforasyon' },
+                            ].map((cutting) => (
+                              <Button
+                                key={cutting.value}
+                                type="button"
+                                variant={formData.cuttingType === cutting.value ? 'default' : 'outline'}
+                                onClick={() => updateFormData('cuttingType', cutting.value)}
+                                className="h-auto p-3 justify-start"
+                              >
+                                <div className="text-left">
+                                  <div className="font-medium text-sm">{cutting.label}</div>
+                                  <div className="text-xs text-gray-500">{cutting.desc}</div>
+                                </div>
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Köşe Şekli</Label>
+                          <Select onValueChange={(value) => updateFormData('cornerType', value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Köşe şekli seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="square">Kare Köşe</SelectItem>
+                              <SelectItem value="rounded-2mm">Yuvarlak Köşe (2mm)</SelectItem>
+                              <SelectItem value="rounded-5mm">Yuvarlak Köşe (5mm)</SelectItem>
+                              <SelectItem value="rounded-10mm">Yuvarlak Köşe (10mm)</SelectItem>
+                              <SelectItem value="custom-shape">Özel Şekil</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Ambalajlama</Label>
+                          <Select onValueChange={(value) => updateFormData('packaging', value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Ambalaj seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="individual-sheets">Tekli Yapraklar</SelectItem>
+                              <SelectItem value="roll-format">Rulo Format</SelectItem>
+                              <SelectItem value="pre-spaced">Önceden Aralıklı</SelectItem>
+                              <SelectItem value="transfer-tape-applied">Transfer Tape Uygulanmış</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
