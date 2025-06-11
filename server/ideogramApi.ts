@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import FormData from 'form-data';
 
@@ -5,7 +6,7 @@ interface IdeogramV3Request {
   image_request: {
     prompt: string;
     aspect_ratio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
-    model?: 'V_2' | 'V_2_TURBO' | 'V_3' | 'V_3_TURBO';
+    model?: 'V_3' | 'V_3_TURBO';
     magic_prompt_option?: 'AUTO' | 'ON' | 'OFF';
     seed?: number;
     style_type?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
@@ -47,7 +48,7 @@ class IdeogramService {
 
   async generateImage(prompt: string, options: {
     aspectRatio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
-    model?: 'V_2' | 'V_2_TURBO' | 'V_3' | 'V_3_TURBO';
+    model?: 'V_3' | 'V_3_TURBO';
     styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
     magicPrompt?: 'AUTO' | 'ON' | 'OFF';
     negativePrompt?: string;
@@ -75,7 +76,7 @@ class IdeogramService {
         image_request: {
           prompt: prompt,
           aspect_ratio: options.aspectRatio || 'ASPECT_1_1',
-          model: options.model || 'V_2',
+          model: options.model || 'V_3',
           style_type: options.styleType || 'AUTO',
           magic_prompt_option: options.magicPrompt || 'AUTO',
           negative_prompt: options.negativePrompt,
@@ -85,13 +86,8 @@ class IdeogramService {
         }
       };
 
-      // V3 modeli için yeni endpoint kullan
-      const endpoint = options.model === 'V_3' || options.model === 'V_3_TURBO' 
-        ? 'https://api.ideogram.ai/generate' 
-        : this.baseUrl;
-
       const response = await axios.post<IdeogramV3Response>(
-        endpoint,
+        this.baseUrl,
         requestData,
         {
           headers: {
@@ -157,7 +153,7 @@ class IdeogramService {
     return results;
   }
 
-  // New v3 features
+  // V3 specific features
   async generateWithColorPalette(prompt: string, colors: string[], options: Parameters<typeof this.generateImage>[1] = {}): Promise<IdeogramV3Response> {
     const colorPalette = {
       members: colors.map(color => ({
@@ -172,14 +168,14 @@ class IdeogramService {
     });
   }
 
-  async generateHighResolution(prompt: string, resolution: '1024x1024' | '1360x768' | '768x1360' | '1536x640' | '640x1536', options: Parameters<typeof this.generateImage>[1] = {}): Promise<IdeogramV3Response> {
+  async generateHighResolution(prompt: string, resolution: 'RESOLUTION_1024_1024' | 'RESOLUTION_1344_768' | 'RESOLUTION_1536_640', options: Parameters<typeof this.generateImage>[1] = {}): Promise<IdeogramV3Response> {
     return this.generateImage(prompt, {
       ...options,
       resolution
     });
   }
 
-  async generateWithAdvancedStyle(prompt: string, styleType: 'CONCEPTUAL_ART' | 'ILLUSTRATION' | 'PHOTOGRAPHY', options: Parameters<typeof this.generateImage>[1] = {}): Promise<IdeogramV3Response> {
+  async generateWithAdvancedStyle(prompt: string, styleType: 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME', options: Parameters<typeof this.generateImage>[1] = {}): Promise<IdeogramV3Response> {
     return this.generateImage(prompt, {
       ...options,
       styleType

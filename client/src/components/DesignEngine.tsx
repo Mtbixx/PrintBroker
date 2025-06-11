@@ -47,7 +47,7 @@ interface GeneratedImage {
 
 interface DesignOptions {
   aspectRatio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
-  model?: 'V_3' | 'V_3_TURBO' | 'V_2' | 'V_2_TURBO';
+  model?: 'V_3' | 'V_3_TURBO';
   styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
   magicPrompt?: 'AUTO' | 'ON' | 'OFF';
   negativePrompt?: string;
@@ -64,7 +64,7 @@ export default function DesignEngine() {
   const [prompt, setPrompt] = useState("");
   const [designOptions, setDesignOptions] = useState<DesignOptions>({
     aspectRatio: "ASPECT_1_1",
-    model: "V_2",
+    model: "V_3",
     styleType: "DESIGN",
     magicPrompt: "ON",
     resolution: "default",
@@ -559,10 +559,8 @@ export default function DesignEngine() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="V_3">V3 (Latest Model)</SelectItem>
-                      <SelectItem value="V_3_TURBO">V3 Turbo (Fastest)</SelectItem>
-                      <SelectItem value="V_2">V2 (Balanced)</SelectItem>
-                      <SelectItem value="V_2_TURBO">V2 Turbo (Fastest)</SelectItem>
+                      <SelectItem value="V_3">V3 (En Gelişmiş Model)</SelectItem>
+                      <SelectItem value="V_3_TURBO">V3 Turbo (En Hızlı)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
