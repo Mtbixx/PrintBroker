@@ -250,81 +250,29 @@ export default function DesignEngine() {
     }
 
     try {
-      // Doğrudan görseli fetch et
-      const response = await fetch(url, {
-        method: 'GET',
-        mode: 'cors'
-      });
-
-      if (!response.ok) {
-        // CORS sorunu varsa proxy kullan
-        const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(url)}`;
-        const proxyResponse = await fetch(proxyUrl);
-
-        if (!proxyResponse.ok) {
-          throw new Error('İndirme başarısız');
-        }
-
-        const blob = await proxyResponse.blob();
-        const link = document.createElement('a');
-        const objectUrl = URL.createObjectURL(blob);
-        link.href = objectUrl;
-        link.download = filename || `tasarim-${Date.now()}.png`;
-        link.style.display = 'none';
-
-        document.body.appendChild(link);
-        link.click();
-
-        // Cleanup
-        setTimeout(() => {
-          if (document.body.contains(link)) {
-            document.body.removeChild(link);
-          }
-          URL.revokeObjectURL(objectUrl);
-        }, 100);
-      } else {
-        // Direkt indirme
-        const blob = await response.blob();
-        const link = document.createElement('a');
-        const objectUrl = URL.createObjectURL(blob);
-        link.href = objectUrl;
-        link.download = filename || `tasarim-${Date.now()}.png`;
-        link.style.display = 'none';
-
-        document.body.appendChild(link);
-        link.click();
-
-        // Cleanup
-        setTimeout(() => {
-          if (document.body.contains(link)) {
-            document.body.removeChild(link);
-          }
-          URL.revokeObjectURL(objectUrl);
-        }, 100);
-      }
+      // Simple and reliable download method
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename || `tasarim-${Date.now()}.png`;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      
+      // Add to DOM, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
       toast({
-        title: "Başarılı",
-        description: "Tasarım başarıyla indirildi.",
+        title: "İndirme Başlatıldı",
+        description: "Tasarım indiriliyor. İndirme klasörünüzü kontrol edin.",
       });
     } catch (error) {
       console.error('Download error:', error);
-
-      // Fallback: yeni pencerede aç
-      try {
-        window.open(url, '_blank');
-        toast({
-          title: "Bilgi",
-          description: "Tasarım yeni sekmede açıldı. Sağ tıklayıp 'Resmi Farklı Kaydet' seçebilirsiniz.",
-        });
-      } catch (fallbackError) {
-        console.error('Fallback error:', fallbackError);
-        toast({
-          title: "Hata",
-          description: "Görsel indirilemedi. Lütfen tekrar deneyin.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "İndirme Hatası",
+        description: "Tasarım indirilemedi. Tarayıcınızın popup engelleyicisi aktif olabilir.",
+        variant: "destructive",
+      });
     }
   };
 
