@@ -228,18 +228,39 @@ export default function QuoteFormUVDTF() {
     return () => subscription.unsubscribe();
   }, [form]);
 
-  // Initialize formData with form values on mount
+  // Initialize formData with form values on mount and set default values
   useEffect(() => {
-    const specs = form.getValues('specifications');
-    if (specs) {
-      setFormData((prev: any) => ({ ...prev, ...specs }));
-    }
+    const defaultSpecs = {
+      quantity: "",
+      width: "",
+      height: "",
+      material: "",
+      adhesiveType: "",
+      transparency: "",
+      durability: "",
+      colorOption: "",
+      finishType: "",
+      specialEffects: [],
+      applicationType: "",
+      cuttingType: "",
+      cornerType: "",
+      packaging: ""
+    };
+    
+    const currentSpecs = form.getValues('specifications');
+    const mergedSpecs = { ...defaultSpecs, ...currentSpecs };
+    
+    setFormData(mergedSpecs);
+    
+    // Update form with default values if empty
+    form.setValue('specifications', mergedSpecs);
   }, []);
 
   const updateFormData = (key: string, value: any) => {
     // Update both local state and form
     setFormData((prev: any) => {
       const updated = { ...prev, [key]: value };
+      console.log('Updated formData:', updated); // Debug log
       return updated;
     });
     
@@ -414,6 +435,11 @@ export default function QuoteFormUVDTF() {
                 </TabsContent>
 
                 <TabsContent value="specifications" className="space-y-8">
+                  {/* Debug Panel - Remove this after fixing */}
+                  <div className="mb-4 p-3 bg-gray-100 rounded text-xs">
+                    <strong>Debug - Current formData:</strong> {JSON.stringify(formData, null, 2)}
+                  </div>
+                  
                   {/* UV DTF Etiket Boyutu */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
