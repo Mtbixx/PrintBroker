@@ -526,12 +526,11 @@ export default function QuoteForm() {
         <h3 className="text-lg font-semibold mb-4 text-gray-900">Malzeme Seçimi</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { value: 'coated-90', label: 'Kuşe Kağıt 90gr', desc: 'Ekonomik, günlük kullanım' },
-            { value: 'coated-120', label: 'Kuşe Kağıt 120gr', desc: 'Standart kalite' },
-            { value: 'bristol-160', label: 'Bristol Kağıt 160gr', desc: 'Dayanıklı, kaliteli' },
-            { value: 'sticker-white', label: 'Beyaz Sticker', desc: 'Yapışkanlı, pratik' },
-            { value: 'sticker-transparent', label: 'Şeffaf Sticker', desc: 'Görünmez kenar' },
-            { value: 'kraft', label: 'Kraft Kağıt', desc: 'Doğal, çevre dostu' },
+            { value: 'sticker-transparent', label: 'Şeffaf Etiket', desc: 'Görünmez kenar, transparan' },
+            { value: 'sticker-opaque', label: 'Opak Etiket', desc: 'Mat beyaz, kapatıcı' },
+            { value: 'kraft', label: 'Kraft Etiket', desc: 'Doğal, çevre dostu' },
+            { value: 'metalize', label: 'Metalize Etiket', desc: 'Metalik görünüm, premium' },
+            { value: 'textured', label: 'Dokulu Etiket', desc: 'Özel doku, hissedilebilir' },
           ].map((paper) => (
             <Button
               key={paper.value}

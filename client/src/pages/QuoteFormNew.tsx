@@ -430,8 +430,11 @@ export default function QuoteForm() {
                             <SelectValue placeholder="Kağıt tipini seçin" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="coated">Kuşe Kağıt</SelectItem>
-                            <SelectItem value="bristol">Bristol Kağıt</SelectItem>
+                            <SelectItem value="transparent">Şeffaf Etiket</SelectItem>
+                            <SelectItem value="opaque">Opak Etiket</SelectItem>
+                            <SelectItem value="kraft">Kraft Etiket</SelectItem>
+                            <SelectItem value="metalize">Metalize Etiket</SelectItem>
+                            <SelectItem value="textured">Dokulu Etiket</SelectItem>
                             <SelectItem value="sticker">Sticker Kağıt</SelectItem>
                           </SelectContent>
                         </Select>
