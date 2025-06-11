@@ -626,24 +626,28 @@ export default function QuoteForm() {
 
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">Toplam Miktar *</Label>
-            <Input
-              type="number"
-              min="5000"
-              placeholder="Minimum 5.000 adet"
-              onChange={(e) => {
-                const value = parseInt(e.target.value) || 0;
-                updateFormData('totalQuantity', e.target.value);
-                
-                if (value > 0 && value < 5000) {
-                  toast({
-                    title: "Uyarı",
-                    description: "Minimum sipariş miktarı 5.000 adettir.",
-                    variant: "destructive",
-                  });
-                }
-              }}
-              className="h-12"
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <Input
+                  type="number"
+                  min="5000"
+                  placeholder="Minimum 5.000 adet"
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value) || 0;
+                    updateFormData('totalQuantity', e.target.value);
+                    
+                    if (value > 0 && value < 5000) {
+                      toast({
+                        title: "Uyarı",
+                        description: "Minimum sipariş miktarı 5.000 adettir.",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                  className="h-12"
+                />
+              </div>
+            </div>
             {formData.totalQuantity && parseInt(formData.totalQuantity) < 5000 && parseInt(formData.totalQuantity) > 0 && (
               <p className="text-sm text-red-500">Minimum sipariş miktarı 5.000 adettir.</p>
             )}
