@@ -472,27 +472,22 @@ export default function QuoteForm() {
       {/* Temel Özellikler */}
       <div>
         <h3 className="text-lg font-semibold mb-4 text-gray-900">Temel Özellikler</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700">Özel Etiket Boyutu *</Label>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="text-xs text-gray-500">Genişlik (mm)</Label>
-                <Input 
-                  placeholder="Örn: 45" 
-                  onChange={(e) => updateFormData('customWidth', e.target.value)}
-                  className="h-12"
-                />
-              </div>
-              <div>
-                <Label className="text-xs text-gray-500">Yükseklik (mm)</Label>
-                <Input 
-                  placeholder="Örn: 65" 
-                  onChange={(e) => updateFormData('customHeight', e.target.value)}
-                  className="h-12"
-                />
-              </div>
-            </div>
+            <Label className="text-xs text-gray-500">Genişlik (mm)</Label>
+            <Input 
+              placeholder="Örn: 45" 
+              onChange={(e) => updateFormData('customWidth', e.target.value)}
+              className="h-12"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-xs text-gray-500">Yükseklik (mm)</Label>
+            <Input 
+              placeholder="Örn: 65" 
+              onChange={(e) => updateFormData('customHeight', e.target.value)}
+              className="h-12"
+            />
           </div>
 
           <div className="space-y-2">
