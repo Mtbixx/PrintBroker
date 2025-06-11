@@ -213,7 +213,7 @@ async function createTestUsers() {
         role: 'customer',
         password: 'demo123',
         isActive: true,
-        creditBalance: '500.00',
+        creditBalance: '0.00',
         subscriptionStatus: 'inactive',
         companyAddress: 'Test Adres, İstanbul',
         companyName: 'Test Şirketi',
@@ -565,7 +565,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Configure based on role
       if (role === 'customer') {
-        userData.creditBalance = '1000.00'; // Starting credit for customers
+        userData.creditBalance = '0.00'; // No starting credit - customers must purchase credits
         userData.subscriptionStatus = 'inactive';
         userData.companyAddress = address ? `${address}, ${city} ${postalCode}` : '';
         userData.companyName = companyName || '';
