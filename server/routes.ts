@@ -2399,6 +2399,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Manual credit loading endpoint for admin
+  app.post('/api/admin/load-credit', requireAdmin, async (req: any, res) => {
+    try {
+      const { email, amount } = req.body;
+
+      if (!email || !amount) {
+        return res.status(400).json({ message: "Email and amount are required" });
+      }
+
+      // Find user by email
+      const users = await storage.getAllUsers();
+      const targetUser = users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+
+      if (!targetUser) {
+        return res.status(404).json({ message: `User with email ${email} not found` });
+      }
+
+      // Calculate new balance
+      const currentBalance = parseFloat(targetUser.creditBalance || '0');
+      const creditAmount = parseFloat(amount);
+      const newBalance = currentBalance + creditAmount;
+
+      // Update user credit balance
+      await storage.updateUserCreditBalance(targetUser.id, newBalance.toString());
+
+      console.log(`💳 Admin credit load: ${email} - Added ${creditAmount}₺, New balance: ${newBalance}₺`);
+
+      res.json({
+        success: true,
+        message: `${creditAmount}₺ credit loaded to ${email}`,
+        user: {
+          email: targetUser.email,
+          oldBalance: currentBalance,
+          newBalance: newBalance,
+          addedAmount: creditAmount
+        }
+      });
+
+    } catch (error) {
+      console.error("Error loading credit:", error);
+      res.status(500).json({ message: "Failed to load credit" });
+    }
+  });
+
   // Admin routes
   app.get('/api/admin/users', isAuthenticated, async (req: any, res) => {
     try {
