@@ -1181,11 +1181,6 @@ export default function QuoteForm() {
               </div>
             </CardContent>
           </Card>
-                
-              
-            
-          
-        
 
         {/* Form Card */}
         <Card className="border-0 shadow-xl">
