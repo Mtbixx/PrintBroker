@@ -87,10 +87,15 @@ export default function DesignEngine() {
     mutationFn: async (data: { prompt: string; options: DesignOptions }) => {
       console.log('🎨 Starting design generation with data:', data);
 
-      // Refresh user balance before generation to ensure we have latest data
-      await queryClient.refetchQueries({ queryKey: ['/api/auth/user'] });
+      try {
+        // Refresh user balance before generation to ensure we have latest data
+        await queryClient.refetchQueries({ queryKey: ['/api/auth/user'] });
 
-      return await apiRequest('POST', '/api/design/generate', data);
+        return await apiRequest('POST', '/api/design/generate', data);
+      } catch (error) {
+        console.error('Generate mutation error:', error);
+        throw error;
+      }
     },
     onSuccess: async (response) => {
       if (response.data && response.data.length > 0) {
@@ -233,6 +238,15 @@ export default function DesignEngine() {
   };
 
   const downloadImage = async (url: string, filename: string) => {
+    if (!url) {
+      toast({
+        title: "Hata",
+        description: "Geçersiz görsel URL'si.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       // Doğrudan görseli fetch et
       const response = await fetch(url, {
@@ -261,7 +275,9 @@ export default function DesignEngine() {
 
         // Cleanup
         setTimeout(() => {
-          document.body.removeChild(link);
+          if (document.body.contains(link)) {
+            document.body.removeChild(link);
+          }
           URL.revokeObjectURL(objectUrl);
         }, 100);
       } else {
@@ -278,7 +294,9 @@ export default function DesignEngine() {
 
         // Cleanup
         setTimeout(() => {
-          document.body.removeChild(link);
+          if (document.body.contains(link)) {
+            document.body.removeChild(link);
+          }
           URL.revokeObjectURL(objectUrl);
         }, 100);
       }
@@ -298,6 +316,7 @@ export default function DesignEngine() {
           description: "Tasarım yeni sekmede açıldı. Sağ tıklayıp 'Resmi Farklı Kaydet' seçebilirsiniz.",
         });
       } catch (fallbackError) {
+        console.error('Fallback error:', fallbackError);
         toast({
           title: "Hata",
           description: "Görsel indirilemedi. Lütfen tekrar deneyin.",
@@ -445,12 +464,16 @@ export default function DesignEngine() {
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {generatedImages.map((image, index) => (
-                        <div key={index} className="relative group">
+                      {generatedImages.filter(image => image && image.url).map((image, index) => (
+                        <div key={`${image.url}-${index}`} className="relative group">
                           <img
                             src={image.url}
                             alt={`Generated design ${index + 1}`}
                             className="w-full h-64 object-cover rounded-lg border"
+                            onError={(e) => {
+                              console.error('Image failed to load:', image.url);
+                              e.currentTarget.style.display = 'none';
+                            }}
                           />
                           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <div className="flex gap-2">
@@ -471,6 +494,9 @@ export default function DesignEngine() {
                                 <DialogContent className="max-w-4xl">
                                   <DialogHeader>
                                     <DialogTitle>Tasarım Önizleme</DialogTitle>
+                                    <DialogDescription>
+                                      Tasarımınızın detaylı görünümü ve bilgileri
+                                    </DialogDescription>
                                   </DialogHeader>
                                   <img
                                     src={image.url}
@@ -479,7 +505,7 @@ export default function DesignEngine() {
                                   />
                                   <div className="space-y-2">
                                     <p className="text-sm text-gray-600"><strong>Açıklama:</strong> {image.prompt}</p>
-                                    <p className="text-sm text-gray-600"><strong>Çözünürlük:</strong> {image.resolution}</p>
+                                    <p className="text-sm text-gray-600"><strong>Çözünürlük:</strong> {image.resolution || 'Varsayılan'}</p>
                                     <p className="text-sm text-gray-600"><strong>Seed:</strong> {image.seed}</p>
                                   </div>
                                 </DialogContent>
@@ -508,8 +534,8 @@ export default function DesignEngine() {
                             </div>
                           </div>
                           <div className="absolute top-2 right-2">
-                            <Badge variant={image.is_image_safe ? "default" : "destructive"}>
-                              {image.is_image_safe ? "Güvenli" : "Dikkat"}
+                            <Badge variant={image.is_image_safe !== false ? "default" : "destructive"}>
+                              {image.is_image_safe !== false ? "Güvenli" : "Dikkat"}
                             </Badge>
                           </div>
                         </div>
