@@ -63,8 +63,7 @@ import {
   Building2, 
   ShoppingCart,
   UserPlus,
-  Sparkles,
-  Link
+  Sparkles
 } from "lucide-react";
 
 export default function AdminDashboard() {

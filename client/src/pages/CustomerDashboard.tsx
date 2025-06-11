@@ -654,25 +654,25 @@ export default function CustomerDashboard() {
                                       try {
                                         // Use proxy URL to avoid CORS issues
                                         const proxyUrl = `https://cors-anywhere.herokuapp.com/${imageUrl}`;
-                                        
+
                                         // Try direct download first
                                         try {
                                           const response = await fetch(imageUrl, {
                                             mode: 'no-cors'
                                           });
                                           const blob = await response.blob();
-                                          
+
                                           const link = document.createElement('a');
                                           link.href = URL.createObjectURL(blob);
                                           link.download = `tasarim-${design.id}-${Date.now()}.png`;
                                           link.style.display = 'none';
-                                          
+
                                           document.body.appendChild(link);
                                           link.click();
                                           document.body.removeChild(link);
-                                          
+
                                           URL.revokeObjectURL(link.href);
-                                          
+
                                           toast({
                                             title: "İndirme Başlatıldı",
                                             description: "Tasarım başarıyla indirildi.",
@@ -684,11 +684,11 @@ export default function CustomerDashboard() {
                                           link.download = `tasarim-${design.id}-${Date.now()}.png`;
                                           link.target = '_blank';
                                           link.rel = 'noopener noreferrer';
-                                          
+
                                           document.body.appendChild(link);
                                           link.click();
                                           document.body.removeChild(link);
-                                          
+
                                           toast({
                                             title: "İndirme Başlatıldı",
                                             description: "Tasarım yeni sekmede açıldı. Sağ tıklayıp 'Resmi farklı kaydet' seçeneğini kullanabilirsiniz.",
@@ -750,7 +750,7 @@ export default function CustomerDashboard() {
                                   Favorili
                                 </Badge>
                               )}
-                              {design.status === 'completed' && (
+                              {design.status === 'completed' &&The code is updated to address issues in CustomerDashboard.tsx, including import errors, missing imports, and variable issues by replacing problematic code snippets with corrected versions. (
                                 <Badge variant="default" className="bg-green-100 text-green-800">
                                   Tamamlandı
                                 </Badge>

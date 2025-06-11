@@ -74,6 +74,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Building2,
+  Users,
+  FileText,
+  DollarSign,
+  TrendingUp,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Settings,
+  Shield,
+  Activity,
+  Database,
+  Server,
+  Zap,
+  BarChart3,
+  MessageCircle,
+  UserCheck,
+  UserX,
+  Filter,
+  Download,
+  RefreshCw,
+  Eye,
+  Edit,
+  Trash2,
+  Bell
+} from "lucide-react";
+import StatsCard from "@/components/StatsCard";
+import Navigation from "@/components/Navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function PrinterDashboard() {
