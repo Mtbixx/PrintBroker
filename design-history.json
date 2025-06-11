@@ -1,5 +1,203 @@
 [
   {
+    "id": "e480c066-45f4-4891-8edb-34bb9017a815",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ecesu & Batuhan 06.06.2026 düğün hatırası etiket tasarımı yap",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A sophisticated wedding keepsake tag design featuring intertwined olive branches and delicate watercolor roses in muted gold and ivory tones, with the names \"Ecesu & Batuhan\" elegantly scripted across the center in a flowing, romantic font. A subtle, vintage-inspired border of laurel leaves frames the design, emphasizing the timeless quality of the couple’s commitment, while a smaller, modern sans-serif font displays \"06.06.2026\" beneath their names. The overall design conveys a feeling of understated elegance and enduring love, with ample space on the tag’s reverse side for a handwritten message or a small photograph to create a cherished memory.",
+        "resolution": "1024x1024",
+        "seed": 185305071,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/6oC0daVlRKuAr6bR_2OClQ.png?exp=1749765697&sig=1ac3693790fad25478641b506d978832aa2c107873899dfc1f5097fa3ac7154b"
+      },
+      "generationId": "e4407d10-8493-434c-975b-68df38a183dc",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/6oC0daVlRKuAr6bR_2OClQ.png?exp=1749765697&sig=1ac3693790fad25478641b506d978832aa2c107873899dfc1f5097fa3ac7154b",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T22:01:37.626Z"
+  },
+  {
+    "id": "70dedf06-b5b3-4c91-9b59-d832e3af2ed0",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ecesu & Batuhan 06.06.2026 düğün hatırası etiket tasarımı yap düğün hatırası yazısınıda ekle",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A commemorative wedding favor tag design for \"Ecesu & Batuhan 06.06.2026\". The tag is shaped like a stylized heart, crafted from textured, aged parchment paper with delicate floral details surrounding the edges. \"Düğün hatırası\" is elegantly inscribed in a flowing, calligraphic font at the center, subtly embossed to catch the light. The background is a soft, warm gradient of cream and gold, evoking a sense of timeless romance and celebratory joy.",
+        "resolution": "1024x1024",
+        "seed": 1744815295,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/U-oXJNV-RK6_40038hv-vg.png?exp=1749765664&sig=6e84c7a0ecadd720def7080855c0ae7986c4e0154bda19c02819a482eaf41b5e"
+      },
+      "generationId": "bf7050a5-c1e2-4489-901e-0237a94ca63f",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/U-oXJNV-RK6_40038hv-vg.png?exp=1749765664&sig=6e84c7a0ecadd720def7080855c0ae7986c4e0154bda19c02819a482eaf41b5e",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T22:01:04.516Z"
+  },
+  {
+    "id": "fa5d2da9-22ef-42e4-b00f-3b83ff6b2a1a",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Sauvale Parfüm için logo tasarla  50ml, daha çok etiket tasarım formatında olsun",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A logo design for Sauvale Parfüm in a label format, showcasing a sleek, minimalist aesthetic. The central focus is a stylized representation of a 50ml perfume bottle with a frosted glass finish and a silver metallic cap. Prominently displayed on the label is the text \"Sauvale Parfüm\" in a modern serif font with an elegant curve; below it, in a smaller sans-serif font, is the size designation \"50ml\". The background is a gradient of soft beige and rose gold, creating a luxurious and sophisticated feel.",
+        "resolution": "1024x1024",
+        "seed": 552459146,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/9NV6JXAPQuKZyncNjnbUaw.png?exp=1749765595&sig=cbe2131d8fd6068a2f2032633e007351a0e2fde528b68e78cc12cddd212794f1"
+      },
+      "generationId": "916866a5-3fca-438c-881b-9f2ced05f2d2",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/9NV6JXAPQuKZyncNjnbUaw.png?exp=1749765595&sig=cbe2131d8fd6068a2f2032633e007351a0e2fde528b68e78cc12cddd212794f1",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T21:59:55.304Z"
+  },
+  {
+    "id": "87ee668e-c3c0-4b69-ba0b-10d262e48a3b",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Sauvale Parfüm için logo tasarla  50ml, daha çok etiket tasarım formatında olsun",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A minimalist label design for \"Sauvale Parfüm\" in a sleek, modern style, centered around a stylized depiction of a single jasmine flower. The jasmine is rendered in a gradient of soft ivory to pale gold, with delicate, hand-drawn details on its petals and a subtle shimmer effect. Beneath the flower, the text \"50ml\" appears in a clean sans-serif font, placed neatly below \"Sauvale Parfüm\" in a slightly smaller size, creating a visual hierarchy. The background is a deep charcoal gray, providing a luxurious contrast and allowing the floral illustration and text to stand out prominently.",
+        "resolution": "1024x1024",
+        "seed": 1489233431,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/u98REyHXQL21rgApNpOOew.png?exp=1749765574&sig=173aa3bf1bb909bfb52220df0151cd1a2dd214ce68d93b15a4246a8c616312ee"
+      },
+      "generationId": "e06d392e-ed1f-4cfb-b9f3-2dbd3fdebbad",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/u98REyHXQL21rgApNpOOew.png?exp=1749765574&sig=173aa3bf1bb909bfb52220df0151cd1a2dd214ce68d93b15a4246a8c616312ee",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T21:59:34.738Z"
+  },
+  {
+    "id": "ad16a81a-cf2b-4cf5-a7c9-542785dff253",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Sauvale Parfüm için logo tasarla ",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A minimalist logo design featuring the word \"Sauvale Parfüm\" in an elegant serif typeface in a deep violet color. Below the text, a stylized, single jasmine flower blooms, its petals a gradient of soft pink and cream, delicately curved and centered beneath the brand name. A subtle, blurred background of gold particles adds a touch of luxury and sophistication. The overall design conveys a sense of refined elegance and floral fragrance.",
+        "resolution": "1024x1024",
+        "seed": 1580409975,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/ypc1WJ4XRouhUeV39NRkGw.png?exp=1749765541&sig=c597697fc24322a904dc878ba59c32a881244a2d491c990f5945cafc4c00a515"
+      },
+      "generationId": "8a35e33d-1f4d-439a-a093-3188a003cc09",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/ypc1WJ4XRouhUeV39NRkGw.png?exp=1749765541&sig=c597697fc24322a904dc878ba59c32a881244a2d491c990f5945cafc4c00a515",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T21:59:01.193Z"
+  },
+  {
+    "id": "05dc9a1d-f033-4854-855d-5700dad31fb4",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Matbixx için modern logo tasarla",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern logo design featuring the word \"Matbixx\" in a bold, sans-serif typeface with a slight italic slant. The text is presented in a gradient transitioning from deep teal to vibrant emerald green, conveying a sense of innovation and growth. A stylized, abstract representation of a circuit board pattern subtly overlays the text, suggesting technology and connectivity. The background is a clean, minimalist white to ensure the logo's vibrant colors and modern aesthetic pop.",
+        "resolution": "1024x1024",
+        "seed": 1515459663,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/17ES7Cw8TdCbe5JjIqhwLQ.png?exp=1749765506&sig=309b8af517edfef833916c278d2541a6d53022524112c7269c266e92689e7f31"
+      },
+      "generationId": "3f5c689b-acdf-4956-8eff-879a22186311",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/17ES7Cw8TdCbe5JjIqhwLQ.png?exp=1749765506&sig=309b8af517edfef833916c278d2541a6d53022524112c7269c266e92689e7f31",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T21:58:27.112Z"
+  },
+  {
     "id": "9bffe328-84b8-4624-aa16-50e3c1e22ae8",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Ecesu & Batuhan 06.06.2026 Düğün Hatırası etiketi",
