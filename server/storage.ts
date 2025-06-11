@@ -450,7 +450,7 @@ export class DatabaseStorage implements IStorage {
       console.log('Saving new design:', data.result.generationId || 'unknown-id', 'for user:', data.userId);
 
       const designEntry = {
-        id: data.result.generationId || crypto.randomUUID(),
+        id: data.result.generationId || (await import('crypto')).randomUUID(),
         userId: data.userId,
         prompt: data.prompt,
         options: data.options,
@@ -561,13 +561,13 @@ export class DatabaseStorage implements IStorage {
       if (fs.existsSync(designsPath)) {
         const data = fs.readFileSync(designsPath, 'utf8');
         let allDesigns = JSON.parse(data);
-        
+
         // Ensure allDesigns is an array
         if (!Array.isArray(allDesigns)) {
           console.warn('Design history file corrupted, resetting to empty array');
           allDesigns = [];
         }
-        
+
         return allDesigns.filter((design: any) => design.userId === userId) || [];
       }
       return [];
@@ -795,7 +795,7 @@ export class DatabaseStorage implements IStorage {
     // Store in memory for now - in production this would be in database
     const notifications = this.getStoredNotifications();
     const newNotification = {
-      id: crypto.randomUUID(),
+      id: (await import('crypto')).randomUUID(),
       ...notification
     };
     notifications.push(newNotification);
@@ -856,9 +856,9 @@ export class DatabaseStorage implements IStorage {
     try {
       // Get all existing designs from file
       let allDesigns = await this.getAllStoredDesigns();
-      
+
       const newDesign = {
-        id: crypto.randomUUID(),
+        id: (await import('crypto')).randomUUID(),
         userId: data.userId,
         prompt: data.prompt,
         options: data.options,
@@ -934,13 +934,13 @@ export class DatabaseStorage implements IStorage {
       if (fs.existsSync(designsPath)) {
         const data = fs.readFileSync(designsPath, 'utf8');
         let allDesigns = JSON.parse(data);
-        
+
         // Ensure allDesigns is an array
         if (!Array.isArray(allDesigns)) {
           console.warn('Design history file corrupted, resetting to empty array');
           allDesigns = [];
         }
-        
+
         return allDesigns;
       }
       return [];

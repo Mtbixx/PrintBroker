@@ -41,7 +41,7 @@ export default function CustomerDashboard() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isDesignDialogOpen, setIsDesignDialogOpen] = useState(false);
-  
+
   // Reset to first page when new designs are created
   useEffect(() => {
     if (currentPage > 1) {
@@ -96,11 +96,13 @@ export default function CustomerDashboard() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: designHistory, isLoading: designsLoading } = useQuery({
+  const { data: designHistoryData, isLoading: designsLoading } = useQuery({
     queryKey: ["/api/designs/history", currentPage],
     queryFn: () => apiRequest('GET', `/api/designs/history?page=${currentPage}&limit=12`),
     enabled: isAuthenticated && user?.role === 'customer',
   });
+
+  const designHistory = designHistoryData?.designs || [];
 
   const { data: userBalance, refetch: refetchUserBalance } = useQuery({
     queryKey: ['/api/auth/user'],
@@ -172,7 +174,7 @@ export default function CustomerDashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8">
-            
+
             <div>
               <h4 className="text-lg font-semibold mb-4 text-gray-900">Teklif Talep Et</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -208,7 +210,7 @@ export default function CustomerDashboard() {
               </div>
             </div>
 
-            
+
             <div>
               <h4 className="text-lg font-semibold mb-4 text-gray-900">Hızlı İşlemler</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -258,7 +260,7 @@ export default function CustomerDashboard() {
               </div>
             </div>
 
-            
+
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <StatsCard
                 title="Bekleyen Teklifler"
@@ -286,7 +288,7 @@ export default function CustomerDashboard() {
               />
             </div>
 
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Son Tekliflerim</CardTitle>
@@ -343,7 +345,7 @@ export default function CustomerDashboard() {
                           <div className="aspect-square relative group">
                             {(() => {
                               let imageUrl = null;
-                              
+
                               // Try different possible data structures
                               if (design.result && Array.isArray(design.result) && design.result[0]?.url) {
                                 imageUrl = design.result[0].url;
@@ -379,7 +381,7 @@ export default function CustomerDashboard() {
                               <ImageIcon className="h-12 w-12 text-gray-400" />
                             </div>
 
-                            
+
                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
                               <div className="flex gap-2">
                                 <Dialog>
@@ -395,7 +397,7 @@ export default function CustomerDashboard() {
                                     <div className="space-y-4">
                                       {(() => {
                                         let imageUrl = null;
-                                        
+
                                         if (design.result && Array.isArray(design.result) && design.result[0]?.url) {
                                           imageUrl = design.result[0].url;
                                         } else if (design.result && design.result.data && Array.isArray(design.result.data) && design.result.data[0]?.url) {
@@ -461,7 +463,7 @@ export default function CustomerDashboard() {
                                         link.download = `tasarim-${design.id}-${Date.now()}.png`;
                                         link.target = '_blank';
                                         link.rel = 'noopener noreferrer';
-                                        
+
                                         // Force download by temporarily adding to DOM
                                         document.body.appendChild(link);
                                         link.click();
@@ -516,7 +518,7 @@ export default function CustomerDashboard() {
                               </div>
                             </div>
 
-                            
+
                             <div className="absolute top-2 right-2 space-y-1">
                               {design.isBookmarked && (
                                 <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
@@ -549,7 +551,7 @@ export default function CustomerDashboard() {
                       ))}
                     </div>
 
-                    
+
                     {designHistory.totalPages > 1 && (
                       <div className="flex justify-center items-center gap-2 mt-6">
                         <Button
@@ -646,14 +648,14 @@ export default function CustomerDashboard() {
             </Card>
           </TabsContent>
 
-          
+
           <TabsContent value="files">
             <FileManager />
           </TabsContent>
         </Tabs>
       </main>
 
-      
+
       <Button
         onClick={() => setIsChatOpen(true)}
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-40"
@@ -672,7 +674,7 @@ export default function CustomerDashboard() {
         </div>
       </Button>
 
-      
+
       {isChatOpen && (
         <Chat
           isOpen={isChatOpen}
