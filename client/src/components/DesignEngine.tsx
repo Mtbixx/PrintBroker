@@ -612,8 +612,8 @@ export default function DesignEngine() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="V_2">V2 (Recommended)</SelectItem>
-                        <SelectItem value="V_2_TURBO">V2 Turbo</SelectItem>
+                        <SelectItem value="V_2">V2 (Latest Model)</SelectItem>
+                        <SelectItem value="V_2_TURBO">V2 Turbo (Fastest)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
