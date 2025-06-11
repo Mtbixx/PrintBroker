@@ -1220,10 +1220,7 @@ export default function QuoteForm() {
                         <p className="text-sm text-red-500">{form.formState.errors.title.message}</p>
                       )}
                     </div>
-
-
-
-                    </div>
+                  </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="description">Proje Açıklaması</Label>
