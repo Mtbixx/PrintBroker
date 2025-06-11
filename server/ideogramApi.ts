@@ -2,7 +2,7 @@ import axios from 'axios';
 
 interface IdeogramV3Request {
   prompt: string;
-  aspect_ratio?: '1:1' | '10:16' | '16:10' | '9:16' | '16:9' | '3:2' | '2:3' | '4:3' | '3:4';
+  aspect_ratio?: '1x1' | '1x3' | '3x1' | '1x2' | '2x1' | '9x16' | '16x9' | '10x16' | '16x10' | '2x3' | '3x2' | '3x4' | '4x3' | '4x5' | '5x4';
   rendering_speed?: 'TURBO' | 'STANDARD';
   magic_prompt_option?: 'AUTO' | 'ON' | 'OFF';
   seed?: number;
@@ -35,7 +35,7 @@ class IdeogramService {
   }
 
   async generateImage(prompt: string, options: {
-    aspectRatio?: '1:1' | '10:16' | '16:10' | '9:16' | '16:9' | '3:2' | '2:3' | '4:3' | '3:4';
+    aspectRatio?: '1x1' | '1x3' | '3x1' | '1x2' | '2x1' | '9x16' | '16x9' | '10x16' | '16x10' | '2x3' | '3x2' | '3x4' | '4x3' | '4x5' | '5x4';
     styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
     magicPrompt?: 'AUTO' | 'ON' | 'OFF';
     negativePrompt?: string;
@@ -53,7 +53,7 @@ class IdeogramService {
 
       const requestData = {
         prompt: prompt,
-        aspect_ratio: options.aspectRatio || '1:1',
+        aspect_ratio: options.aspectRatio || '1x1',
         rendering_speed: 'TURBO',
         style_type: options.styleType || 'DESIGN',
         magic_prompt_option: options.magicPrompt || 'AUTO',
