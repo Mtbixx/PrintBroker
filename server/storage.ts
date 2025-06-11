@@ -994,15 +994,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteDesign(designId: string, userId: string): Promise<boolean> {
-    const designHistory = this.getStoredDesigns();
-    const designIndex = designHistory.findIndex(design => design.id === designId && design.userId === userId);
+    try {
+      const allDesigns = await this.getAllStoredDesigns();
+      const designIndex = allDesigns.findIndex(design => design.id === designId && design.userId === userId);
 
-    if (designIndex !== -1) {
-      designHistory.splice(designIndex, 1);
-      this.storeDesigns(designHistory);
-      return true;
+      if (designIndex !== -1) {
+        allDesigns.splice(designIndex, 1);
+        await this.storeDesigns(allDesigns);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error deleting design:', error);
+      return false;
     }
-    return false;
   }
 
   async bookmarkDesign(designId: string, userId: string): Promise<boolean> {

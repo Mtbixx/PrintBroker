@@ -652,26 +652,48 @@ export default function CustomerDashboard() {
 
                                     if (imageUrl) {
                                       try {
-                                        // Fetch the image and create a blob URL for reliable download
-                                        const response = await fetch(imageUrl);
-                                        const blob = await response.blob();
-                                        const blobUrl = URL.createObjectURL(blob);
-
-                                        const link = document.createElement('a');
-                                        link.href = blobUrl;
-                                        link.download = `tasarim-${design.id}-${Date.now()}.png`;
-
-                                        document.body.appendChild(link);
-                                        link.click();
-                                        document.body.removeChild(link);
-
-                                        // Clean up the blob URL
-                                        URL.revokeObjectURL(blobUrl);
-
-                                        toast({
-                                          title: "İndirme Başlatıldı",
-                                          description: "Tasarım başarıyla indirildi.",
-                                        });
+                                        // Use proxy URL to avoid CORS issues
+                                        const proxyUrl = `https://cors-anywhere.herokuapp.com/${imageUrl}`;
+                                        
+                                        // Try direct download first
+                                        try {
+                                          const response = await fetch(imageUrl, {
+                                            mode: 'no-cors'
+                                          });
+                                          const blob = await response.blob();
+                                          
+                                          const link = document.createElement('a');
+                                          link.href = URL.createObjectURL(blob);
+                                          link.download = `tasarim-${design.id}-${Date.now()}.png`;
+                                          link.style.display = 'none';
+                                          
+                                          document.body.appendChild(link);
+                                          link.click();
+                                          document.body.removeChild(link);
+                                          
+                                          URL.revokeObjectURL(link.href);
+                                          
+                                          toast({
+                                            title: "İndirme Başlatıldı",
+                                            description: "Tasarım başarıyla indirildi.",
+                                          });
+                                        } catch (fetchError) {
+                                          // Fallback: Open in new window with download intent
+                                          const link = document.createElement('a');
+                                          link.href = imageUrl;
+                                          link.download = `tasarim-${design.id}-${Date.now()}.png`;
+                                          link.target = '_blank';
+                                          link.rel = 'noopener noreferrer';
+                                          
+                                          document.body.appendChild(link);
+                                          link.click();
+                                          document.body.removeChild(link);
+                                          
+                                          toast({
+                                            title: "İndirme Başlatıldı",
+                                            description: "Tasarım yeni sekmede açıldı. Sağ tıklayıp 'Resmi farklı kaydet' seçeneğini kullanabilirsiniz.",
+                                          });
+                                        }
                                       } catch (error) {
                                         console.error('Download error:', error);
                                         toast({
@@ -697,13 +719,16 @@ export default function CustomerDashboard() {
                                   variant="secondary"
                                   onClick={async () => {
                                     try {
-                                      await apiRequest('DELETE', `/api/design/${design.id}`);
-                                      queryClient.invalidateQueries({ queryKey: ['/api/designs/history'] });
-                                      toast({
-                                        title: "Başarılı",
-                                        description: "Tasarım silindi.",
-                                      });
+                                      const response = await apiRequest('DELETE', `/api/designs/${design.id}`);
+                                      if (response) {
+                                        queryClient.invalidateQueries({ queryKey: ['/api/designs/history'] });
+                                        toast({
+                                          title: "Başarılı",
+                                          description: "Tasarım silindi.",
+                                        });
+                                      }
                                     } catch (error) {
+                                      console.error('Delete error:', error);
                                       toast({
                                         title: "Hata",
                                         description: "Tasarım silinemedi.",
