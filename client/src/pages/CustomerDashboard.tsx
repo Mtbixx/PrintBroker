@@ -41,15 +41,16 @@ export default function CustomerDashboard() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isDesignDialogOpen, setIsDesignDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [currentPage, setCurrentPage] = useState(1);
+  const queryClient = useQueryClient();
   
   // Reset to first page when new designs are created
   useEffect(() => {
     if (currentPage > 1) {
       setCurrentPage(1);
     }
-  }, [designHistory?.total]);
-  const [activeTab, setActiveTab] = useState("overview");
-  const queryClient = useQueryClient();
+  }, [currentPage]);
 
   // Enhanced authentication handling
   useEffect(() => {
@@ -95,7 +96,6 @@ export default function CustomerDashboard() {
     enabled: isAuthenticated && user?.role === 'customer',
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
   const { data: designHistory, isLoading: designsLoading } = useQuery({
     queryKey: ["/api/designs/history", currentPage],
     queryFn: () => apiRequest('GET', `/api/designs/history?page=${currentPage}&limit=12`),
@@ -661,12 +661,12 @@ export default function CustomerDashboard() {
       >
         <div className="relative">
           <MessageCircle className="h-6 w-6" />
-          {unreadCount && unreadCount > 0 && (
+          {typeof unreadCount === 'number' && unreadCount > 0 && (
             <Badge 
               variant="destructive" 
               className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
             >
-              {unreadCount > 99 ? '99+' : unreadCount}
+              {unreadCount > 99 ? '99+' : String(unreadCount)}
             </Badge>
           )}
         </div>
