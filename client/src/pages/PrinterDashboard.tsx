@@ -43,7 +43,8 @@ import {
   Receipt,
   Zap,
   Eye,
-  AlertCircle
+  AlertCircle,
+  Send
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -61,14 +62,23 @@ export default function PrinterDashboard() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const queryClient = useQueryClient();
 
+  // Teklif verme state'leri
+  const [selectedQuote, setSelectedQuote] = useState<any>(null);
+  const [quoteResponse, setQuoteResponse] = useState({
+    price: "",
+    estimatedDays: "",
+    notes: ""
+  });
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+
   // Firma profili state'leri
   const [companyProfile, setCompanyProfile] = useState({
-    companyName: "",
+    companyName: user?.companyName || "",
     logo: "",
     description: "",
     address: "",
-    phone: "",
-    email: "",
+    phone: user?.phone || "",
+    email: user?.email || "",
     website: "",
     foundedYear: "",
     employeeCount: "",
@@ -124,6 +134,26 @@ export default function PrinterDashboard() {
     refetchInterval: 30000,
   });
 
+  // Fetch quotes for printer
+  const { data: quotes, isLoading: quotesLoading, refetch: refetchQuotes } = useQuery({
+    queryKey: ["/api/quotes"],
+    enabled: isAuthenticated && user?.role === 'printer',
+    refetchInterval: 30000,
+  });
+
+  // Fetch orders for printer
+  const { data: orders, isLoading: ordersLoading } = useQuery({
+    queryKey: ["/api/orders"],
+    enabled: isAuthenticated && user?.role === 'printer',
+  });
+
+  // Fetch printer statistics
+  const { data: printerStats } = useQuery({
+    queryKey: ["/api/printer/stats"],
+    enabled: isAuthenticated && user?.role === 'printer',
+    refetchInterval: 60000,
+  });
+
   const notifications = notificationsData?.notifications || [];
   const unreadCount = notifications.filter((n: any) => !n.isRead).length;
 
@@ -164,14 +194,29 @@ export default function PrinterDashboard() {
     }
   }, [isAuthenticated, isLoading, user, toast]);
 
-  const { data: quotes, isLoading: quotesLoading } = useQuery({
-    queryKey: ["/api/quotes"],
-    enabled: isAuthenticated,
-  });
-
-  const { data: orders, isLoading: ordersLoading } = useQuery({
-    queryKey: ["/api/orders"],
-    enabled: isAuthenticated && user?.role === 'printer',
+  // Teklif verme mutation'ı
+  const submitQuoteMutation = useMutation({
+    mutationFn: async (quoteData: any) => {
+      return await apiRequest('POST', `/api/quotes/${selectedQuote.id}/printer-quotes`, quoteData);
+    },
+    onSuccess: () => {
+      setIsQuoteModalOpen(false);
+      setQuoteResponse({ price: "", estimatedDays: "", notes: "" });
+      setSelectedQuote(null);
+      toast({
+        title: "Teklif Gönderildi",
+        description: "Teklifiniz başarıyla müşteriye gönderildi.",
+      });
+      refetchQuotes();
+      queryClient.invalidateQueries({ queryKey: ['/api/notifications'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Teklif Hatası",
+        description: error.message || "Teklif gönderilirken hata oluştu",
+        variant: "destructive",
+      });
+    },
   });
 
   // Belge yükleme mutation'ı
@@ -267,9 +312,9 @@ export default function PrinterDashboard() {
   const allOrders = orders || [];
 
   // Filter quotes by status
-  const receivedQuotes = allQuotes.filter((quote: any) => quote.printerId === user.id);
-  const pendingQuotes = receivedQuotes.filter((quote: any) => quote.status === 'pending');
-  const approvedQuotes = receivedQuotes.filter((quote: any) => quote.status === 'approved');
+  const pendingQuotes = allQuotes.filter((quote: any) => quote.status === 'pending');
+  const receivedQuotes = allQuotes.filter((quote: any) => quote.status === 'received_quotes');
+  const approvedQuotes = allQuotes.filter((quote: any) => quote.status === 'approved');
   
   // Filter orders
   const activeOrders = allOrders.filter((order: any) => 
@@ -278,6 +323,40 @@ export default function PrinterDashboard() {
   const completedOrders = allOrders.filter((order: any) => 
     order.status === 'completed' && order.printerId === user.id
   );
+
+  // Calculate statistics
+  const stats = {
+    totalQuotes: allQuotes.length,
+    pendingQuotes: pendingQuotes.length,
+    approvedQuotes: approvedQuotes.length,
+    activeOrders: activeOrders.length,
+    completedOrders: completedOrders.length,
+    totalRevenue: completedOrders.reduce((sum, order) => sum + (parseFloat(order.totalAmount) || 0), 0),
+    averageRating: printerStats?.averageRating || 0,
+    totalRatings: printerStats?.totalRatings || 0
+  };
+
+  const handleQuoteResponse = (quote: any) => {
+    setSelectedQuote(quote);
+    setIsQuoteModalOpen(true);
+  };
+
+  const handleSubmitQuote = () => {
+    if (!quoteResponse.price || !quoteResponse.estimatedDays) {
+      toast({
+        title: "Eksik Bilgi",
+        description: "Lütfen fiyat ve tahmini süre bilgilerini doldurun",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    submitQuoteMutation.mutate({
+      price: parseFloat(quoteResponse.price),
+      estimatedDays: parseInt(quoteResponse.estimatedDays),
+      notes: quoteResponse.notes
+    });
+  };
 
   const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -353,11 +432,11 @@ export default function PrinterDashboard() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Genel Bakış</TabsTrigger>
+            <TabsTrigger value="quotes">Teklifler</TabsTrigger>
+            <TabsTrigger value="orders">Siparişler</TabsTrigger>
             <TabsTrigger value="verification">Doğrulama</TabsTrigger>
             <TabsTrigger value="profile">Firma Profili</TabsTrigger>
             <TabsTrigger value="products">Ürünler</TabsTrigger>
-            <TabsTrigger value="quotes">Teklifler</TabsTrigger>
-            <TabsTrigger value="orders">Siparişler</TabsTrigger>
             <TabsTrigger value="campaigns">Kampanyalar</TabsTrigger>
             <TabsTrigger value="analytics">İstatistikler</TabsTrigger>
           </TabsList>
@@ -366,26 +445,26 @@ export default function PrinterDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <StatsCard
                 title="Bekleyen Teklifler"
-                value={pendingQuotes.length}
+                value={stats.pendingQuotes}
                 icon={<Clock className="h-5 w-5 text-yellow-600" />}
                 color="bg-yellow-50"
               />
               <StatsCard
                 title="Onaylanmış İşler"
-                value={approvedQuotes.length}
+                value={stats.approvedQuotes}
                 icon={<CheckCircle className="h-5 w-5 text-green-600" />}
                 color="bg-green-50"
               />
               <StatsCard
                 title="Aktif Siparişler"
-                value={activeOrders.length}
+                value={stats.activeOrders}
                 icon={<Printer className="h-5 w-5 text-blue-600" />}
                 color="bg-blue-50"
               />
               <StatsCard
-                title="Tamamlanan İşler"
-                value={completedOrders.length}
-                icon={<Star className="h-5 w-5 text-purple-600" />}
+                title="Toplam Gelir"
+                value={`₺${stats.totalRevenue.toFixed(0)}`}
+                icon={<DollarSign className="h-5 w-5 text-purple-600" />}
                 color="bg-purple-50"
               />
             </div>
@@ -395,7 +474,7 @@ export default function PrinterDashboard() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Clock className="h-5 w-5" />
-                    Son Teklifler
+                    Son Gelen Teklifler
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -411,11 +490,19 @@ export default function PrinterDashboard() {
                             <h4 className="font-medium">{quote.title || quote.type}</h4>
                             <p className="text-sm text-gray-600">{quote.quantity} adet</p>
                           </div>
-                          <div className="text-right">
-                            <p className="font-semibold text-green-600">₺{quote.estimatedBudget}</p>
-                            <Badge variant="secondary" className="text-xs">
-                              {quote.status === 'pending' ? 'Bekliyor' : 'Değerlendiriliyor'}
-                            </Badge>
+                          <div className="text-right flex items-center gap-2">
+                            <div>
+                              <p className="font-semibold text-green-600">₺{quote.estimatedBudget || quote.budget || '0'}</p>
+                              <Badge variant="secondary" className="text-xs">
+                                Yeni Teklif
+                              </Badge>
+                            </div>
+                            <Button
+                              size="sm"
+                              onClick={() => handleQuoteResponse(quote)}
+                            >
+                              Teklif Ver
+                            </Button>
                           </div>
                         </div>
                       ))}
@@ -432,45 +519,147 @@ export default function PrinterDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Printer className="h-5 w-5" />
-                    Aktif Siparişler
+                    <BarChart3 className="h-5 w-5" />
+                    Performans Özeti
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {ordersLoading ? (
-                    <div className="flex justify-center py-8">
-                      <StackedPapersLoader size={60} color="#8B5CF6" />
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Toplam Teklif</span>
+                      <span className="font-semibold">{stats.totalQuotes}</span>
                     </div>
-                  ) : activeOrders.length > 0 ? (
-                    <div className="space-y-4">
-                      {activeOrders.slice(0, 3).map((order: any) => (
-                        <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div>
-                            <h4 className="font-medium">{order.title}</h4>
-                            <p className="text-sm text-gray-600">
-                              {new Date(order.createdAt).toLocaleDateString('tr-TR')}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <Badge 
-                              variant={order.status === 'in_progress' ? 'default' : 'secondary'}
-                              className="text-xs"
-                            >
-                              {order.status === 'in_progress' ? 'Üretimde' : 'Bekliyor'}
-                            </Badge>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Tamamlanan İş</span>
+                      <span className="font-semibold">{stats.completedOrders}</span>
                     </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <Printer className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">Aktif sipariş yok</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Müşteri Puanı</span>
+                      <div className="flex items-center gap-2">
+                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <span className="font-semibold">{stats.averageRating.toFixed(1)}</span>
+                        <span className="text-xs text-gray-500">({stats.totalRatings})</span>
+                      </div>
                     </div>
-                  )}
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Bu Ay Gelir</span>
+                      <span className="font-semibold text-green-600">₺{stats.totalRevenue.toFixed(0)}</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="quotes" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Gelen Teklifler
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {quotesLoading ? (
+                  <div className="flex justify-center py-8">
+                    <StackedPapersLoader size={60} color="#8B5CF6" />
+                  </div>
+                ) : allQuotes.length > 0 ? (
+                  <div className="space-y-4">
+                    {allQuotes.map((quote: any) => (
+                      <div key={quote.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg">{quote.title}</h3>
+                            <p className="text-gray-600 mt-1">{quote.description}</p>
+                            <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                              <span>Adet: {quote.quantity}</span>
+                              <span>Bütçe: ₺{quote.estimatedBudget || quote.budget || 'Belirtilmemiş'}</span>
+                              <span>Tarih: {new Date(quote.createdAt).toLocaleDateString('tr-TR')}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge 
+                              variant={
+                                quote.status === 'pending' ? 'secondary' :
+                                quote.status === 'received_quotes' ? 'default' :
+                                quote.status === 'approved' ? 'default' : 'secondary'
+                              }
+                            >
+                              {quote.status === 'pending' ? 'Bekliyor' :
+                               quote.status === 'received_quotes' ? 'Teklif Verildi' :
+                               quote.status === 'approved' ? 'Onaylandı' : 'Diğer'}
+                            </Badge>
+                            {quote.status === 'pending' && (
+                              <Button 
+                                size="sm"
+                                onClick={() => handleQuoteResponse(quote)}
+                              >
+                                <Send className="h-4 w-4 mr-2" />
+                                Teklif Ver
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <FileText className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500">Henüz teklif talebi yok</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="orders">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Printer className="h-5 w-5" />
+                  Sipariş Yönetimi
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {ordersLoading ? (
+                  <div className="flex justify-center py-8">
+                    <StackedPapersLoader size={60} color="#8B5CF6" />
+                  </div>
+                ) : allOrders.length > 0 ? (
+                  <div className="space-y-4">
+                    {allOrders.map((order: any) => (
+                      <div key={order.id} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-semibold">Sipariş #{order.id}</h3>
+                            <p className="text-gray-600">Tutar: ₺{order.totalAmount}</p>
+                            <p className="text-sm text-gray-500">
+                              {new Date(order.createdAt).toLocaleDateString('tr-TR')}
+                            </p>
+                          </div>
+                          <Badge 
+                            variant={
+                              order.status === 'in_progress' ? 'default' :
+                              order.status === 'completed' ? 'default' : 'secondary'
+                            }
+                          >
+                            {order.status === 'in_progress' ? 'Üretimde' :
+                             order.status === 'completed' ? 'Tamamlandı' : order.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <Printer className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600">Henüz sipariş yok</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="verification" className="space-y-6">
@@ -523,14 +712,6 @@ export default function PrinterDashboard() {
                            verificationStatus.status === 'approved' ? 'Onaylandı' : 'Reddedildi'}
                         </Badge>
                       </div>
-                      {verificationStatus.submitDate && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm">Başvuru Tarihi:</span>
-                          <span className="text-sm font-medium">
-                            {new Date(verificationStatus.submitDate).toLocaleDateString('tr-TR')}
-                          </span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -900,34 +1081,6 @@ export default function PrinterDashboard() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="quotes">
-            <Card>
-              <CardHeader>
-                <CardTitle>Teklif Yönetimi</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Teklif yönetim sistemi yakında aktif olacak</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="orders">
-            <Card>
-              <CardHeader>
-                <CardTitle>Sipariş Yönetimi</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Printer className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">Sipariş yönetim sistemi yakında aktif olacak</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
           <TabsContent value="campaigns" className="space-y-6">
             <Card>
               <CardHeader>
@@ -976,17 +1129,179 @@ export default function PrinterDashboard() {
           <TabsContent value="analytics">
             <Card>
               <CardHeader>
-                <CardTitle>İstatistikler</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Detaylı İstatistikler
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <BarChart3 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">İstatistik paneli yakında aktif olacak</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-blue-800">Teklif İstatistikleri</h3>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-blue-600">Toplam Teklif:</span>
+                        <span className="font-semibold">{stats.totalQuotes}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-blue-600">Bekleyen:</span>
+                        <span className="font-semibold">{stats.pendingQuotes}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-blue-600">Onaylanan:</span>
+                        <span className="font-semibold">{stats.approvedQuotes}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-green-800">Sipariş İstatistikleri</h3>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-green-600">Aktif Sipariş:</span>
+                        <span className="font-semibold">{stats.activeOrders}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-green-600">Tamamlanan:</span>
+                        <span className="font-semibold">{stats.completedOrders}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-green-600">Toplam Gelir:</span>
+                        <span className="font-semibold">₺{stats.totalRevenue.toFixed(0)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-purple-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-purple-800">Müşteri Memnuniyeti</h3>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-purple-600">Ortalama Puan:</span>
+                        <span className="font-semibold">{stats.averageRating.toFixed(1)}/5</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-purple-600">Toplam Değerlendirme:</span>
+                        <span className="font-semibold">{stats.totalRatings}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Teklif Verme Modal */}
+        <Dialog open={isQuoteModalOpen} onOpenChange={setIsQuoteModalOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Teklif Ver</DialogTitle>
+              <DialogDescription>
+                "{selectedQuote?.title}" için teklif verin
+              </DialogDescription>
+            </DialogHeader>
+            
+            {selectedQuote && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold mb-2">Teklif Detayları</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Proje:</span>
+                      <p className="font-medium">{selectedQuote.title}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Adet:</span>
+                      <p className="font-medium">{selectedQuote.quantity}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Bütçe:</span>
+                      <p className="font-medium">₺{selectedQuote.estimatedBudget || selectedQuote.budget || 'Belirtilmemiş'}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Tarih:</span>
+                      <p className="font-medium">{new Date(selectedQuote.createdAt).toLocaleDateString('tr-TR')}</p>
+                    </div>
+                  </div>
+                  {selectedQuote.description && (
+                    <div className="mt-3">
+                      <span className="text-gray-600">Açıklama:</span>
+                      <p className="text-sm mt-1">{selectedQuote.description}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="price">Fiyat (₺) *</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      placeholder="Teklif fiyatınız"
+                      value={quoteResponse.price}
+                      onChange={(e) => setQuoteResponse(prev => ({
+                        ...prev,
+                        price: e.target.value
+                      }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="estimatedDays">Tahmini Süre (Gün) *</Label>
+                    <Input
+                      id="estimatedDays"
+                      type="number"
+                      placeholder="Teslim süresi"
+                      value={quoteResponse.estimatedDays}
+                      onChange={(e) => setQuoteResponse(prev => ({
+                        ...prev,
+                        estimatedDays: e.target.value
+                      }))}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="notes">Notlar</Label>
+                  <Textarea
+                    id="notes"
+                    placeholder="Teklif detayları, özel şartlar vb."
+                    value={quoteResponse.notes}
+                    onChange={(e) => setQuoteResponse(prev => ({
+                      ...prev,
+                      notes: e.target.value
+                    }))}
+                    rows={3}
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsQuoteModalOpen(false)}
+                  >
+                    İptal
+                  </Button>
+                  <Button 
+                    onClick={handleSubmitQuote}
+                    disabled={submitQuoteMutation.isPending}
+                  >
+                    {submitQuoteMutation.isPending ? (
+                      <>
+                        <InkDropletsLoader size={16} color="white" />
+                        Gönderiliyor...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4 mr-2" />
+                        Teklif Gönder
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
