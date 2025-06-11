@@ -793,18 +793,18 @@ export class DatabaseStorage implements IStorage {
     createdAt: Date;
   }): Promise<any> {
     // Store in memory for now - in production this would be in database
-    const notifications = this.getStoredNotifications();
+    const notifications = await this.getStoredNotifications();
     const newNotification = {
       id: crypto.randomUUID(),
       ...notification
     };
     notifications.push(newNotification);
-    this.storeNotifications(notifications);
+    await this.storeNotifications(notifications);
     return newNotification;
   }
 
   async getNotifications(userId: string): Promise<any[]> {
-    const notifications = this.getStoredNotifications();
+    const notifications = await this.getStoredNotifications();
     return notifications
       .filter(notification => notification.userId === userId)
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -812,18 +812,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async markNotificationAsRead(notificationId: string, userId: string): Promise<void> {
-    const notifications = this.getStoredNotifications();
+    const notifications = await this.getStoredNotifications();
     const notification = notifications.find(n => n.id === notificationId && n.userId === userId);
     if (notification) {
       notification.isRead = true;
-      this.storeNotifications(notifications);
+      await this.storeNotifications(notifications);
     }
   }
 
-  private getStoredNotifications(): any[] {
+  private async getStoredNotifications(): Promise<any[]> {
     try {
-      const fs = require('fs');
-      const path = require('path');
+      const fs = await import('fs');
+      const path = await import('path');
       const filePath = path.join(process.cwd(), 'notifications.json');
       if (fs.existsSync(filePath)) {
         return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -834,10 +834,10 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  private storeNotifications(notifications: any[]) {
+  private async storeNotifications(notifications: any[]) {
     try {
-      const fs = require('fs');
-      const path = require('path');
+      const fs = await import('fs');
+      const path = await import('path');
       const filePath = path.join(process.cwd(), 'notifications.json');
       fs.writeFileSync(filePath, JSON.stringify(notifications, null, 2));
     } catch (error) {
