@@ -322,8 +322,6 @@ export default function DesignEngine() {
       setBatchPrompts(batchPrompts.filter((_, i) => i !== index));
     }
   };
-  const [styleType, setStyleType] = useState('GENERAL');
-
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
       {/* Header */}
@@ -555,6 +553,26 @@ export default function DesignEngine() {
                     </Select>
                   </div>
 
+                  <div>
+                    <Label>Stil Türü</Label>
+                    <Select
+                      value={designOptions.styleType}
+                      onValueChange={(value) => setDesignOptions({...designOptions, styleType: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="AUTO">Otomatik</SelectItem>
+                        <SelectItem value="GENERAL">Genel</SelectItem>
+                        <SelectItem value="REALISTIC">Gerçekçi</SelectItem>
+                        <SelectItem value="DESIGN">Tasarım</SelectItem>
+                        <SelectItem value="RENDER_3D">3D Render</SelectItem>
+                        <SelectItem value="ANIME">Anime</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="model">Model</Label>
@@ -575,14 +593,14 @@ export default function DesignEngine() {
                   <div>
                     <Label htmlFor="resolution">Çözünürlük (Opsiyonel)</Label>
                     <Select 
-                      value={designOptions.resolution} 
-                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, resolution: value }))}
+                      value={designOptions.resolution || "default"} 
+                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, resolution: value === "default" ? "" : value }))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Varsayılan" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Varsayılan</SelectItem>
+                        <SelectItem value="default">Varsayılan</SelectItem>
                         <SelectItem value="512x512">512x512</SelectItem>
                         <SelectItem value="768x768">768x768</SelectItem>
                         <SelectItem value="1024x1024">1024x1024 (HD)</SelectItem>
