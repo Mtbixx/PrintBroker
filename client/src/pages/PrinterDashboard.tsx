@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import {
   Users,
@@ -48,6 +47,214 @@ import StatsCard from "@/components/StatsCard";
 import Navigation from "@/components/Navigation";
 import FirmVerificationPanel from "@/components/FirmVerificationPanel";
 import { InkDropletsLoader } from "@/components/Loaders";
+
+// QuoteFilesViewer Component
+function QuoteFilesViewer({ quoteId }: { quoteId: string }) {
+  const [files, setFiles] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await apiRequest('GET', `/api/quotes/${quoteId}/files`);
+
+        if (response.success) {
+          setFiles(response.files || []);
+        } else {
+          setFiles([]);
+        }
+      } catch (err) {
+        console.error('Error fetching quote files:', err);
+        setError('Dosyalar yüklenirken hata oluştu');
+        setFiles([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (quoteId) {
+      fetchFiles();
+    }
+  }, [quoteId]);
+
+  const getFileIcon = (fileName: string, mimeType?: string) => {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+
+    if (mimeType?.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(extension || '')) {
+      return '🖼️';
+    } else if (extension === 'pdf' || mimeType === 'application/pdf') {
+      return '📄';
+    } else if (['ai', 'eps', 'svg'].includes(extension || '')) {
+      return '🎨';
+    } else {
+      return '📁';
+    }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const handleDownload = async (file: any) => {
+    try {
+      const response = await fetch(`/api/files/${file.filename}`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.originalName || file.filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        throw new Error('Dosya indirilemedi');
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+      alert('Dosya indirirken hata oluştu');
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span className="ml-2 text-gray-600">Dosyalar yükleniyor...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="flex items-center">
+          <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
+          <span className="text-red-800">{error}</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (files.length === 0) {
+    return (
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+        <FileText className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+        <p className="text-gray-600">Bu teklif için henüz dosya yüklenmemiş</p>
+        <p className="text-sm text-gray-500 mt-1">Müşteri dosya yüklediğinde burada görünecektir</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <Package className="h-5 w-5 text-blue-600 mr-2" />
+            <span className="font-medium text-blue-800">
+              {files.length} dosya bulundu
+            </span>
+          </div>
+          <Badge variant="secondary">
+            Toplam: {files.reduce((acc, file) => acc + (file.size || 0), 0) > 0 ? 
+              formatFileSize(files.reduce((acc, file) => acc + (file.size || 0), 0)) : 'Bilinmiyor'}
+          </Badge>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {files.map((file, index) => (
+          <div key={file.id || index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start space-x-3 flex-1">
+                <span className="text-2xl">{getFileIcon(file.originalName || file.filename, file.mimeType)}</span>
+                <div className="flex-1 min-w-0">
+                  <h5 className="font-medium text-gray-900 truncate">
+                    {file.originalName || file.filename}
+                  </h5>
+                  <div className="mt-1 space-y-1">
+                    {file.size && (
+                      <p className="text-sm text-gray-500">
+                        Boyut: {formatFileSize(file.size)}
+                      </p>
+                    )}
+                    {file.mimeType && (
+                      <p className="text-xs text-gray-400">
+                        Tür: {file.mimeType}
+                      </p>
+                    )}
+                    {file.createdAt && (
+                      <p className="text-xs text-gray-400">
+                        Yükleme: {new Date(file.createdAt).toLocaleDateString('tr-TR')}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* File status */}
+                  <div className="mt-2">
+                    <Badge 
+                      variant={file.status === 'ready' ? 'default' : 
+                              file.status === 'processing' ? 'secondary' : 'destructive'}
+                      className="text-xs"
+                    >
+                      {file.status === 'ready' ? 'Hazır' :
+                       file.status === 'processing' ? 'İşleniyor' :
+                       file.status === 'error' ? 'Hata' : 'Bilinmiyor'}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 ml-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleDownload(file)}
+                  className="flex items-center gap-1"
+                >
+                  <Download className="h-3 w-3" />
+                  İndir
+                </Button>
+
+                {file.mimeType?.startsWith('image/') && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => window.open(`/api/files/${file.filename}`, '_blank')}
+                    className="flex items-center gap-1"
+                  >
+                    <Eye className="h-3 w-3" />
+                    Görüntüle
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Processing notes */}
+            {file.processingNotes && (
+              <div className="mt-3 p-2 bg-gray-50 rounded text-xs text-gray-600">
+                <strong>Analiz:</strong> {file.processingNotes}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function PrinterDashboard() {
   const { toast } = useToast();
@@ -1106,6 +1313,183 @@ export default function PrinterDashboard() {
             <Chat />
           </DialogContent>
         </Dialog>
+              {/* Quote Details Modal */}
+              {selectedQuote && (
+                <Dialog open={!!selectedQuote} onOpenChange={() => setSelectedQuote(null)}>
+                  <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        Teklif Detayları
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <Package className="h-4 w-4" />
+                            Genel Bilgiler
+                          </h4>
+                          <div className="space-y-3 text-sm bg-gray-50 p-4 rounded-lg">
+                            <p><span className="font-medium text-gray-700">Başlık:</span> <span className="text-gray-900">{selectedQuote.title}</span></p>
+                            <p><span className="font-medium text-gray-700">Açıklama:</span> <span className="text-gray-900">{selectedQuote.description || 'Belirtilmemiş'}</span></p>
+                            <p><span className="font-medium text-gray-700">Kategori:</span> <span className="text-gray-900">{selectedQuote.category || selectedQuote.type}</span></p>
+                            <p><span className="font-medium text-gray-700">Durum:</span> 
+                              <Badge className="ml-2" variant={selectedQuote.status === 'pending' ? 'secondary' : 'default'}>
+                                {selectedQuote.status === 'pending' ? 'Bekliyor' : 
+                                 selectedQuote.status === 'received_quotes' ? 'Teklifler Alındı' : 
+                                 selectedQuote.status === 'approved' ? 'Onaylandı' : selectedQuote.status}
+                              </Badge>
+                            </p>
+                            <p><span className="font-medium text-gray-700">Tarih:</span> <span className="text-gray-900">{new Date(selectedQuote.createdAt).toLocaleDateString('tr-TR')}</span></p>
+                            {selectedQuote.deadline && (
+                              <p><span className="font-medium text-gray-700">Termin:</span> <span className="text-gray-900">{new Date(selectedQuote.deadline).toLocaleDateString('tr-TR')}</span></p>
+                            )}
+                            {selectedQuote.budget && (
+                              <p><span className="font-medium text-gray-700">Bütçe:</span> <span className="text-green-600 font-semibold">₺{selectedQuote.budget}</span></p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <Settings className="h-4 w-4" />
+                            Teknik Özellikler
+                          </h4>
+                          <div className="space-y-3 text-sm bg-blue-50 p-4 rounded-lg">
+                            {selectedQuote.specifications && Object.keys(selectedQuote.specifications).length > 0 ? (
+                              Object.entries(selectedQuote.specifications).map(([key, value]) => {
+                                if (value && key !== 'uploadedFiles') {
+                                  return (
+                                    <p key={key}>
+                                      <span className="font-medium text-blue-700 capitalize">
+                                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+                                      </span> 
+                                      <span className="text-blue-900 ml-2">{String(value)}</span>
+                                    </p>
+                                  );
+                                }
+                                return null;
+                              })
+                            ) : (
+                              <p className="text-gray-500 italic">Teknik özellik belirtilmemiş</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Customer Contact Info */}
+                      {selectedQuote.contactInfo && (
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            Müşteri İletişim Bilgileri
+                          </h4>
+                          <div className="bg-green-50 p-4 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            {selectedQuote.contactInfo.companyName && (
+                              <p><span className="font-medium text-green-700">Firma:</span> <span className="text-green-900">{selectedQuote.contactInfo.companyName}</span></p>
+                            )}
+                            {selectedQuote.contactInfo.contactName && (
+                              <p><span className="font-medium text-green-700">Yetkili:</span> <span className="text-green-900">{selectedQuote.contactInfo.contactName}</span></p>
+                            )}
+                            {selectedQuote.contactInfo.email && (
+                              <p><span className="font-medium text-green-700">E-posta:</span> <span className="text-green-900">{selectedQuote.contactInfo.email}</span></p>
+                            )}
+                            {selectedQuote.contactInfo.phone && (
+                              <p><span className="font-medium text-green-700">Telefon:</span> <span className="text-green-900">{selectedQuote.contactInfo.phone}</span></p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Customer Files Section */}
+                      <div>
+                        <h4 className="font-semibold mb-3 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          Müşteri Dosyaları
+                        </h4>
+                        <QuoteFilesViewer quoteId={selectedQuote.id} />
+                      </div>
+
+                      {/* Quote Response Form */}
+                      {selectedQuote.status === 'pending' && (
+                        <div className="border-t pt-6">
+                          <h4 className="font-semibold mb-4 flex items-center gap-2">
+                            <Send className="h-4 w-4" />
+                            Teklif Ver
+                          </h4>
+                          <form onSubmit={handleQuoteResponse} className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <Label htmlFor="price">Fiyat (₺) *</Label>
+                                <Input
+                                  id="price"
+                                  type="number"
+                                  step="0.01"
+                                  min="0"
+                                  value={quoteResponse.price}
+                                  onChange={(e) => setQuoteResponse(prev => ({
+                                    ...prev,
+                                    price: e.target.value
+                                  }))}
+                                  placeholder="Örn: 1250.00"
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="estimatedDays">Tahmini Süre (Gün) *</Label>
+                                <Input
+                                  id="estimatedDays"
+                                  type="number"
+                                  min="1"
+                                  value={quoteResponse.estimatedDays}
+                                  onChange={(e) => setQuoteResponse(prev => ({
+                                    ...prev,
+                                    estimatedDays: e.target.value
+                                  }))}
+                                  placeholder="Örn: 5"
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <Label htmlFor="notes">Teklifiniz ve Notlar</Label>
+                              <Textarea
+                                id="notes"
+                                value={quoteResponse.notes}
+                                onChange={(e) => setQuoteResponse(prev => ({
+                                  ...prev,
+                                  notes: e.target.value
+                                }))}
+                                placeholder="Teklifinizle ilgili detayları, özel koşulları ve notları buraya yazabilirsiniz..."
+                                rows={4}
+                              />
+                            </div>
+                            <div className="flex gap-2 pt-4">
+                              <Button type="submit" onClick={handleSubmitQuote} disabled={submitQuoteMutation.isPending} className="bg-green-600 hover:bg-green-700">
+                                {submitQuoteMutation.isPending ? (
+                                  <>
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                    Gönderiliyor...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Send className="h-4 w-4 mr-2" />
+                                    Teklif Gönder
+                                  </>
+                                )}
+                              </Button>
+                              <Button type="button" variant="outline" onClick={() => setSelectedQuote(null)}>
+                                İptal
+                              </Button>
+                            </div>
+                          </form>
+                        </div>
+                      )}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
       </main>
     </div>
   );

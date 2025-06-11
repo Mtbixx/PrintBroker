@@ -878,35 +878,35 @@ export class DatabaseStorage implements IStorage {
       // Enhanced design object with proper URL extraction for Ideogram V3
       const extractImageUrl = (result: any) => {
         if (!result) return null;
-        
+
         // Direct URL
         if (typeof result === 'string' && result.startsWith('http')) {
           return result;
         }
-        
+
         // Check url property
         if (result.url) return result.url;
-        
+
         // Ideogram V3 response format: data array
         if (result.data && Array.isArray(result.data) && result.data[0]?.url) {
           return result.data[0].url;
         }
-        
+
         // Ideogram V3 numbered format (0, 1, 2...)
         if (result['0'] && result['0'].url) {
           return result['0'].url;
         }
-        
+
         // Legacy format support
         if (Array.isArray(result) && result[0]?.url) {
           return result[0].url;
         }
-        
+
         return null;
       };
 
       const imageUrl = extractImageUrl(data.result);
-      
+
       const newDesign = {
         id: (await import('crypto')).randomUUID(),
         userId: data.userId,
@@ -973,7 +973,7 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error fetching design history:', error);
       return {
-        designs: [],
+        designs: [],```text
         total: 0,
         page: options.page,
         totalPages: 0
@@ -1040,7 +1040,21 @@ export class DatabaseStorage implements IStorage {
     return false;
   }
 
+  async getFilesByUser(userId: string): Promise<File[]> {
+    return await db
+      .select()
+      .from(files)
+      .where(eq(files.uploadedBy, userId))
+      .orderBy(desc(files.createdAt));
+  }
 
+  async getFilesByQuote(quoteId: string): Promise<File[]> {
+    return await db
+      .select()
+      .from(files)
+      .where(eq(files.quoteId, quoteId))
+      .orderBy(desc(files.createdAt));
+  }
 }
 
 export const storage = new DatabaseStorage();

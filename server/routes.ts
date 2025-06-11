@@ -1491,17 +1491,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied to quote files" });
       }
 
-      // Get files for this quote
-      const files = await storage.getFilesByQuote(quoteId);
+      // Get files for this quote - try multiple approaches
+      let files = [];
+      
+      try {
+        // Method 1: Try storage.getFilesByQuote if available
+        if (storage.getFilesByQuote) {
+          files = await storage.getFilesByQuote(quoteId);
+        }
+      } catch (err) {
+        console.log("Method 1 failed, trying alternative approaches");
+      }
+
+      // Method 2: If no files found, check quote specifications for uploadedFiles
+      if (!files || files.length === 0) {
+        if (quote.specifications && quote.specifications.uploadedFiles) {
+          const uploadedFileNames = Array.isArray(quote.specifications.uploadedFiles) 
+            ? quote.specifications.uploadedFiles 
+            : [quote.specifications.uploadedFiles];
+          
+          // Get all files and filter by uploaded file names
+          try {
+            const allFiles = await storage.getAllFiles ? await storage.getAllFiles() : [];
+            files = allFiles.filter(file => 
+              uploadedFileNames.includes(file.filename) || 
+              uploadedFileNames.includes(file.originalName)
+            );
+          } catch (err) {
+            console.log("Method 2 failed, trying method 3");
+          }
+        }
+      }
+
+      // Method 3: Get files by customer ID (if quote has customerId)
+      if (!files || files.length === 0) {
+        if (quote.customerId) {
+          try {
+            const customerFiles = await storage.getFilesByUser(quote.customerId);
+            // Filter files created around the quote creation time (within 24 hours)
+            const quoteDate = new Date(quote.createdAt);
+            const oneDayBefore = new Date(quoteDate.getTime() - 24 * 60 * 60 * 1000);
+            const oneDayAfter = new Date(quoteDate.getTime() + 24 * 60 * 60 * 1000);
+            
+            files = customerFiles.filter(file => {
+              const fileDate = new Date(file.createdAt || file.uploadedAt);
+              return fileDate >= oneDayBefore && fileDate <= oneDayAfter;
+            });
+          } catch (err) {
+            console.log("Method 3 failed");
+          }
+        }
+      }
+
+      // Ensure files is always an array
+      if (!files) {
+        files = [];
+      }
+
+      console.log(`Found ${files.length} files for quote ${quoteId}`);
       
       res.json({ 
         success: true, 
-        files: files || [],
-        quoteId: quoteId 
+        files: files,
+        quoteId: quoteId,
+        method: files.length > 0 ? 'found' : 'not_found'
       });
     } catch (error) {
       console.error("Error fetching quote files:", error);
-      res.status(500).json({ message: "Failed to fetch quote files" });
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to fetch quote files",
+        files: []
+      });
     }
   });
 
