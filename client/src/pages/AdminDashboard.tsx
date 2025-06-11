@@ -2,37 +2,30 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "wouter";
 import {
-  Plus,
   Users,
   FileText,
   DollarSign,
-  TrendingUp,
-  AlertCircle,
   CheckCircle,
-  Clock,
   Settings,
-  Shield,
-  Activity,
-  Database,
-  Server,
-  Zap,
   BarChart3,
-  MessageCircle,
-  UserCheck,
-  UserX,
-  Filter,
-  Download,
-  RefreshCw,
-  Eye,
+  Printer,
+  Star,
+  Bell,
+  Activity,
+  TrendingUp,
+  Target,
+  Award,
+  User,
   Edit,
   Trash2,
-  Bell
+  AlertCircle,
+  Package
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Chat from "@/components/Chat";
@@ -113,6 +106,16 @@ export default function AdminDashboard() {
 
   const { data: activity, isLoading: activityLoading } = useQuery({
     queryKey: ["/api/admin/activity"],
+    enabled: isAuthenticated && user?.role === 'admin',
+  });
+
+  const { data: quotes, isLoading: quotesLoading } = useQuery({
+    queryKey: ["/api/admin/quotes"],
+    enabled: isAuthenticated && user?.role === 'admin',
+  });
+
+  const { data: orders, isLoading: ordersLoading } = useQuery({
+    queryKey: ["/api/admin/orders"],
     enabled: isAuthenticated && user?.role === 'admin',
   });
 
@@ -231,139 +234,250 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Admin Stats */}
+        {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <StatsCard
-            title="Aktif Müşteriler"
-            value={statsLoading ? "..." : stats?.customers || 0}
+            title="Toplam Kullanıcı"
+            value={stats?.totalUsers || 0}
             icon={<Users className="h-5 w-5 text-blue-600" />}
             color="bg-blue-50"
           />
           <StatsCard
-            title="Matbaa Sayısı"
-            value={statsLoading ? "..." : stats?.printers || 0}
-            icon={<Building2 className="h-5 w-5 text-orange-600" />}
-            color="bg-orange-50"
+            title="Bekleyen Teklifler"
+            value={stats?.pendingQuotes || 0}
+            icon={<FileText className="h-5 w-5 text-yellow-600" />}
+            color="bg-yellow-50"
           />
           <StatsCard
-            title="Toplam Teklif"
-            value={statsLoading ? "..." : stats?.quotes || 0}
-            icon={<FileText className="h-5 w-5 text-green-600" />}
+            title="Aylık Gelir"
+            value={`₺${(stats?.monthlyRevenue || 0).toLocaleString()}`}
+            icon={<DollarSign className="h-5 w-5 text-green-600" />}
             color="bg-green-50"
           />
           <StatsCard
-            title="Toplam Sipariş"
-            value={statsLoading ? "..." : stats?.orders || 0}
-            icon={<ShoppingCart className="h-5 w-5 text-purple-600" />}
+            title="Tamamlanan İşler"
+            value={stats?.completedOrders || 0}
+            icon={<CheckCircle className="h-5 w-5 text-purple-600" />}
             color="bg-purple-50"
           />
         </div>
 
+        {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Genel Bakış</TabsTrigger>
-          <TabsTrigger value="users">Kullanıcılar</TabsTrigger>
-          <TabsTrigger value="monitoring">İzleme</TabsTrigger>
-          <TabsTrigger value="ideogram">Ideogram</TabsTrigger>
-          <TabsTrigger value="reports">Raporlar</TabsTrigger>
-        </TabsList>
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Recent Users */}
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="overview">Genel Bakış</TabsTrigger>
+            <TabsTrigger value="users">Kullanıcılar</TabsTrigger>
+            <TabsTrigger value="quotes">Teklifler</TabsTrigger>
+            <TabsTrigger value="orders">Siparişler</TabsTrigger>
+            <TabsTrigger value="analytics">Analizler</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="users" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Son Kullanıcılar</CardTitle>
+                <CardTitle>Kullanıcı Yönetimi</CardTitle>
+                <CardDescription>
+                  Sistemdeki tüm kullanıcıları görüntüleyin ve yönetin
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {usersLoading ? (
-                  <div className="space-y-3">
-                    {[...Array(5)].map((_, i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="h-12 bg-gray-200 rounded"></div>
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {users?.map((user: any) => (
+                      <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                            <User className="h-5 w-5 text-gray-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium">{user.firstName} {user.lastName}</h4>
+                            <p className="text-sm text-gray-600">{user.email}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge variant={user.role === 'admin' ? 'destructive' : user.role === 'printer' ? 'default' : 'secondary'}>
+                                {user.role === 'admin' ? 'Admin' : user.role === 'printer' ? 'Matbaa' : 'Müşteri'}
+                              </Badge>
+                              <Badge variant={user.isActive ? 'default' : 'secondary'}>
+                                {user.isActive ? 'Aktif' : 'Pasif'}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button variant="outline" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-red-600">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
-                ) : users && users.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Kullanıcı</TableHead>
-                        <TableHead>Rol</TableHead>
-                        <TableHead>Tarih</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {users.slice(0, 5).map((user: any) => (
-                        <TableRow key={user.id}>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{user.firstName} {user.lastName}</p>
-                              <p className="text-sm text-gray-600">{user.email}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell>{getRoleBadge(user.role)}</TableCell>
-                          <TableCell className="text-sm text-gray-600">
-                            {new Date(user.createdAt).toLocaleDateString('tr-TR')}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <p className="text-gray-600 text-center py-4">Kullanıcı bulunamadı.</p>
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
 
-            {/* Recent Activity */}
+          <TabsContent value="quotes" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Son Aktiviteler</CardTitle>
+                <CardTitle>Teklif Yönetimi</CardTitle>
+                <CardDescription>
+                  Gelen teklif taleplerini görüntüleyin ve yanıtlayın
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                {activityLoading ? (
-                  <div className="space-y-3">
-                    {[...Array(5)].map((_, i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="h-12 bg-gray-200 rounded"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : activity && activity.length > 0 ? (
-                  <div className="space-y-3">
-                    {activity.map((item: any, index: number) => (
-                      <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                          {item.type === 'quote' ? (
-                            <FileText className="text-blue-600 text-sm" />
-                          ) : (
-                            <ShoppingCart className="text-green-600 text-sm" />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm text-gray-900">
-                            {item.type === 'quote' ? 'Yeni teklif: ' : 'Yeni sipariş: '}
-                            <span className="font-medium">{item.description}</span>
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {new Date(item.createdAt).toLocaleDateString('tr-TR')}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                {quotesLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                   </div>
                 ) : (
-                  <p className="text-gray-600 text-center py-4">Aktivite bulunamadı.</p>
+                  <div className="space-y-4">
+                    {quotes?.map((quote: any) => (
+                      <div key={quote.id} className="border rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <h4 className="font-medium">{quote.title}</h4>
+                            <p className="text-sm text-gray-600">{quote.description}</p>
+                          </div>
+                          <Badge variant={quote.status === 'pending' ? 'secondary' : 'default'}>
+                            {quote.status === 'pending' ? 'Bekliyor' : 
+                             quote.status === 'received_quotes' ? 'Teklifler Alındı' : 
+                             quote.status === 'approved' ? 'Onaylandı' : quote.status}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm text-gray-600">
+                            <span>Bütçe: ₺{quote.budget}</span>
+                            <span className="ml-4">Tarih: {new Date(quote.createdAt).toLocaleDateString('tr-TR')}</span>
+                          </div>
+                          {quote.status === 'pending' && (
+                            <Button size="sm">
+                              Teklif Ver
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </CardContent>
             </Card>
-          </div>
-        </TabsContent>
+          </TabsContent>
 
-        {/* Users Tab */}
-        <TabsContent value="users">
-          <div>Kullanıcı Yönetimi</div>
-        </TabsContent>
+          <TabsContent value="orders" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Sipariş Yönetimi</CardTitle>
+                <CardDescription>
+                  Tüm siparişleri görüntüleyin ve takip edin
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {ordersLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {orders?.map((order: any) => (
+                      <div key={order.id} className="border rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <h4 className="font-medium">Sipariş #{order.id}</h4>
+                            <p className="text-sm text-gray-600">Tutar: ₺{order.totalAmount}</p>
+                          </div>
+                          <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
+                            {order.status === 'completed' ? 'Tamamlandı' : 
+                             order.status === 'in_progress' ? 'Üretimde' : 
+                             order.status === 'pending' ? 'Bekliyor' : order.status}
+                          </Badge>
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          Tarih: {new Date(order.createdAt).toLocaleDateString('tr-TR')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Son Aktiviteler</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {activityLoading ? (
+                    <div className="flex justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {activity?.map((item: any, index: number) => (
+                        <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            {item.type === 'quote' ? (
+                              <FileText className="h-4 w-4 text-blue-600" />
+                            ) : (
+                              <Package className="h-4 w-4 text-green-600" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">{item.description}</p>
+                            <p className="text-xs text-gray-500">
+                              {new Date(item.createdAt).toLocaleString('tr-TR')}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sistem İstatistikleri</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Müşteri Sayısı</span>
+                      <span className="text-sm">{stats?.totalCustomers || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Matbaa Sayısı</span>
+                      <span className="text-sm">{stats?.totalPrinters || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Toplam Gelir</span>
+                      <span className="text-sm">₺{(stats?.totalRevenue || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Bu Ay Gelir</span>
+                      <span className="text-sm">₺{(stats?.monthlyRevenue || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Toplam Teklif</span>
+                      <span className="text-sm">{stats?.totalQuotes || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Bekleyen Teklifler</span>
+                      <span className="text-sm">{stats?.pendingQuotes || 0}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
         {/* Monitoring Tab */}
         <TabsContent value="monitoring">

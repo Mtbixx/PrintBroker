@@ -1293,6 +1293,138 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes
+  app.get('/api/admin/stats', requireAdmin, async (req: any, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const quotes = await storage.getAllQuotes ? await storage.getAllQuotes() : [];
+      const orders = await storage.getAllOrders ? await storage.getAllOrders() : [];
+      
+      const stats = {
+        totalUsers: users.length,
+        totalCustomers: users.filter(u => u.role === 'customer').length,
+        totalPrinters: users.filter(u => u.role === 'printer').length,
+        totalQuotes: quotes.length,
+        pendingQuotes: quotes.filter(q => q.status === 'pending').length,
+        completedOrders: orders.filter(o => o.status === 'completed').length,
+        totalRevenue: orders.reduce((sum, order) => sum + (parseFloat(order.totalAmount) || 0), 0),
+        monthlyRevenue: orders
+          .filter(o => new Date(o.createdAt).getMonth() === new Date().getMonth())
+          .reduce((sum, order) => sum + (parseFloat(order.totalAmount) || 0), 0)
+      };
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching admin stats:", error);
+      res.status(500).json({ message: "Failed to fetch admin stats" });
+    }
+  });
+
+  app.get('/api/admin/users', requireAdmin, async (req: any, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.get('/api/admin/activity', requireAdmin, async (req: any, res) => {
+    try {
+      const recentActivity = await storage.getRecentActivity();
+      res.json(recentActivity);
+    } catch (error) {
+      console.error("Error fetching activity:", error);
+      res.status(500).json({ message: "Failed to fetch activity" });
+    }
+  });
+
+  app.get('/api/admin/quotes', requireAdmin, async (req: any, res) => {
+    try {
+      const quotes = await storage.getAllQuotes ? await storage.getAllQuotes() : [];
+      res.json(quotes);
+    } catch (error) {
+      console.error("Error fetching admin quotes:", error);
+      res.status(500).json({ message: "Failed to fetch quotes" });
+    }
+  });
+
+  app.get('/api/admin/orders', requireAdmin, async (req: any, res) => {
+    try {
+      const orders = await storage.getAllOrders ? await storage.getAllOrders() : [];
+      res.json(orders);
+    } catch (error) {
+      console.error("Error fetching admin orders:", error);
+      res.status(500).json({ message: "Failed to fetch orders" });
+    }
+  });
+
+  app.post('/api/admin/quotes/:id/respond', requireAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { response, price, estimatedDays } = req.body;
+      
+      const printerQuoteData = {
+        quoteId: id,
+        printerId: 'admin-response',
+        price: parseFloat(price),
+        estimatedDays: parseInt(estimatedDays),
+        notes: response,
+        status: 'pending' as const,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      const printerQuote = await storage.createPrinterQuote(printerQuoteData);
+      await storage.updateQuoteStatus(id, "received_quotes");
+
+      res.json({
+        success: true,
+        message: "Teklif yanıtı gönderildi",
+        printerQuote
+      });
+    } catch (error) {
+      console.error("Error responding to quote:", error);
+      res.status(500).json({ message: "Failed to respond to quote" });
+    }
+  });
+
+  app.patch('/api/admin/users/:id', requireAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+      
+      const currentUser = await storage.getUser(id);
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const updatedUser = await storage.upsertUser({
+        ...currentUser,
+        ...updateData,
+        id,
+        updatedAt: new Date()
+      });
+
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  app.delete('/api/admin/users/:id', requireAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteUser(id);
+      res.json({ message: "User deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ message: "Failed to delete user" });
+    }
+  });
+
   // Get user files
   app.get('/api/files', isAuthenticated, async (req: any, res) => {
     try {

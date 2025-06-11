@@ -437,6 +437,24 @@ export class DatabaseStorage implements IStorage {
       .slice(0, 10);
   }
 
+  async getAllQuotes(): Promise<any[]> {
+    return await db
+      .select()
+      .from(quotes)
+      .orderBy(desc(quotes.createdAt));
+  }
+
+  async getAllOrders(): Promise<any[]> {
+    return await db
+      .select()
+      .from(orders)
+      .orderBy(desc(orders.createdAt));
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+    await db.delete(users).where(eq(users.id, userId));
+  }
+
   async saveDesignGeneration(data: {
     userId: string;
     prompt: string;
