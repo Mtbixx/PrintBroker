@@ -11,7 +11,7 @@ import Home from "./pages/Home";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import PrinterDashboard from "@/pages/PrinterDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
-import QuoteForm from "./pages/QuoteForm";
+import QuoteForm from "@/pages/QuoteForm";
 import Payment from "./pages/Payment";
 import CustomerRegister from "./pages/CustomerRegister";
 import PrinterRegister from "./pages/PrinterRegister";
@@ -22,7 +22,6 @@ import ReferencesNew from "./pages/ReferencesNew";
 import DesignQuote from "./pages/DesignQuote";
 import NotFound from "./pages/not-found";
 import QuoteFormNew from "./pages/QuoteFormNew";
-import QuoteFormUVDTF from "./pages/QuoteFormUVDTF";
 
 function AppRouter() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -101,14 +100,6 @@ function AppRouter() {
               return null;
             }
             return <QuoteFormNew />;
-          }} />
-        <Route path="/quote/uv_dtf_label" component={() => {
-            const userRole = (user as any)?.role;
-            if (userRole !== 'customer') {
-              window.location.href = '/';
-              return null;
-            }
-            return <QuoteFormUVDTF />;
           }} />
 
           <Route path="/payment" component={Payment} />

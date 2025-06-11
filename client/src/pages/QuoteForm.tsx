@@ -499,7 +499,7 @@ export default function QuoteForm() {
               onChange={(e) => {
                 const value = parseInt(e.target.value) || 0;
                 updateFormData('quantity', e.target.value);
-                
+
                 if (value > 0 && value < 100) {
                   toast({
                     title: "Uyarı",
@@ -515,7 +515,7 @@ export default function QuoteForm() {
             )}
           </div>
 
-          
+
         </div>
       </div>
 
@@ -589,9 +589,9 @@ export default function QuoteForm() {
         </div>
       </div>
 
-      
 
-      
+
+
     </div>
   );
 
@@ -633,10 +633,10 @@ export default function QuoteForm() {
                 // Sadece sayı girişine izin ver
                 const numericValue = e.target.value.replace(/[^0-9]/g, '');
                 e.target.value = numericValue;
-                
+
                 const value = parseInt(numericValue) || 0;
                 updateFormData('totalQuantity', numericValue);
-                
+
                 if (value > 0 && value < 5000) {
                   toast({
                     title: "Uyarı",
@@ -835,6 +835,12 @@ export default function QuoteForm() {
         optionalFields: ['finish', 'handle'],
         sizeOptions: ['custom'],
         paperOptions: ['kraft', 'bristol-250', 'corrugated']
+      },
+      'uv_dtf_label': {
+        requiredFields: ['size', 'material', 'quantity', 'color'],
+        optionalFields: ['finish'],
+        sizeOptions: ['20x20', '30x30', '40x40', '50x50', '60x60', '70x70', 'custom'],
+        materialOptions: ['premium-uv-dtf', 'standard-uv-dtf', 'ultra-thin-uv-dtf']
       }
     };
 
@@ -854,7 +860,10 @@ export default function QuoteForm() {
               'flyer': { label: 'Flyer', desc: 'Reklam flyerleri' },
               'poster': { label: 'Poster', desc: 'Büyük boy posterler' },
               'book': { label: 'Kitap', desc: 'Kitap ve yayın' },
-              'packaging': { label: 'Ambalaj', desc: 'Özel ambalajlar' }
+              'packaging': { label: 'Ambalaj', desc: 'Özel ambalajlar' },
+              'sticker': { label: 'Çıkartma/Etiket', desc: 'Promosyon etiketleri' },
+              'uv_dtf_label': { label: 'UV DTF Etiket', desc: 'Yüksek kaliteli, dayanıklı etiketler' },
+              'banner': { label: 'Banner/Poster', desc: 'Geniş format baskılar' }
             }).map(([value, config]) => (
               <Button
                 key={value}
@@ -892,19 +901,21 @@ export default function QuoteForm() {
                       <SelectContent>
                         {selectedType.sizeOptions.map(size => {
                           const sizeLabels: Record<string, string> = {
-                            '85x55': '85 x 55 mm (Standart Kartvizit)',
-                            '90x50': '90 x 50 mm (Avrupa Kartvizit)', 
-                            'a6': 'A6 (105 x 148 mm)',
-                            'a5': 'A5 (148 x 210 mm)',
-                            'a4': 'A4 (210 x 297 mm)',
-                            'a3': 'A3 (297 x 420 mm)',
-                            'a2': 'A2 (420 x 594 mm)',
-                            'a1': 'A1 (594 x 841 mm)',
-                            '21x21': '21 x 21 cm (Kare)',
-                            '21x28': '21 x 28 cm (Dergi)',
-                            '19x27': '19 x 27 cm (Küçük Dergi)',
-                            '50x70': '50 x 70 cm',
-                            '70x100': '70 x 100 cm',
+                            'a4': 'A4 (21x29.7 cm)',
+                            'a5': 'A5 (14.8x21 cm)',
+                            'a6': 'A6 (10.5x14.8 cm)',
+                            '85x55': '85x55 mm (Standart Kartvizit)',
+                            '90x50': '90x50 mm (Büyük Kartvizit)',
+                            '85x54': '85x54 mm (Kredi Kartı)',
+                            '21x21': '21x21 cm (Kare)',
+                            '21x28': '21x28 cm',
+                            '19x27': '19x27 cm',
+                            '20x20': '20x20 mm (Mini Etiket)',
+                            '30x30': '30x30 mm (Küçük Etiket)',
+                            '40x40': '40x40 mm (Orta Etiket)',
+                            '50x50': '50x50 mm (Standart Etiket)',
+                            '60x60': '60x60 mm (Büyük Etiket)',
+                            '70x70': '70x70 mm (Extra Büyük Etiket)',
                             'custom': 'Özel Boyut'
                           };
                           return (
@@ -1029,46 +1040,82 @@ export default function QuoteForm() {
 
             <Separator />
 
-            {/* Malzeme Seçimi */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">Malzeme Seçimi</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {selectedType.paperOptions.map((paper) => {
-                  const paperLabels: Record<string, { label: string, desc: string }> = {
-                    'coated-90': { label: 'Kuşe 90gr', desc: 'Ekonomik, günlük kullanım' },
-                    'coated-120': { label: 'Kuşe 120gr', desc: 'Standart kalite' },
-                    'coated-150': { label: 'Kuşe 150gr', desc: 'İyi kalite' },
-                    'coated-200': { label: 'Kuşe 200gr', desc: 'Yüksek kalite' },
-                    'coated-300': { label: 'Kuşe 300gr', desc: 'Premium kalite' },
-                    'coated-350': { label: 'Kuşe 350gr', desc: 'Ultra kalite' },
-                    'bristol-300': { label: 'Bristol 300gr', desc: 'Kalın, dayanıklı' },
-                    'offset-80': { label: 'Offset 80gr', desc: 'Hafif, ekonomik' },
-                    'offset-90': { label: 'Offset 90gr', desc: 'Standart iç sayfa' },
-                    'textured': { label: 'Dokulu Kağıt', desc: 'Premium doku' },
-                    'kraft': { label: 'Kraft Kağıt', desc: 'Doğal, çevre dostu' },
-                    'poster-paper': { label: 'Poster Kağıdı', desc: 'Büyük boy baskılar' },
-                    'book-paper': { label: 'Kitap Kağıdı', desc: 'Okuma dostu' },
-                    'corrugated': { label: 'Oluklu Karton', desc: 'Ambalaj için' }
-                  };
+            {/* Kağıt/Malzeme Seçimi */}
+                {selectedType.requiredFields.includes('paper') && (
+                  <div className="space-y-4">
+                    <Label className="text-sm font-medium text-gray-700 flex items-center">
+                      Kağıt/Malzeme Türü <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {selectedType.paperOptions?.map((paper) => {
+                        const paperLabels: Record<string, { label: string; desc: string }> = {
+                          'coated-120': { label: 'Kuşe 120gr', desc: 'Parlak yüzey, vibrant renkler' },
+                          'coated-150': { label: 'Kuşe 150gr', desc: 'Orta kalınlık, premium' },
+                          'coated-200': { label: 'Kuşe 200gr', desc: 'Kalın, lüks hissiyat' },
+                          'coated-300': { label: 'Kuşe 300gr', desc: 'Çok kalın, dayanıklı' },
+                          'coated-350': { label: 'Kuşe 350gr', desc: 'Extra kalın, premium' },
+                          'bristol-300': { label: 'Bristol 300gr', desc: 'Mat yüzey, şık' },
+                          'offset-90': { label: 'Offset 90gr', desc: 'Standart, ekonomik' },
+                          'textured': { label: 'Dokulu Kağıt', desc: 'Özel doku, premium' },
+                          'kraft': { label: 'Kraft Kağıt', desc: 'Doğal, çevre dostu' },
+                          'poster-paper': { label: 'Poster Kağıdı', desc: 'Büyük boy baskılar' },
+                          'book-paper': { label: 'Kitap Kağıdı', desc: 'Okuma dostu' },
+                          'corrugated': { label: 'Oluklu Karton', desc: 'Ambalaj için' }
+                        };
 
-                  const paperInfo = paperLabels[paper] || { label: paper, desc: '' };
+                        const paperInfo = paperLabels[paper] || { label: paper, desc: '' };
 
-                  return (
-                    <Button
-                      key={paper}
-                      variant={formData.printPaper === paper ? 'default' : 'outline'}
-                      onClick={() => updateFormData('printPaper', paper)}
-                      className="h-auto p-4 justify-start"
-                    >
-                      <div className="text-left">
-                        <div className="font-medium">{paperInfo.label}</div>
-                        <div className="text-sm text-gray-500">{paperInfo.desc}</div>
-                      </div>
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
+                        return (
+                          <Button
+                            key={paper}
+                            variant={formData.printPaper === paper ? 'default' : 'outline'}
+                            onClick={() => updateFormData('printPaper', paper)}
+                            className="h-auto p-4 justify-start"
+                          >
+                            <div className="text-left">
+                              <div className="font-medium">{paperInfo.label}</div>
+                              <div className="text-sm text-gray-500">{paperInfo.desc}</div>
+                            </div>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* UV DTF Malzeme Seçimi */}
+                {selectedType.requiredFields.includes('material') && formData.printType === 'uv_dtf_label' && (
+                  <div className="space-y-4">
+                    <Label className="text-sm font-medium text-gray-700 flex items-center">
+                      UV DTF Film Türü <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {selectedType.materialOptions?.map((material) => {
+                        const materialLabels: Record<string, { label: string; desc: string }> = {
+                          'premium-uv-dtf': { label: 'Premium UV DTF Film', desc: '0.7mm kalınlık, yüksek dayanıklılık' },
+                          'standard-uv-dtf': { label: 'Standart UV DTF Film', desc: '0.5mm kalınlık, ekonomik seçenek' },
+                          'ultra-thin-uv-dtf': { label: 'Ultra İnce UV DTF Film', desc: '0.3mm kalınlık, hassas uygulamalar' }
+                        };
+
+                        const materialInfo = materialLabels[material] || { label: material, desc: '' };
+
+                        return (
+                          <Button
+                            key={material}
+                            variant={formData.uvdtfMaterial === material ? 'default' : 'outline'}
+                            onClick={() => updateFormData('uvdtfMaterial', material)}
+                            className="h-auto p-4 justify-start"
+                          >
+                            <div className="text-left">
+                              <div className="font-medium">{materialInfo.label}</div>
+                              <div className="text-sm text-gray-500">{materialInfo.desc}</div>
+                            </div>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
             <Separator />
 
@@ -1094,39 +1141,46 @@ export default function QuoteForm() {
           </Link>
 
           {/* Header Card */}
-          <Card className="mb-8 border-0 shadow-xl bg-gradient-to-r from-white to-blue-50">
-            <CardContent className="p-8">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className={`w-16 h-16 bg-gradient-to-r ${typeConfig.bgGradient} rounded-full flex items-center justify-center shadow-lg`}>
+          
+          
+            
+              
+                
                   {typeConfig.icon}
-                </div>
-                <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                    {typeConfig.title}
-                  </h1>
-                  <p className="text-xl text-gray-600">
-                    {typeConfig.description}
-                  </p>
-                </div>
-              </div>
+                
+                
+                  
+                    Baskı Teklif Formu
+                  
+                  
+                    Kartvizit, broşür, katalog, UV DTF etiket ve daha fazlası için profesyonel baskı hizmeti
+                  
+                
+              
+              
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                  <div className="text-sm text-gray-500 mb-1">Hızlı Teklif</div>
-                  <div className="text-2xl font-bold text-blue-600">5 Dakika</div>
-                </div>
-                <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                  <div className="text-sm text-gray-500 mb-1">Matbaa Sayısı</div>
-                  <div className="text-2xl font-bold text-green-600">50+</div>
-                </div>
-                <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                  <div className="text-sm text-gray-500 mb-1">Ortalama Tasarruf</div>
-                  <div className="text-2xl font-bold text-orange-600">%25</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                
+                  
+                    Hızlı Teklif
+                  
+                  5 Dakika
+                
+                
+                  
+                    Matbaa Sayısı
+                  
+                   50+
+                
+                
+                  
+                    Ortalama Tasarruf
+                  
+                   %25
+                
+              
+            
+          
+        
 
         {/* Form Card */}
         <Card className="border-0 shadow-xl">
@@ -1167,7 +1221,7 @@ export default function QuoteForm() {
                       )}
                     </div>
 
-                    
+
 
                     </div>
 

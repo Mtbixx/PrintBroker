@@ -228,15 +228,7 @@ export default function CustomerDashboard() {
                   </Button>
                 </Link>
 
-                <Link href="/quote/uv_dtf_label">
-                  <Button variant="outline" className="flex items-center p-4 h-auto bg-purple-50 hover:bg-purple-100 border-purple-200 w-full justify-start">
-                    <Palette className="text-purple-500 text-2xl mr-3" />
-                    <div className="text-left">
-                      <h5 className="font-semibold text-gray-900">UV DTF Etiket</h5>
-                      <p className="text-sm text-gray-600">Transfer etiket baskısı</p>
-                    </div>
-                  </Button>
-                </Link>
+                
 
                 <Link href="/quote/general_printing">
                   <Button variant="outline" className="flex items-center p-4 h-auto bg-green-50 hover:bg-green-100 border-green-200 w-full justify-start">
