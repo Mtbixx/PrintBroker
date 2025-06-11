@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 interface IdeogramV3Request {
@@ -36,7 +35,7 @@ interface IdeogramV3Response {
 
 class IdeogramService {
   private apiKey: string;
-  private baseUrl = 'https://api.ideogram.ai/v3/generate';
+  private baseUrl = 'https://api.ideogram.ai/v1/ideogram-v3/generate';
 
   constructor() {
     this.apiKey = 'X3h2wLDuOfuJynGGclLZhLN1isGvy9oxBM-S8wcNJVTqk80lyW6pszMShoMHP8YbN7DYSfzti7eTLL-KCExqZw';
