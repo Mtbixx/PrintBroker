@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -35,8 +36,6 @@ import {
 import { cn } from "@/lib/utils";
 import IdeogramAnalyzer from './IdeogramAnalyzer';
 
-
-
 interface GeneratedImage {
   url: string;
   is_image_safe: boolean;
@@ -47,7 +46,6 @@ interface GeneratedImage {
 
 interface DesignOptions {
   aspectRatio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
-  model?: 'V_1' | 'V_1_TURBO' | 'V_2' | 'V_2_TURBO' | 'V_2A' | 'V_2A_TURBO' | 'V_3';
   styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
   magicPrompt?: 'AUTO' | 'ON' | 'OFF';
   negativePrompt?: string;
@@ -64,7 +62,6 @@ export default function DesignEngine() {
   const [prompt, setPrompt] = useState("");
   const [designOptions, setDesignOptions] = useState<DesignOptions>({
     aspectRatio: "ASPECT_1_1",
-    model: "V_3",
     styleType: "DESIGN",
     magicPrompt: "ON",
     resolution: "default",
@@ -86,7 +83,7 @@ export default function DesignEngine() {
   // Generate single design mutation
   const generateMutation = useMutation({
     mutationFn: async (data: { prompt: string; options: DesignOptions }) => {
-      console.log('🎨 Starting design generation with data:', data);
+      console.log('🎨 Starting V3 design generation with data:', data);
 
       try {
         // Refresh user balance before generation to ensure we have latest data
@@ -115,8 +112,8 @@ export default function DesignEngine() {
         toast({
           title: "Tasarım Oluşturuldu ✅",
           description: response.autoSaved 
-            ? `Tasarım otomatik kaydedildi. ${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`
-            : `${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`,
+            ? `V3 model ile tasarım otomatik kaydedildi. ${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`
+            : `V3 model ile tasarım oluşturuldu. ${response.creditDeducted}₺ kredi kullanıldı. Kalan bakiye: ${response.remainingBalance}₺`,
         });
 
         // Immediately refresh user balance and design history for real-time updates
@@ -128,8 +125,8 @@ export default function DesignEngine() {
       }
     },
     onError: async (error: any) => {
-      console.error('Design generation error:', error);
-      const errorMessage = error.message || 'Tasarım oluşturulurken bir hata oluştu.';
+      console.error('V3 Design generation error:', error);
+      const errorMessage = error.message || 'V3 tasarım oluşturulurken bir hata oluştu.';
 
       if (errorMessage.includes('Insufficient credit')) {
         // Refresh user balance to show current amount
@@ -137,13 +134,13 @@ export default function DesignEngine() {
 
         toast({
           title: "Yetersiz Kredi 💳",
-          description: "Tasarım oluşturmak için yeterli krediniz yok. Lütfen kredi yükleyin (35₺ gerekli).",
+          description: "V3 tasarım oluşturmak için yeterli krediniz yok. Lütfen kredi yükleyin (35₺ gerekli).",
           variant: "destructive",
         });
       } else if (errorMessage.includes('API key') || errorMessage.includes('401') || errorMessage.includes('403')) {
         toast({
           title: "API Hatası",
-          description: "Tasarım servisi yapılandırıldı ve çalışıyor. Tekrar deneyin.",
+          description: "V3 tasarım servisi yapılandırıldı ve çalışıyor. Tekrar deneyin.",
           variant: "destructive",
         });
       } else if (errorMessage.includes('Rate limit') || errorMessage.includes('429')) {
@@ -154,7 +151,7 @@ export default function DesignEngine() {
         });
       } else {
         toast({
-          title: "Hata",
+          title: "V3 Model Hatası",
           description: errorMessage,
           variant: "destructive",
         });
@@ -175,14 +172,14 @@ export default function DesignEngine() {
       setGeneratedImages(allImages);
       toast({
         title: "Başarılı",
-        description: `${results.length} tasarım başarıyla oluşturuldu!`,
+        description: `${results.length} V3 tasarım başarıyla oluşturuldu!`,
       });
       queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
     },
     onError: (error) => {
       toast({
         title: "Hata",
-        description: "Toplu tasarım oluşturulurken bir hata oluştu.",
+        description: "V3 toplu tasarım oluşturulurken bir hata oluştu.",
         variant: "destructive",
       });
     },
@@ -214,7 +211,6 @@ export default function DesignEngine() {
     } else {
       const requestOptions: DesignOptions = {
         aspectRatio: designOptions.aspectRatio,
-        model: designOptions.model,
         styleType: designOptions.styleType,
         magicPrompt: designOptions.magicPrompt,
         negativePrompt: designOptions.negativePrompt,
@@ -228,8 +224,6 @@ export default function DesignEngine() {
       generateMutation.mutate({ prompt, options: requestOptions });
     }
   };
-
-
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -253,7 +247,7 @@ export default function DesignEngine() {
       // Simple and reliable download method
       const link = document.createElement('a');
       link.href = url;
-      link.download = filename || `tasarim-${Date.now()}.png`;
+      link.download = filename || `v3-tasarim-${Date.now()}.png`;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
 
@@ -264,7 +258,7 @@ export default function DesignEngine() {
 
       toast({
         title: "İndirme Başlatıldı",
-        description: "Tasarım indiriliyor. İndirme klasörünüzü kontrol edin.",
+        description: "V3 tasarım indiriliyor. İndirme klasörünüzü kontrol edin.",
       });
     } catch (error) {
       console.error('Download error:', error);
@@ -291,6 +285,7 @@ export default function DesignEngine() {
       setBatchPrompts(batchPrompts.filter((_, i) => i !== index));
     }
   };
+
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
       {/* Header */}
@@ -300,19 +295,22 @@ export default function DesignEngine() {
             <Wand2 className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Tasarım Motoru
+            V3 Tasarım Motoru
           </h1>
         </div>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Yapay zeka destekli profesyonel tasarım oluşturma platformu. Logo, etiket, kartvizit ve daha fazlası için.
+          Ideogram V3 AI modeli ile profesyonel tasarım oluşturma platformu. En gelişmiş yapay zeka ile logo, etiket, kartvizit ve daha fazlası.
         </p>
+        <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+          ✨ Ideogram V3 - En Gelişmiş Model
+        </Badge>
       </div>
 
       <Tabs defaultValue="create" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="create" className="flex items-center gap-2">
             <Wand2 className="h-4 w-4" />
-            Tasarım Oluştur
+            V3 Tasarım Oluştur
           </TabsTrigger>
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
@@ -329,7 +327,7 @@ export default function DesignEngine() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Palette className="h-5 w-5" />
-                    Tasarım Açıklaması
+                    V3 Tasarım Açıklaması
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -356,7 +354,7 @@ export default function DesignEngine() {
 
                   {!batchMode ? (
                     <div>
-                      <Label htmlFor="prompt">Tasarım Açıklaması</Label>
+                      <Label htmlFor="prompt">V3 Tasarım Açıklaması</Label>
                       <Textarea
                         id="prompt"
                         value={prompt}
@@ -368,13 +366,13 @@ export default function DesignEngine() {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <Label>Tasarım Açıklamaları (Toplu)</Label>
+                      <Label>V3 Tasarım Açıklamaları (Toplu)</Label>
                       {batchPrompts.map((prompt, index) => (
                         <div key={index} className="flex gap-2">
                           <Textarea
                             value={prompt}
                             onChange={(e) => updateBatchPrompt(index, e.target.value)}
-                            placeholder={`Tasarım ${index + 1} açıklaması...`}
+                            placeholder={`V3 Tasarım ${index + 1} açıklaması...`}
                             rows={2}
                             className="flex-1"
                           />
@@ -398,8 +396,6 @@ export default function DesignEngine() {
                       </Button>
                     </div>
                   )}
-
-
                 </CardContent>
               </Card>
 
@@ -409,7 +405,7 @@ export default function DesignEngine() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <ImageIcon className="h-5 w-5" />
-                      Oluşturulan Tasarımlar
+                      V3 Oluşturulan Tasarımlar
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -418,7 +414,7 @@ export default function DesignEngine() {
                         <div key={`${image.url}-${index}`} className="relative group">
                           <img
                             src={image.url}
-                            alt={`Generated design ${index + 1}`}
+                            alt={`V3 Generated design ${index + 1}`}
                             className="w-full h-64 object-cover rounded-lg border"
                             onError={(e) => {
                               console.error('Image failed to load:', image.url);
@@ -430,8 +426,8 @@ export default function DesignEngine() {
                               <Button
                                 size="sm"
                                 variant="secondary"
-                                onClick={() => downloadImage(image.url, `tasarim-${Date.now()}-${index + 1}.png`)}
-                                title="Tasarımı İndir"
+                                onClick={() => downloadImage(image.url, `v3-tasarim-${Date.now()}-${index + 1}.png`)}
+                                title="V3 Tasarımı İndir"
                               >
                                 <Download className="h-4 w-4" />
                               </Button>
@@ -443,17 +439,18 @@ export default function DesignEngine() {
                                 </DialogTrigger>
                                 <DialogContent className="max-w-4xl">
                                   <DialogHeader>
-                                    <DialogTitle>Tasarım Önizleme</DialogTitle>
+                                    <DialogTitle>V3 Tasarım Önizleme</DialogTitle>
                                     <DialogDescription>
-                                      Tasarımınızın detaylı görünümü ve bilgileri
+                                      V3 model ile oluşturulan tasarımınızın detaylı görünümü
                                     </DialogDescription>
                                   </DialogHeader>
                                   <img
                                     src={image.url}
-                                    alt={`Design preview ${index + 1}`}
+                                    alt={`V3 Design preview ${index + 1}`}
                                     className="w-full h-auto rounded-lg"
                                   />
                                   <div className="space-y-2">
+                                    <p className="text-sm text-gray-600"><strong>Model:</strong> Ideogram V3</p>
                                     <p className="text-sm text-gray-600"><strong>Açıklama:</strong> {image.prompt}</p>
                                     <p className="text-sm text-gray-600"><strong>Çözünürlük:</strong> {image.resolution || 'Varsayılan'}</p>
                                     <p className="text-sm text-gray-600"><strong>Seed:</strong> {image.seed}</p>
@@ -472,6 +469,7 @@ export default function DesignEngine() {
                                   const designData = {
                                     imageUrl: image.url,
                                     prompt: image.prompt,
+                                    model: 'V3',
                                     timestamp: Date.now()
                                   };
                                   localStorage.setItem('selectedDesign', JSON.stringify(designData));
@@ -488,6 +486,11 @@ export default function DesignEngine() {
                               {image.is_image_safe !== false ? "Güvenli" : "Dikkat"}
                             </Badge>
                           </div>
+                          <div className="absolute top-2 left-2">
+                            <Badge className="bg-purple-600 text-white">
+                              V3
+                            </Badge>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -502,7 +505,7 @@ export default function DesignEngine() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Settings className="h-5 w-5" />
-                    Tasarım Ayarları
+                    V3 Tasarım Ayarları
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -549,49 +552,29 @@ export default function DesignEngine() {
                     </Select>
                   </div>
 
-                <div>
-                  <Label htmlFor="model">Model</Label>
-                  <Select 
-                    value={designOptions.model} 
-                    onValueChange={(value) => setDesignOptions(prev => ({ ...prev, model: value as DesignOptions['model'] }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="V_3">V3 (En Gelişmiş)</SelectItem>
-                      <SelectItem value="V_2A_TURBO">V2A Turbo (Hızlı & Kaliteli)</SelectItem>
-                      <SelectItem value="V_2A">V2A (Gelişmiş)</SelectItem>
-                      <SelectItem value="V_2_TURBO">V2 Turbo (Hızlı)</SelectItem>
-                      <SelectItem value="V_2">V2 (Stabil)</SelectItem>
-                      <SelectItem value="V_1_TURBO">V1 Turbo</SelectItem>
-                      <SelectItem value="V_1">V1</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label>Renk Paleti (Opsiyonel)</Label>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#98D8C8", "#F7DC6F"].map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        className={`w-8 h-8 rounded-full border-2 ${
-                          selectedColors.includes(color) ? 'border-gray-800' : 'border-gray-300'
-                        }`}
-                        style={{ backgroundColor: color }}
-                        onClick={() => {
-                          if (selectedColors.includes(color)) {
-                            setSelectedColors(selectedColors.filter(c => c !== color));
-                          } else if (selectedColors.length < 5) {
-                            setSelectedColors([...selectedColors, color]);
-                          }
-                        }}
-                      />
-                    ))}
+                  <div>
+                    <Label>Renk Paleti (Opsiyonel)</Label>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#98D8C8", "#F7DC6F"].map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          className={`w-8 h-8 rounded-full border-2 ${
+                            selectedColors.includes(color) ? 'border-gray-800' : 'border-gray-300'
+                          }`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => {
+                            if (selectedColors.includes(color)) {
+                              setSelectedColors(selectedColors.filter(c => c !== color));
+                            } else if (selectedColors.length < 5) {
+                              setSelectedColors([...selectedColors, color]);
+                            }
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">En fazla 5 renk seçebilirsiniz</p>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">En fazla 5 renk seçebilirsiniz</p></div>
 
                   <div>
                     <Label>Negatif Açıklama (İstenmeyen)</Label>
@@ -604,19 +587,19 @@ export default function DesignEngine() {
 
                   <div>
                     <Label htmlFor="magic-prompt">Magic Prompt</Label>
-              <Select value={designOptions.magicPrompt} onValueChange={(value) => setDesignOptions({...designOptions, magicPrompt: value as DesignOptions['magicPrompt']})}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ON">Açık (Kısa prompt'ları geliştirir)</SelectItem>
-                  <SelectItem value="AUTO">Otomatik</SelectItem>
-                  <SelectItem value="OFF">Kapalı</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground mt-1">
-                Magic Prompt kısa açıklamaları daha detaylı ve etkili prompt'lara dönüştürür
-              </p>
+                    <Select value={designOptions.magicPrompt} onValueChange={(value) => setDesignOptions({...designOptions, magicPrompt: value as DesignOptions['magicPrompt']})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ON">Açık (Kısa prompt'ları geliştirir)</SelectItem>
+                        <SelectItem value="AUTO">Otomatik</SelectItem>
+                        <SelectItem value="OFF">Kapalı</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Magic Prompt kısa açıklamaları daha detaylı ve etkili prompt'lara dönüştürür
+                    </p>
                   </div>
 
                   <Button
@@ -628,12 +611,12 @@ export default function DesignEngine() {
                     {(generateMutation.isPending || generateBatchMutation.isPending) ? (
                       <>
                         <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                        Oluşturuluyor...
+                        V3 Oluşturuluyor...
                       </>
                     ) : (
                       <>
                         <Zap className="h-5 w-5 mr-2" />
-                        Tasarım Oluştur
+                        V3 Tasarım Oluştur
                       </>
                     )}
                   </Button>
@@ -642,8 +625,6 @@ export default function DesignEngine() {
             </div>
           </div>
         </TabsContent>
-
-
 
         {/* History Tab */}
         <TabsContent value="history">
@@ -658,6 +639,7 @@ export default function DesignEngine() {
                         <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
                           <Clock className="h-4 w-4" />
                           {new Date(design.createdAt).toLocaleDateString('tr-TR')}
+                          <Badge className="bg-purple-100 text-purple-800 ml-2">V3</Badge>
                         </div>
                       </div>
                       <div className="flex gap-2">
@@ -665,7 +647,7 @@ export default function DesignEngine() {
                           <img
                             key={imgIndex}
                             src={image.url}
-                            alt={`History ${index}-${imgIndex}`}
+                            alt={`V3 History ${index}-${imgIndex}`}
                             className="w-16 h-16 object-cover rounded border"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
@@ -683,10 +665,10 @@ export default function DesignEngine() {
               <CardContent className="text-center py-12">
                 <History className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-600 mb-2">
-                  Henüz tasarım geçmişiniz yok
+                  Henüz V3 tasarım geçmişiniz yok
                 </h3>
                 <p className="text-gray-500">
-                  İlk tasarımınızı oluşturun ve burada görün
+                  İlk V3 tasarımınızı oluşturun ve burada görün
                 </p>
               </CardContent>
             </Card>
