@@ -223,7 +223,7 @@ export default function DesignEngine() {
           }
         })
       };
-	  const finalOptions = {
+          const finalOptions = {
       ...designOptions,
       resolution: designOptions.resolution === 'default' ? undefined : designOptions.resolution
     };
@@ -717,12 +717,15 @@ export default function DesignEngine() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        {design.result?.map((image: any, imgIndex: number) => (
+                        {design.result && Array.isArray(design.result) && design.result.map((image: any, imgIndex: number) => (
                           <img
                             key={imgIndex}
                             src={image.url}
                             alt={`History ${index}-${imgIndex}`}
                             className="w-16 h-16 object-cover rounded border"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
                           />
                         ))}
                       </div>
