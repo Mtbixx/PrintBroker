@@ -75,7 +75,22 @@ export default function QuoteFormUVDTF() {
   const queryClient = useQueryClient();
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [currentTab, setCurrentTab] = useState("details");
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<any>({
+    quantity: "",
+    width: "",
+    height: "",
+    material: "",
+    adhesiveType: "",
+    transparency: "",
+    durability: "",
+    colorOption: "",
+    finishType: "",
+    specialEffects: [],
+    applicationType: "",
+    cuttingType: "",
+    cornerType: "",
+    packaging: ""
+  });
 
   const form = useForm<UVDTFFormData>({
     resolver: zodResolver(uvdtfSchema),
@@ -83,7 +98,24 @@ export default function QuoteFormUVDTF() {
     defaultValues: {
       title: "",
       type: "uv_dtf_label",
-      specifications: {},
+      specifications: {
+        quantity: 0,
+        material: "",
+        size: "",
+        description: "",
+        width: "",
+        height: "",
+        adhesiveType: "",
+        transparency: "",
+        durability: "",
+        colorOption: "",
+        finishType: "",
+        specialEffects: [],
+        applicationType: "",
+        cuttingType: "",
+        cornerType: "",
+        packaging: ""
+      },
       description: "",
       deadline: "",
       budget: "",
@@ -185,8 +217,7 @@ export default function QuoteFormUVDTF() {
 
   // Initialize form data and sync with form watch
   useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
-      // Watch for any changes and update formData accordingly
+    const subscription = form.watch((value, { name }) => {
       if (name && name.startsWith('specifications.')) {
         const key = name.replace('specifications.', '');
         if (value.specifications && value.specifications[key] !== undefined) {
@@ -196,6 +227,14 @@ export default function QuoteFormUVDTF() {
     });
     return () => subscription.unsubscribe();
   }, [form]);
+
+  // Initialize formData with form values on mount
+  useEffect(() => {
+    const specs = form.getValues('specifications');
+    if (specs) {
+      setFormData((prev: any) => ({ ...prev, ...specs }));
+    }
+  }, []);
 
   const updateFormData = (key: string, value: any) => {
     // Update both local state and form
@@ -209,6 +248,9 @@ export default function QuoteFormUVDTF() {
       shouldValidate: true, 
       shouldDirty: true 
     });
+    
+    // Force re-render by triggering watch
+    form.trigger(`specifications.${key}` as any);
   };
 
   if (isLoading) {
@@ -853,12 +895,7 @@ export default function QuoteFormUVDTF() {
                       UV DTF Teklif Özeti
                     </h3>
                     
-                    {/* Debug bilgisi - geliştirme sırasında */}
-                    {Object.keys(formData).length > 0 && (
-                      <div className="mb-4 p-3 bg-blue-50 rounded text-xs">
-                        <strong>Form Data:</strong> {JSON.stringify(formData, null, 2)}
-                      </div>
-                    )}
+                    
                     
                     <div className="space-y-3">
                       <div className="flex justify-between">
