@@ -42,14 +42,9 @@ export default function CustomerDashboard() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isDesignDialogOpen, setIsDesignDialogOpen] = useState(false);
 
-  // Reset to first page when new designs are created
-  useEffect(() => {
-    if (currentPage > 1) {
-      setCurrentPage(1);
-    }
-  }, [designHistory?.total]);
   const [activeTab, setActiveTab] = useState("overview");
   const queryClient = useQueryClient();
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Enhanced authentication handling
   useEffect(() => {
@@ -95,7 +90,6 @@ export default function CustomerDashboard() {
     enabled: isAuthenticated && user?.role === 'customer',
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
   const { data: designHistoryData, isLoading: designsLoading } = useQuery({
     queryKey: ["/api/designs/history", currentPage],
     queryFn: () => apiRequest('GET', `/api/designs/history?page=${currentPage}&limit=12`),
@@ -103,6 +97,13 @@ export default function CustomerDashboard() {
   });
 
   const designHistory = designHistoryData?.designs || [];
+
+  // Reset to first page when new designs are created
+  useEffect(() => {
+    if (currentPage > 1 && designHistory && typeof designHistory === 'object' && 'total' in designHistory) {
+      setCurrentPage(1);
+    }
+  }, [designHistory?.total, currentPage]);
 
   const { data: userBalance, refetch: refetchUserBalance } = useQuery({
     queryKey: ['/api/auth/user'],
