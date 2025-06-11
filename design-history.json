@@ -1,5 +1,71 @@
 [
   {
+    "id": "13f448c8-9265-41d5-b12f-94b0bf114121",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Doğum Günün Kutlu Olsun Burcu Bebek",
+    "options": {
+      "aspectRatio": "ASPECT_1_1",
+      "model": "V_2",
+      "styleType": "GENERAL",
+      "magicPrompt": "AUTO",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A photo of a baby named Burcu celebrating her birthday. She is wearing a pink dress with white polka dots and a pink bow in her hair. She is surrounded by balloons and a cake. The background is decorated with streamers and balloons.",
+        "resolution": "1024x1024",
+        "seed": 1805879910,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/3V114KUaTFKG5pa0NOYgZA.png?exp=1749733109&sig=b30ad0e6986b65319d1fb0f2f096b38b1b71f40ddeec6cb87954c84be90b972c"
+      },
+      "generationId": "4a5e8d44-ef2f-4974-91d4-718d115ffd60",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "ASPECT_1_1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T12:58:29.754Z"
+  },
+  {
+    "id": "24fce9cb-4ae0-4e89-b30e-99293d4812e5",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "A cheerful birthday tag designed for Burcu Bebek, featuring a whimsical illustration of a fluffy pink bunny wearing a party hat and holding a bunch of colorful balloons. The bunny is set against a background of pastel rainbow stripes and scattered confetti in shades of pink, yellow, and mint green, creating a vibrant and celebratory feel. \"Doğum Günün Kutlu Olsun Burcu Bebek!\" appears in a playful, rounded font at the top, while the bottom of the tag features a decorative border of stylized stars and polka dots. The overall design is bright, playful, and personalized, perfect for adding a touch of joy to a birthday celebration.",
+    "options": {
+      "aspectRatio": "ASPECT_1_1",
+      "model": "V_2",
+      "styleType": "GENERAL",
+      "magicPrompt": "AUTO",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A cheerful birthday tag designed for Burcu Bebek, featuring a whimsical illustration of a fluffy pink bunny wearing a party hat and holding a bunch of colorful balloons. The bunny is set against a background of pastel rainbow stripes and scattered confetti in shades of pink, yellow, and mint green, creating a vibrant and celebratory feel. \"Doğum Günün Kutlu Olsun Burcu Bebek!\" appears in a playful, rounded font at the top, while the bottom of the tag features a decorative border of stylized stars and polka dots. The overall design is bright, playful, and personalized, perfect for adding a touch of joy to a birthday celebration.",
+        "resolution": "1024x1024",
+        "seed": 1454855002,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/weC0QOYlTxKPYbDAFDTQyw.png?exp=1749732972&sig=568d52ac8534696cda86ec4b2e8a429fa2339359194448600bf613a494d465b3"
+      },
+      "generationId": "0f6c330a-f033-436b-b128-b684380fdd0e",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "ASPECT_1_1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-11T12:56:12.732Z"
+  },
+  {
     "id": "6d75b6dc-f177-4600-9de1-2c36e5efcf8f",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "A cheerful birthday tag designed for Burcu Bebek, featuring a whimsical illustration of a fluffy pink bunny wearing a party hat and holding a bunch of colorful balloons. The bunny is set against a background of pastel rainbow stripes and scattered confetti in shades of pink, yellow, and mint green, creating a vibrant and celebratory feel. \"Doğum Günün Kutlu Olsun Burcu Bebek!\" appears in a playful, rounded font at the top, while the bottom of the tag features a decorative border of stylized stars and polka dots. The overall design is bright, playful, and personalized, perfect for adding a touch of joy to a birthday celebration.",
