@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { PrinterLoader, RollingPaperLoader } from "@/components/PrintingLoaders";
@@ -96,14 +96,43 @@ export default function CustomerDashboard() {
     enabled: isAuthenticated && user?.role === 'customer',
   });
 
-  const designHistory = designHistoryData?.designs || [];
+  // Safely extract design history data
+  const designHistory = React.useMemo(() => {
+    if (!designHistoryData) return [];
+    
+    // Handle different response structures
+    if (Array.isArray(designHistoryData)) {
+      return designHistoryData;
+    }
+    
+    if (designHistoryData.designs && Array.isArray(designHistoryData.designs)) {
+      return designHistoryData.designs;
+    }
+    
+    if (designHistoryData.pagination && Array.isArray(designHistoryData.pagination)) {
+      return designHistoryData.pagination;
+    }
+    
+    return [];
+  }, [designHistoryData]);
+
+  // Extract pagination info
+  const paginationInfo = React.useMemo(() => {
+    if (!designHistoryData) return { total: 0, page: 1, totalPages: 1 };
+    
+    return {
+      total: designHistoryData.total || designHistoryData.pagination?.total || designHistory.length,
+      page: designHistoryData.page || designHistoryData.pagination?.page || currentPage,
+      totalPages: designHistoryData.totalPages || designHistoryData.pagination?.pages || Math.ceil((designHistoryData.total || designHistory.length) / 12)
+    };
+  }, [designHistoryData, designHistory.length, currentPage]);
 
   // Reset to first page when new designs are created
   useEffect(() => {
-    if (currentPage > 1 && designHistory && typeof designHistory === 'object' && 'total' in designHistory) {
+    if (currentPage > 1 && paginationInfo.total > 0) {
       setCurrentPage(1);
     }
-  }, [designHistory?.total, currentPage]);
+  }, [paginationInfo.total, currentPage]);
 
   const { data: userBalance, refetch: refetchUserBalance } = useQuery({
     queryKey: ['/api/auth/user'],
@@ -283,7 +312,7 @@ export default function CustomerDashboard() {
               />
               <StatsCard
                 title="Toplam Tasarım"
-                value={designHistory && typeof designHistory === 'object' && 'total' in designHistory ? designHistory.total : 0}
+                value={paginationInfo.total}
                 icon={<Palette className="h-5 w-5 text-purple-600" />}
                 color="bg-purple-50"
               />
@@ -326,9 +355,9 @@ export default function CustomerDashboard() {
                 <CardTitle className="flex items-center gap-2">
                   <ImageIcon className="h-5 w-5" />
                   Tasarım Geçmişim
-                  {designHistory && typeof designHistory === 'object' && 'total' in designHistory && (
+                  {paginationInfo.total > 0 && (
                     <Badge variant="secondary" className="ml-2">
-                      {designHistory.total} tasarım
+                      {paginationInfo.total} tasarım
                     </Badge>
                   )}
                 </CardTitle>
@@ -338,43 +367,74 @@ export default function CustomerDashboard() {
                   <div className="flex justify-center py-8">
                     <RollingPaperLoader size={100} color="#8B5CF6" />
                   </div>
-                ) : designHistory && typeof designHistory === 'object' && 'designs' in designHistory && Array.isArray(designHistory.designs) && designHistory.designs.length > 0 ? (
+                ) : Array.isArray(designHistory) && designHistory.length > 0 ? (
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {designHistory.designs.map((design: any) => (
+                      {designHistory.map((design: any) => (
                         <Card key={design.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                           <div className="aspect-square relative group">
                             {(() => {
-                              let imageUrl = null;
+                              // Extract image URL from various data structures
+                              const getImageUrl = (designData: any) => {
+                                if (!designData) return null;
+                                
+                                // Direct URL
+                                if (typeof designData === 'string' && designData.startsWith('http')) {
+                                  return designData;
+                                }
+                                
+                                // Check url property
+                                if (designData.url) return designData.url;
+                                
+                                // Check result object
+                                if (designData.result) {
+                                  if (typeof designData.result === 'string') return designData.result;
+                                  if (designData.result.url) return designData.result.url;
+                                  
+                                  // Array format
+                                  if (Array.isArray(designData.result) && designData.result[0]?.url) {
+                                    return designData.result[0].url;
+                                  }
+                                  
+                                  // Data array format
+                                  if (designData.result.data && Array.isArray(designData.result.data) && designData.result.data[0]?.url) {
+                                    return designData.result.data[0].url;
+                                  }
+                                }
+                                
+                                return null;
+                              };
 
-                              // Try different possible data structures
-                              if (design.result && Array.isArray(design.result) && design.result[0]?.url) {
-                                imageUrl = design.result[0].url;
-                              } else if (design.result && design.result.data && Array.isArray(design.result.data) && design.result.data[0]?.url) {
-                                imageUrl = design.result.data[0].url;
-                              } else if (design.result && design.result.url) {
-                                imageUrl = design.result.url;
-                              } else if (typeof design.result === 'string') {
-                                imageUrl = design.result;
-                              }
+                              const imageUrl = getImageUrl(design);
 
                               return imageUrl ? (
-                                <img 
-                                  src={imageUrl} 
-                                  alt={design.prompt || 'Tasarım'}
-                                  className="w-full h-full object-cover rounded-lg"
-                                  onError={(e) => {
-                                    console.error('Image failed to load:', imageUrl);
-                                    e.currentTarget.style.display = 'none';
-                                    e.currentTarget.parentElement?.querySelector('.fallback-icon')?.classList.remove('hidden');
-                                  }}
-                                  onLoad={() => {
-                                    console.log('Image loaded successfully:', imageUrl);
-                                  }}
-                                />
+                                <div className="relative w-full h-full">
+                                  <img 
+                                    src={imageUrl} 
+                                    alt={design.prompt || 'Tasarım'}
+                                    className="w-full h-full object-cover rounded-lg transition-all duration-200"
+                                    onError={(e) => {
+                                      console.error('Image failed to load:', imageUrl);
+                                      const target = e.currentTarget as HTMLImageElement;
+                                      target.style.display = 'none';
+                                      const fallback = target.parentElement?.querySelector('.fallback-icon') as HTMLElement;
+                                      if (fallback) fallback.classList.remove('hidden');
+                                    }}
+                                    onLoad={(e) => {
+                                      const target = e.currentTarget as HTMLImageElement;
+                                      target.style.opacity = '1';
+                                    }}
+                                    style={{ opacity: '0' }}
+                                  />
+                                  <div className="fallback-icon hidden absolute inset-0 bg-gray-100 flex items-center justify-center rounded-lg">
+                                    <ImageIcon className="h-12 w-12 text-gray-400" />
+                                    <span className="text-sm text-gray-500 ml-2">Görsel yüklenemedi</span>
+                                  </div>
+                                </div>
                               ) : (
                                 <div className="w-full h-full bg-gray-100 flex items-center justify-center rounded-lg">
                                   <ImageIcon className="h-12 w-12 text-gray-400" />
+                                  <span className="text-sm text-gray-500 ml-2">Görsel bulunamadı</span>
                                 </div>
                               );
                             })()}
@@ -397,26 +457,57 @@ export default function CustomerDashboard() {
                                     </DialogHeader>
                                     <div className="space-y-4">
                                       {(() => {
-                                        let imageUrl = null;
+                                        const getImageUrl = (designData: any) => {
+                                          if (!designData) return null;
+                                          
+                                          if (typeof designData === 'string' && designData.startsWith('http')) {
+                                            return designData;
+                                          }
+                                          
+                                          if (designData.url) return designData.url;
+                                          
+                                          if (designData.result) {
+                                            if (typeof designData.result === 'string') return designData.result;
+                                            if (designData.result.url) return designData.result.url;
+                                            
+                                            if (Array.isArray(designData.result) && designData.result[0]?.url) {
+                                              return designData.result[0].url;
+                                            }
+                                            
+                                            if (designData.result.data && Array.isArray(designData.result.data) && designData.result.data[0]?.url) {
+                                              return designData.result.data[0].url;
+                                            }
+                                          }
+                                          
+                                          return null;
+                                        };
 
-                                        if (design.result && Array.isArray(design.result) && design.result[0]?.url) {
-                                          imageUrl = design.result[0].url;
-                                        } else if (design.result && design.result.data && Array.isArray(design.result.data) && design.result.data[0]?.url) {
-                                          imageUrl = design.result.data[0].url;
-                                        } else if (design.result && design.result.url) {
-                                          imageUrl = design.result.url;
-                                        }
+                                        const imageUrl = getImageUrl(design);
 
                                         return imageUrl ? (
-                                          <img 
-                                            src={imageUrl} 
-                                            alt={design.prompt || 'Tasarım'}
-                                            className="w-full h-auto rounded-lg max-h-96 object-contain mx-auto"
-                                            onError={(e) => {
-                                              console.error('Preview image failed to load:', imageUrl);
-                                              e.currentTarget.style.display = 'none';
-                                            }}
-                                          />
+                                          <div className="relative">
+                                            <img 
+                                              src={imageUrl} 
+                                              alt={design.prompt || 'Tasarım'}
+                                              className="w-full h-auto rounded-lg max-h-96 object-contain mx-auto transition-opacity duration-200"
+                                              onError={(e) => {
+                                                console.error('Preview image failed to load:', imageUrl);
+                                                const target = e.currentTarget as HTMLImageElement;
+                                                target.style.display = 'none';
+                                                const fallback = target.parentElement?.querySelector('.preview-fallback') as HTMLElement;
+                                                if (fallback) fallback.classList.remove('hidden');
+                                              }}
+                                              onLoad={(e) => {
+                                                const target = e.currentTarget as HTMLImageElement;
+                                                target.style.opacity = '1';
+                                              }}
+                                              style={{ opacity: '0' }}
+                                            />
+                                            <div className="preview-fallback hidden w-full h-64 bg-gray-100 flex items-center justify-center rounded-lg">
+                                              <ImageIcon className="h-16 w-16 text-gray-400" />
+                                              <span className="text-gray-500 ml-2">Görsel yüklenemedi</span>
+                                            </div>
+                                          </div>
                                         ) : (
                                           <div className="w-full h-64 bg-gray-100 flex items-center justify-center rounded-lg">
                                             <ImageIcon className="h-16 w-16 text-gray-400" />
@@ -450,29 +541,54 @@ export default function CustomerDashboard() {
                                   size="sm" 
                                   variant="secondary"
                                   onClick={async () => {
-                                    const imageUrl = design.result && Array.isArray(design.result) && design.result[0] 
-                                      ? design.result[0].url 
-                                      : design.result && design.result.data && design.result.data[0] 
-                                      ? design.result.data[0].url 
-                                      : null;
+                                    const getImageUrl = (designData: any) => {
+                                      if (!designData) return null;
+                                      
+                                      if (typeof designData === 'string' && designData.startsWith('http')) {
+                                        return designData;
+                                      }
+                                      
+                                      if (designData.url) return designData.url;
+                                      
+                                      if (designData.result) {
+                                        if (typeof designData.result === 'string') return designData.result;
+                                        if (designData.result.url) return designData.result.url;
+                                        
+                                        if (Array.isArray(designData.result) && designData.result[0]?.url) {
+                                          return designData.result[0].url;
+                                        }
+                                        
+                                        if (designData.result.data && Array.isArray(designData.result.data) && designData.result.data[0]?.url) {
+                                          return designData.result.data[0].url;
+                                        }
+                                      }
+                                      
+                                      return null;
+                                    };
+
+                                    const imageUrl = getImageUrl(design);
 
                                     if (imageUrl) {
                                       try {
-                                        // Create download link with forced download
-                                        const link = document.createElement('a');
-                                        link.href = imageUrl;
-                                        link.download = `tasarim-${design.id}-${Date.now()}.png`;
-                                        link.target = '_blank';
-                                        link.rel = 'noopener noreferrer';
+                                        // Fetch the image and create a blob URL for reliable download
+                                        const response = await fetch(imageUrl);
+                                        const blob = await response.blob();
+                                        const blobUrl = URL.createObjectURL(blob);
 
-                                        // Force download by temporarily adding to DOM
+                                        const link = document.createElement('a');
+                                        link.href = blobUrl;
+                                        link.download = `tasarim-${design.id}-${Date.now()}.png`;
+                                        
                                         document.body.appendChild(link);
                                         link.click();
                                         document.body.removeChild(link);
+                                        
+                                        // Clean up the blob URL
+                                        URL.revokeObjectURL(blobUrl);
 
                                         toast({
                                           title: "İndirme Başlatıldı",
-                                          description: "Tasarım indiriliyor. Tarayıcınızın indirme klasörünü kontrol edin.",
+                                          description: "Tasarım başarıyla indirildi.",
                                         });
                                       } catch (error) {
                                         console.error('Download error:', error);
@@ -553,12 +669,12 @@ export default function CustomerDashboard() {
                     </div>
 
 
-                    {designHistory.totalPages > 1 && (
+                    {paginationInfo.totalPages > 1 && (
                       <div className="flex justify-center items-center gap-2 mt-6">
                         <Button
                           variant="outline"
                           size="sm"
-                          disabled={designHistory.page <= 1}
+                          disabled={paginationInfo.page <= 1}
                           onClick={() => {
                             setCurrentPage(prev => Math.max(1, prev - 1));
                           }}
@@ -567,15 +683,15 @@ export default function CustomerDashboard() {
                         </Button>
 
                         <span className="text-sm text-gray-600">
-                          Sayfa {designHistory.page} / {designHistory.totalPages}
+                          Sayfa {paginationInfo.page} / {paginationInfo.totalPages}
                         </span>
 
                         <Button
                           variant="outline"
                           size="sm"
-                          disabled={designHistory.page >= designHistory.totalPages}
+                          disabled={paginationInfo.page >= paginationInfo.totalPages}
                           onClick={() => {
-                            setCurrentPage(prev => Math.min(designHistory.totalPages, prev + 1));
+                            setCurrentPage(prev => Math.min(paginationInfo.totalPages, prev + 1));
                           }}
                         >
                           Sonraki
