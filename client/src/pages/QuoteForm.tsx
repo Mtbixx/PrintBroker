@@ -497,21 +497,27 @@ export default function QuoteForm() {
 
           <div className="space-y-2">
             <Label className="text-sm font-medium text-gray-700">Miktar (Adet) *</Label>
-            <Select onValueChange={(value) => updateFormData('quantity', value)}>
-              <SelectTrigger className="h-12">
-                <SelectValue placeholder="Miktar seçin" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="100">100 Adet</SelectItem>
-                <SelectItem value="250">250 Adet</SelectItem>
-                <SelectItem value="500">500 Adet</SelectItem>
-                <SelectItem value="1000">1.000 Adet</SelectItem>
-                <SelectItem value="2500">2.500 Adet</SelectItem>
-                <SelectItem value="5000">5.000 Adet</SelectItem>
-                <SelectItem value="10000">10.000 Adet</SelectItem>
-                <SelectItem value="custom">Özel Miktar</SelectItem>
-              </SelectContent>
-            </Select>
+            <Input
+              type="number"
+              min="100"
+              placeholder="Minimum 100 adet"
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 0;
+                updateFormData('quantity', e.target.value);
+                
+                if (value > 0 && value < 100) {
+                  toast({
+                    title: "Uyarı",
+                    description: "Minimum sipariş miktarı 100 adettir.",
+                    variant: "destructive",
+                  });
+                }
+              }}
+              className="h-12"
+            />
+            {formData.quantity && parseInt(formData.quantity) < 100 && parseInt(formData.quantity) > 0 && (
+              <p className="text-sm text-red-500">Minimum sipariş miktarı 100 adettir.</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -605,18 +611,7 @@ export default function QuoteForm() {
 
       
 
-      {/* Özel Miktar Girişi */}
-      {formData.quantity === 'custom' && (
-        <div className="p-6 bg-blue-50 rounded-lg border border-blue-200">
-          <div className="space-y-2">
-            <Label>Özel Miktar</Label>
-            <Input 
-              placeholder="Adet sayısını girin" 
-              onChange={(e) => updateFormData('customQuantity', e.target.value)}
-            />
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 
