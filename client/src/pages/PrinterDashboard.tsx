@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import {
   Users,
@@ -34,13 +38,15 @@ import {
   AlertCircle,
   Eye,
   Download,
-  Trash2
+  Trash2,
+  Send
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Chat from "@/components/Chat";
 import StatsCard from "@/components/StatsCard";
 import Navigation from "@/components/Navigation";
 import FirmVerificationPanel from "@/components/FirmVerificationPanel";
+import { InkDropletsLoader } from "@/components/Loaders";
 
 export default function PrinterDashboard() {
   const { toast } = useToast();
@@ -724,7 +730,7 @@ export default function PrinterDashboard() {
                       type="number"
                       placeholder="Teslim süresi"
                       value={quoteResponse.estimatedDays}
-                      onChange={(e) => setQuoteResponse(prev => ({
+                      onChange{(e) => setQuoteResponse(prev => ({
                         ...prev,
                         estimatedDays: e.target.value
                       }))}
@@ -734,7 +740,7 @@ export default function PrinterDashboard() {
 
                 <div>
                   <Label htmlFor="notes">Notlar</Label>
-                  Updated PrinterDashboard.tsx with mobile responsiveness, design improvements, and removed product/campaign tabs.                  <Textarea
+                  <Textarea
                     id="notes"
                     placeholder="Teklif detayları, özel şartlar vb."
                     value={quoteResponse.notes}
