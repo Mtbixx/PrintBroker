@@ -1246,23 +1246,91 @@ export default function PrinterDashboard() {
                         <div>
                           <h4 className="font-semibold mb-3 flex items-center gap-2">
                             <Settings className="h-4 w-4" />
-                            Teknik Özellikler
+                            Teknik Özellikler ve Detaylar
                           </h4>
                           <div className="space-y-3 text-sm bg-blue-50 p-4 rounded-lg">
                             {selectedQuote.specifications && Object.keys(selectedQuote.specifications).length > 0 ? (
-                              Object.entries(selectedQuote.specifications).map(([key, value]) => {
-                                if (value && key !== 'uploadedFiles') {
-                                  return (
-                                    <p key={key}>
-                                      <span className="font-medium text-blue-700 capitalize">
-                                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
-                                      </span> 
-                                      <span className="text-blue-900 ml-2">{String(value)}</span>
-                                    </p>
-                                  );
-                                }
-                                return null;
-                              })
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {Object.entries(selectedQuote.specifications).map(([key, value]) => {
+                                  if (value && key !== 'uploadedFiles') {
+                                    // Türkçe alan isimleri için mapping
+                                    const fieldNames = {
+                                      'type': 'Ürün Tipi',
+                                      'quantity': 'Adet',
+                                      'width': 'Genişlik',
+                                      'height': 'Yükseklik',
+                                      'diameter': 'Çap',
+                                      'length': 'Uzunluk',
+                                      'size': 'Boyut',
+                                      'paperType': 'Kağıt Türü',
+                                      'material': 'Malzeme',
+                                      'thickness': 'Kalınlık',
+                                      'colors': 'Renk Sayısı',
+                                      'finishing': 'Son İşlem',
+                                      'coating': 'Kaplama',
+                                      'binding': 'Ciltleme',
+                                      'folding': 'Katlama',
+                                      'cutting': 'Kesim',
+                                      'gilding': 'Yaldız',
+                                      'embossing': 'Kabartma',
+                                      'lamination': 'Laminasyon',
+                                      'varnish': 'Vernik',
+                                      'printSides': 'Baskı Tarafı',
+                                      'printType': 'Baskı Türü',
+                                      'notes': 'Özel Notlar'
+                                    };
+                                    
+                                    const displayName = fieldNames[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                                    
+                                    return (
+                                      <div key={key} className="bg-white p-3 rounded border">
+                                        <span className="font-medium text-blue-700 block">
+                                          {displayName}:
+                                        </span> 
+                                        <span className="text-blue-900 text-base">
+                                          {Array.isArray(value) ? value.join(', ') : String(value)}
+                                        </span>
+                                      </div>
+                                    );
+                                  }
+                                  return null;
+                                })}
+                                
+                                {/* Adet ve boyut bilgileri özel gösterim */}
+                                {(selectedQuote.specifications?.quantity || selectedQuote.quantity) && (
+                                  <div className="bg-green-50 p-3 rounded border border-green-200">
+                                    <span className="font-medium text-green-700 block">Toplam Adet:</span>
+                                    <span className="text-green-900 text-lg font-bold">
+                                      {selectedQuote.specifications?.quantity || selectedQuote.quantity} adet
+                                    </span>
+                                  </div>
+                                )}
+                                
+                                {/* Boyut bilgileri özel gösterim */}
+                                {(selectedQuote.specifications?.width && selectedQuote.specifications?.height) && (
+                                  <div className="bg-purple-50 p-3 rounded border border-purple-200">
+                                    <span className="font-medium text-purple-700 block">Ölçüler:</span>
+                                    <span className="text-purple-900 text-base">
+                                      {selectedQuote.specifications.width} x {selectedQuote.specifications.height} mm
+                                    </span>
+                                  </div>
+                                )}
+                                
+                                {/* Özel işlemler */}
+                                {(selectedQuote.specifications?.gilding || selectedQuote.specifications?.embossing) && (
+                                  <div className="bg-yellow-50 p-3 rounded border border-yellow-200">
+                                    <span className="font-medium text-yellow-700 block">Özel İşlemler:</span>
+                                    <div className="space-y-1">
+                                      {selectedQuote.specifications?.gilding && (
+                                        <span className="text-yellow-900 block">• Yaldız: {selectedQuote.specifications.gilding}</span>
+                                      )}
+                                      {selectedQuote.specifications?.embossing && (
+                                        <span className="text-yellow-900 block">• Kabartma: {selectedQuote.specifications.embossing}</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             ) : (
                               <p className="text-gray-500 italic">Teknik özellik belirtilmemiş</p>
                             )}
@@ -1271,28 +1339,59 @@ export default function PrinterDashboard() {
                       </div>
 
                       {/* Customer Contact Info */}
-                      {selectedQuote.contactInfo && (
-                        <div>
-                          <h4 className="font-semibold mb-3 flex items-center gap-2">
-                            <User className="h-4 w-4" />
-                            Müşteri İletişim Bilgileri
-                          </h4>
-                          <div className="bg-green-50 p-4 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            {selectedQuote.contactInfo.companyName && (
-                              <p><span className="font-medium text-green-700">Firma:</span> <span className="text-green-900">{selectedQuote.contactInfo.companyName}</span></p>
-                            )}
-                            {selectedQuote.contactInfo.contactName && (
-                              <p><span className="font-medium text-green-700">Yetkili:</span> <span className="text-green-900">{selectedQuote.contactInfo.contactName}</span></p>
-                            )}
-                            {selectedQuote.contactInfo.email && (
-                              <p><span className="font-medium text-green-700">E-posta:</span> <span className="text-green-900">{selectedQuote.contactInfo.email}</span></p>
-                            )}
-                            {selectedQuote.contactInfo.phone && (
-                              <p><span className="font-medium text-green-700">Telefon:</span> <span className="text-green-900">{selectedQuote.contactInfo.phone}</span></p>
-                            )}
-                          </div>
+                      <div>
+                        <h4 className="font-semibold mb-3 flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          Müşteri İletişim Bilgileri
+                        </h4>
+                        <div className="bg-green-50 p-4 rounded-lg space-y-3 text-sm">
+                          {selectedQuote.contactInfo ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {selectedQuote.contactInfo.companyName && (
+                                <div className="bg-white p-3 rounded border">
+                                  <span className="font-medium text-green-700 block">Firma:</span>
+                                  <span className="text-green-900 text-base">{selectedQuote.contactInfo.companyName}</span>
+                                </div>
+                              )}
+                              {selectedQuote.contactInfo.contactName && (
+                                <div className="bg-white p-3 rounded border">
+                                  <span className="font-medium text-green-700 block">Yetkili Kişi:</span>
+                                  <span className="text-green-900 text-base">{selectedQuote.contactInfo.contactName}</span>
+                                </div>
+                              )}
+                              {selectedQuote.contactInfo.email && (
+                                <div className="bg-white p-3 rounded border">
+                                  <span className="font-medium text-green-700 block">E-posta:</span>
+                                  <span className="text-green-900 text-base">{selectedQuote.contactInfo.email}</span>
+                                </div>
+                              )}
+                              {selectedQuote.contactInfo.phone && (
+                                <div className="bg-white p-3 rounded border">
+                                  <span className="font-medium text-green-700 block">Telefon:</span>
+                                  <span className="text-green-900 text-base">{selectedQuote.contactInfo.phone}</span>
+                                </div>
+                              )}
+                              {selectedQuote.contactInfo.address && (
+                                <div className="bg-white p-3 rounded border md:col-span-2">
+                                  <span className="font-medium text-green-700 block">Adres:</span>
+                                  <span className="text-green-900 text-base">{selectedQuote.contactInfo.address}</span>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="bg-white p-3 rounded border">
+                              <span className="text-gray-600 italic">Müşteri iletişim bilgileri bulunamadı</span>
+                              {/* Fallback olarak quote'un ana bilgilerini göster */}
+                              {selectedQuote.userId && (
+                                <div className="mt-2 text-sm">
+                                  <span className="font-medium text-green-700">Müşteri ID:</span>
+                                  <span className="text-green-900 ml-2">{selectedQuote.userId}</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
 
                       {/* Customer Files Section */}
                       <div>
