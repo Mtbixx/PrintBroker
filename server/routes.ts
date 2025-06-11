@@ -1819,8 +1819,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Prompt is required" });
       }
 
-      // Ideogram API is now configured directly in the service
-      console.log('🎨 Design generation request received:', { prompt, options });
+      // V3 model ve magic prompt ayarları
+      const ideogramOptions = {
+        model: 'V_3',
+        styleType: 'DESIGN',
+        magicPrompt: prompt.length < 50 ? 'ON' : 'AUTO', // Kısa prompt'lar için magic prompt'u zorla
+        aspectRatio: options.aspectRatio || 'ASPECT_1_1',
+        resolution: 'RESOLUTION_1024_1024',
+        ...options
+      };
+
+      console.log('🎨 Design generation request received:', { 
+        prompt, 
+        promptLength: prompt.length,
+        willUseMagicPrompt: ideogramOptions.magicPrompt,
+        options: ideogramOptions 
+      });
 
       // Check if user has enough credit (35₺ per design)
       const designCost = 35;
@@ -1845,7 +1859,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const result = await ideogramService.generateImage(prompt, options);
+      const result = await ideogramService.generateImage(prompt, ideogramOptions);
 
       // Deduct credit from user balance
       const newBalance = currentBalance - designCost;

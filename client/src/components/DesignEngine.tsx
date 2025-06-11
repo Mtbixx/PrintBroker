@@ -47,7 +47,7 @@ interface GeneratedImage {
 
 interface DesignOptions {
   aspectRatio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
-  model?: 'V_2' | 'V_2_TURBO';
+  model?: 'V_3' | 'V_3_TURBO' | 'V_2' | 'V_2_TURBO';
   styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
   magicPrompt?: 'AUTO' | 'ON' | 'OFF';
   negativePrompt?: string;
@@ -64,9 +64,9 @@ export default function DesignEngine() {
   const [prompt, setPrompt] = useState("");
   const [designOptions, setDesignOptions] = useState<DesignOptions>({
     aspectRatio: "ASPECT_1_1",
-    model: "V_2",
-    styleType: "AUTO",
-    magicPrompt: "AUTO",
+    model: "V_3",
+    styleType: "DESIGN",
+    magicPrompt: "ON",
     resolution: "default",
     negativePrompt: "",
     colorPalette: { members: [] }
@@ -256,7 +256,7 @@ export default function DesignEngine() {
       link.download = filename || `tasarim-${Date.now()}.png`;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      
+
       // Add to DOM, click, and remove
       document.body.appendChild(link);
       link.click();
@@ -559,7 +559,9 @@ export default function DesignEngine() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="V_2">V2 (Latest Model)</SelectItem>
+                      <SelectItem value="V_3">V3 (Latest Model)</SelectItem>
+                      <SelectItem value="V_3_TURBO">V3 Turbo (Fastest)</SelectItem>
+                      <SelectItem value="V_2">V2 (Balanced)</SelectItem>
                       <SelectItem value="V_2_TURBO">V2 Turbo (Fastest)</SelectItem>
                     </SelectContent>
                   </Select>
@@ -595,6 +597,23 @@ export default function DesignEngine() {
                       onChange={(e) => setDesignOptions({...designOptions, negativePrompt: e.target.value})}
                       placeholder="Örn: bulanık, düşük kalite, metin"
                     />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="magic-prompt">Magic Prompt</Label>
+              <Select value={designOptions.magicPrompt} onValueChange={(value) => setDesignOptions({...designOptions, magicPrompt: value as DesignOptions['magicPrompt']})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ON">Açık (Kısa prompt'ları geliştirir)</SelectItem>
+                  <SelectItem value="AUTO">Otomatik</SelectItem>
+                  <SelectItem value="OFF">Kapalı</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                Magic Prompt kısa açıklamaları daha detaylı ve etkili prompt'lara dönüştürür
+              </p>
                   </div>
 
                   <Button
