@@ -601,44 +601,20 @@ export default function DesignEngine() {
                     </Select>
                   </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="model">Model</Label>
-                    <Select 
-                      value={designOptions.model} 
-                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, model: value as DesignOptions['model'] }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="V_2">V2 (Latest Model)</SelectItem>
-                        <SelectItem value="V_2_TURBO">V2 Turbo (Fastest)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="resolution">Çözünürlük (Opsiyonel)</Label>
-                    <Select 
-                      value={designOptions.resolution} 
-                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, resolution: value as DesignOptions['resolution'] }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Varsayılan" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="default">Varsayılan</SelectItem>
-                        <SelectItem value="RESOLUTION_1024_1024">1024x1024 (HD)</SelectItem>
-                        <SelectItem value="RESOLUTION_768_1024">768x1024 (Dikey)</SelectItem>
-                        <SelectItem value="RESOLUTION_1024_768">1024x768 (Yatay)</SelectItem>
-                        <SelectItem value="RESOLUTION_1152_896">1152x896 (Geniş)</SelectItem>
-                        <SelectItem value="RESOLUTION_1344_768">1344x768 (Ultra Geniş)</SelectItem>
-                        <SelectItem value="RESOLUTION_1536_640">1536x640 (Panorama)</SelectItem>
-                        <SelectItem value="RESOLUTION_640_1536">640x1536 (Ultra Dikey)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div>
+                  <Label htmlFor="model">Model</Label>
+                  <Select 
+                    value={designOptions.model} 
+                    onValueChange={(value) => setDesignOptions(prev => ({ ...prev, model: value as DesignOptions['model'] }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="V_2">V2 (Latest Model)</SelectItem>
+                      <SelectItem value="V_2_TURBO">V2 Turbo (Fastest)</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
