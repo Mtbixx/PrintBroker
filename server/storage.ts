@@ -560,7 +560,14 @@ export class DatabaseStorage implements IStorage {
 
       if (fs.existsSync(designsPath)) {
         const data = fs.readFileSync(designsPath, 'utf8');
-        const allDesigns = JSON.parse(data);
+        let allDesigns = JSON.parse(data);
+        
+        // Ensure allDesigns is an array
+        if (!Array.isArray(allDesigns)) {
+          console.warn('Design history file corrupted, resetting to empty array');
+          allDesigns = [];
+        }
+        
         return allDesigns.filter((design: any) => design.userId === userId) || [];
       }
       return [];
@@ -847,10 +854,15 @@ export class DatabaseStorage implements IStorage {
     createdAt: Date;
   }): Promise<any> {
     try {
-      const designHistory = this.getStoredDesigns();
+      // Get all existing designs from file
+      let allDesigns = await this.getAllStoredDesigns();
+      
       const newDesign = {
         id: crypto.randomUUID(),
-        ...data,
+        userId: data.userId,
+        prompt: data.prompt,
+        options: data.options,
+        result: data.result,
         status: 'completed',
         downloadCount: 0,
         isBookmarked: false,
@@ -860,19 +872,20 @@ export class DatabaseStorage implements IStorage {
       console.log('Saving new design:', newDesign.id, 'for user:', data.userId);
 
       // Add to beginning of array (newest first)
-      designHistory.unshift(newDesign);
+      allDesigns.unshift(newDesign);
 
       // Keep only last 1000 designs per user to prevent unlimited growth
-      const userDesigns = designHistory.filter(d => d.userId === data.userId);
+      const userDesigns = allDesigns.filter(d => d.userId === data.userId);
       if (userDesigns.length > 1000) {
-        const designsToKeep = designHistory.filter(d => d.userId !== data.userId);
+        const otherDesigns = allDesigns.filter(d => d.userId !== data.userId);
         const limitedUserDesigns = userDesigns.slice(0, 1000);
-        this.storeDesigns([...limitedUserDesigns, ...designsToKeep]);
-      } else {
-        this.storeDesigns(designHistory);
+        allDesigns = [...limitedUserDesigns, ...otherDesigns];
       }
 
-      console.log('Design saved successfully. Total designs:', designHistory.length);
+      // Store all designs back to file
+      await this.storeDesigns(allDesigns);
+
+      console.log('Design saved successfully. Total designs:', allDesigns.length);
       return newDesign;
     } catch (error) {
       console.error('Error saving design generation:', error);
@@ -886,20 +899,55 @@ export class DatabaseStorage implements IStorage {
     page: number;
     totalPages: number;
   }> {
-    const designHistory = this.getStoredDesigns();
-    const userDesigns = designHistory
-      .filter(design => design.userId === userId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Newest first
+    try {
+      const userDesigns = await this.getStoredDesigns(userId);
+      const sortedDesigns = userDesigns.sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      ); // Newest first
 
-    const start = (options.page - 1) * options.limit;
-    const end = start + options.limit;
+      const start = (options.page - 1) * options.limit;
+      const end = start + options.limit;
 
-    return {
-      designs: userDesigns.slice(start, end),
-      total: userDesigns.length,
-      page: options.page,
-      totalPages: Math.ceil(userDesigns.length / options.limit)
-    };
+      return {
+        designs: sortedDesigns.slice(start, end),
+        total: sortedDesigns.length,
+        page: options.page,
+        totalPages: Math.ceil(sortedDesigns.length / options.limit)
+      };
+    } catch (error) {
+      console.error('Error fetching design history:', error);
+      return {
+        designs: [],
+        total: 0,
+        page: options.page,
+        totalPages: 0
+      };
+    }
+  }
+
+  private async getAllStoredDesigns(): Promise<any[]> {
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const designsPath = path.join(process.cwd(), 'design-history.json');
+
+      if (fs.existsSync(designsPath)) {
+        const data = fs.readFileSync(designsPath, 'utf8');
+        let allDesigns = JSON.parse(data);
+        
+        // Ensure allDesigns is an array
+        if (!Array.isArray(allDesigns)) {
+          console.warn('Design history file corrupted, resetting to empty array');
+          allDesigns = [];
+        }
+        
+        return allDesigns;
+      }
+      return [];
+    } catch (error) {
+      console.error('Error reading all designs:', error);
+      return [];
+    }
   }
 
   async getDesignById(designId: string, userId: string): Promise<any | null> {
