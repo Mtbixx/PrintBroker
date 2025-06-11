@@ -1423,7 +1423,8 @@ export default function PrinterDashboard() {
                                     ...prev,
                                     price: e.target.value
                                   }))}
-                                  placeholder="Örn: 1250.00"Fixes React rendering issues by removing redundant console log statement.                                  required
+                                  placeholder="Örn: 1250.00"
+                                  required
                                 />
                               </div>
                               <div>
