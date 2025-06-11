@@ -750,7 +750,7 @@ export default function CustomerDashboard() {
                                   Favorili
                                 </Badge>
                               )}
-                              {design.status === 'completed' &&The code is updated to address issues in CustomerDashboard.tsx, including import errors, missing imports, and variable issues by replacing problematic code snippets with corrected versions. (
+                              {design.status === 'completed' && (
                                 <Badge variant="default" className="bg-green-100 text-green-800">
                                   Tamamlandı
                                 </Badge>
