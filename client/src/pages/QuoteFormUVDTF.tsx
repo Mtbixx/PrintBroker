@@ -70,7 +70,12 @@ export default function QuoteFormUVDTF() {
     defaultValues: {
       title: "",
       type: "uv_dtf_label",
-      specifications: {},
+      specifications: {
+        quantity: 0,
+        material: "",
+        size: "",
+        description: ""
+      },
       description: "",
       deadline: "",
       budget: "",
@@ -79,13 +84,20 @@ export default function QuoteFormUVDTF() {
 
   const mutation = useMutation({
     mutationFn: async (data: UVDTFFormData) => {
+      // Combine form specifications with formData
+      const combinedSpecs = {
+        ...data.specifications,
+        ...formData,
+        uploadedFiles,
+        // Ensure size is properly formatted
+        size: formData.width && formData.height ? `${formData.width}x${formData.height}mm` : "",
+        // Ensure quantity is a number
+        quantity: parseInt(formData.quantity) || 0,
+      };
+
       const quoteData = {
         ...data,
-        specifications: {
-          ...data.specifications,
-          ...formData,
-          uploadedFiles,
-        },
+        specifications: combinedSpecs,
       };
 
       if (quoteData.deadline && quoteData.deadline !== '') {
@@ -163,8 +175,26 @@ export default function QuoteFormUVDTF() {
     });
   };
 
+  // Initialize form data with watch
+  useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      if (name && name.startsWith('specifications.')) {
+        const key = name.replace('specifications.', '');
+        if (value.specifications && value.specifications[key] !== undefined) {
+          setFormData((prev: any) => ({ ...prev, [key]: value.specifications[key] }));
+        }
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   const updateFormData = (key: string, value: any) => {
-    setFormData((prev: any) => ({ ...prev, [key]: value }));
+    setFormData((prev: any) => {
+      const updated = { ...prev, [key]: value };
+      // Update form specifications as well
+      form.setValue(`specifications.${key}` as any, value);
+      return updated;
+    });
   };
 
   if (isLoading) {
@@ -571,6 +601,18 @@ export default function QuoteFormUVDTF() {
                       <div className="flex justify-between">
                         <span className="text-gray-600">Bütçe:</span>
                         <span className="font-medium">{form.getValues("budget") || "Belirtilmedi"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Miktar:</span>
+                        <span className="font-medium">{formData.quantity || "Belirtilmedi"} adet</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Boyut:</span>
+                        <span className="font-medium">{formData.width && formData.height ? `${formData.width}x${formData.height}mm` : "Belirtilmedi"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Malzeme:</span>
+                        <span className="font-medium">{formData.material || "Belirtilmedi"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Yüklenen Dosya:</span>
