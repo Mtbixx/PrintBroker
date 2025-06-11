@@ -39,17 +39,29 @@ const uvdtfSchema = z.object({
   title: z.string().min(1, "Başlık gerekli"),
   type: z.literal("uv_dtf_label"),
   specifications: z.object({
-    quantity: z.number().min(1, "Miktar en az 1 olmalı"),
-    material: z.string().min(1, "Malzeme seçimi gerekli"),
-    size: z.string().min(1, "Boyut bilgisi gerekli"),
-    description: z.string().min(10, "En az 10 karakter açıklama gerekli")
-  }),
+    quantity: z.coerce.number().min(1, "Miktar en az 1 olmalı").optional(),
+    material: z.string().optional(),
+    size: z.string().optional(),
+    description: z.string().optional(),
+    width: z.string().optional(),
+    height: z.string().optional(),
+    adhesiveType: z.string().optional(),
+    transparency: z.string().optional(),
+    durability: z.string().optional(),
+    colorOption: z.string().optional(),
+    finishType: z.string().optional(),
+    specialEffects: z.array(z.string()).optional(),
+    applicationType: z.string().optional(),
+    cuttingType: z.string().optional(),
+    cornerType: z.string().optional(),
+    packaging: z.string().optional()
+  }).optional(),
   contactInfo: z.object({
     companyName: z.string().min(1, "Firma adı gerekli"),
     contactName: z.string().min(1, "Yetkili kişi adı gerekli"),
     email: z.string().email("Geçerli e-posta adresi gerekli"),
     phone: z.string().optional()
-  }),
+  }).optional(),
   description: z.string().optional(),
   deadline: z.string().optional(),
   budget: z.string().optional(),
@@ -67,15 +79,11 @@ export default function QuoteFormUVDTF() {
 
   const form = useForm<UVDTFFormData>({
     resolver: zodResolver(uvdtfSchema),
+    mode: "onChange",
     defaultValues: {
       title: "",
       type: "uv_dtf_label",
-      specifications: {
-        quantity: 0,
-        material: "",
-        size: "",
-        description: ""
-      },
+      specifications: {},
       description: "",
       deadline: "",
       budget: "",
@@ -175,9 +183,10 @@ export default function QuoteFormUVDTF() {
     });
   };
 
-  // Initialize form data with watch
+  // Initialize form data and sync with form watch
   useEffect(() => {
     const subscription = form.watch((value, { name, type }) => {
+      // Watch for any changes and update formData accordingly
       if (name && name.startsWith('specifications.')) {
         const key = name.replace('specifications.', '');
         if (value.specifications && value.specifications[key] !== undefined) {
@@ -189,11 +198,16 @@ export default function QuoteFormUVDTF() {
   }, [form]);
 
   const updateFormData = (key: string, value: any) => {
+    // Update both local state and form
     setFormData((prev: any) => {
       const updated = { ...prev, [key]: value };
-      // Update form specifications as well
-      form.setValue(`specifications.${key}` as any, value);
       return updated;
+    });
+    
+    // Update form registry
+    form.setValue(`specifications.${key}` as any, value, { 
+      shouldValidate: true, 
+      shouldDirty: true 
     });
   };
 
@@ -839,6 +853,13 @@ export default function QuoteFormUVDTF() {
                       UV DTF Teklif Özeti
                     </h3>
                     
+                    {/* Debug bilgisi - geliştirme sırasında */}
+                    {Object.keys(formData).length > 0 && (
+                      <div className="mb-4 p-3 bg-blue-50 rounded text-xs">
+                        <strong>Form Data:</strong> {JSON.stringify(formData, null, 2)}
+                      </div>
+                    )}
+                    
                     <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Proje Tipi:</span>
@@ -846,23 +867,35 @@ export default function QuoteFormUVDTF() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Başlık:</span>
-                        <span className="font-medium">{form.getValues("title") || "Belirtilmedi"}</span>
+                        <span className="font-medium">{form.watch("title") || "Belirtilmedi"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Bütçe:</span>
-                        <span className="font-medium">{form.getValues("budget") || "Belirtilmedi"}</span>
+                        <span className="font-medium">{form.watch("budget") || "Belirtilmedi"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Miktar:</span>
-                        <span className="font-medium">{formData.quantity || "Belirtilmedi"} adet</span>
+                        <span className="font-medium">{formData.quantity || form.watch("specifications.quantity") || "Belirtilmedi"} adet</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Boyut:</span>
-                        <span className="font-medium">{formData.width && formData.height ? `${formData.width}x${formData.height}mm` : "Belirtilmedi"}</span>
+                        <span className="font-medium">
+                          {(formData.width && formData.height) || (form.watch("specifications.width") && form.watch("specifications.height")) 
+                            ? `${formData.width || form.watch("specifications.width")}x${formData.height || form.watch("specifications.height")}mm` 
+                            : "Belirtilmedi"}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Malzeme:</span>
-                        <span className="font-medium">{formData.material || "Belirtilmedi"}</span>
+                        <span className="font-medium">{formData.material || form.watch("specifications.material") || "Belirtilmedi"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Yapışkanlık:</span>
+                        <span className="font-medium">{formData.adhesiveType || form.watch("specifications.adhesiveType") || "Belirtilmedi"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Renk Modeli:</span>
+                        <span className="font-medium">{formData.colorOption || form.watch("specifications.colorOption") || "Belirtilmedi"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Yüklenen Dosya:</span>
