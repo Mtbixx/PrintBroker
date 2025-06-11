@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -38,24 +37,6 @@ import { Link } from "wouter";
 const uvdtfSchema = z.object({
   title: z.string().min(1, "Başlık gerekli"),
   type: z.literal("uv_dtf_label"),
-  specifications: z.object({
-    quantity: z.coerce.number().min(1, "Miktar en az 1 olmalı").optional(),
-    material: z.string().optional(),
-    size: z.string().optional(),
-    description: z.string().optional(),
-    width: z.string().optional(),
-    height: z.string().optional(),
-    adhesiveType: z.string().optional(),
-    transparency: z.string().optional(),
-    durability: z.string().optional(),
-    colorOption: z.string().optional(),
-    finishType: z.string().optional(),
-    specialEffects: z.array(z.string()).optional(),
-    applicationType: z.string().optional(),
-    cuttingType: z.string().optional(),
-    cornerType: z.string().optional(),
-    packaging: z.string().optional()
-  }).optional(),
   contactInfo: z.object({
     companyName: z.string().min(1, "Firma adı gerekli"),
     contactName: z.string().min(1, "Yetkili kişi adı gerekli"),
@@ -69,13 +50,32 @@ const uvdtfSchema = z.object({
 
 type UVDTFFormData = z.infer<typeof uvdtfSchema>;
 
+interface SpecificationData {
+  quantity: string;
+  width: string;
+  height: string;
+  material: string;
+  adhesiveType: string;
+  transparency: string;
+  durability: string;
+  colorOption: string;
+  finishType: string;
+  specialEffects: string[];
+  applicationType: string;
+  cuttingType: string;
+  cornerType: string;
+  packaging: string;
+}
+
 export default function QuoteFormUVDTF() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [currentTab, setCurrentTab] = useState("details");
-  const [formData, setFormData] = useState<any>({
+
+  // UV DTF Specifications State
+  const [specs, setSpecs] = useState<SpecificationData>({
     quantity: "",
     width: "",
     height: "",
@@ -98,24 +98,6 @@ export default function QuoteFormUVDTF() {
     defaultValues: {
       title: "",
       type: "uv_dtf_label",
-      specifications: {
-        quantity: 0,
-        material: "",
-        size: "",
-        description: "",
-        width: "",
-        height: "",
-        adhesiveType: "",
-        transparency: "",
-        durability: "",
-        colorOption: "",
-        finishType: "",
-        specialEffects: [],
-        applicationType: "",
-        cuttingType: "",
-        cornerType: "",
-        packaging: ""
-      },
       description: "",
       deadline: "",
       budget: "",
@@ -124,20 +106,14 @@ export default function QuoteFormUVDTF() {
 
   const mutation = useMutation({
     mutationFn: async (data: UVDTFFormData) => {
-      // Combine form specifications with formData
-      const combinedSpecs = {
-        ...data.specifications,
-        ...formData,
-        uploadedFiles,
-        // Ensure size is properly formatted
-        size: formData.width && formData.height ? `${formData.width}x${formData.height}mm` : "",
-        // Ensure quantity is a number
-        quantity: parseInt(formData.quantity) || 0,
-      };
-
       const quoteData = {
         ...data,
-        specifications: combinedSpecs,
+        specifications: {
+          ...specs,
+          uploadedFiles,
+          size: specs.width && specs.height ? `${specs.width}x${specs.height}mm` : "",
+          quantity: parseInt(specs.quantity) || 0,
+        },
       };
 
       if (quoteData.deadline && quoteData.deadline !== '') {
@@ -146,12 +122,7 @@ export default function QuoteFormUVDTF() {
         delete quoteData.deadline;
       }
 
-      console.log("Submitting UV DTF quote data:", {
-        title: quoteData.title,
-        type: quoteData.type,
-        hasDeadline: !!quoteData.deadline,
-        specificationsCount: Object.keys(quoteData.specifications).length
-      });
+      console.log("Submitting UV DTF quote data:", quoteData);
 
       const response = await fetch("/api/quotes", {
         method: "POST",
@@ -176,7 +147,22 @@ export default function QuoteFormUVDTF() {
       queryClient.invalidateQueries({ queryKey: ["/api/quotes"] });
       form.reset();
       setUploadedFiles([]);
-      setFormData({});
+      setSpecs({
+        quantity: "",
+        width: "",
+        height: "",
+        material: "",
+        adhesiveType: "",
+        transparency: "",
+        durability: "",
+        colorOption: "",
+        finishType: "",
+        specialEffects: [],
+        applicationType: "",
+        cuttingType: "",
+        cornerType: "",
+        packaging: ""
+      });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -215,57 +201,20 @@ export default function QuoteFormUVDTF() {
     });
   };
 
-  // Initialize form data and sync with form watch
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name && name.startsWith('specifications.')) {
-        const key = name.replace('specifications.', '');
-        if (value.specifications && value.specifications[key] !== undefined) {
-          setFormData((prev: any) => ({ ...prev, [key]: value.specifications[key] }));
-        }
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
+  const updateSpec = (key: keyof SpecificationData, value: any) => {
+    setSpecs(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
 
-  // Initialize formData with form values on mount and set default values
-  useEffect(() => {
-    const defaultSpecs = {
-      quantity: "",
-      width: "",
-      height: "",
-      material: "",
-      adhesiveType: "",
-      transparency: "",
-      durability: "",
-      colorOption: "",
-      finishType: "",
-      specialEffects: [],
-      applicationType: "",
-      cuttingType: "",
-      cornerType: "",
-      packaging: ""
-    };
-    
-    setFormData(defaultSpecs);
-    form.setValue('specifications', defaultSpecs);
-  }, [form]);
-
-  const updateFormData = (key: string, value: any) => {
-    // Update both local state and form
-    setFormData((prev: any) => {
-      const updated = { ...prev, [key]: value };
-      return updated;
-    });
-    
-    // Update form registry with proper path
-    const currentSpecs = form.getValues('specifications') || {};
-    const updatedSpecs = { ...currentSpecs, [key]: value };
-    
-    form.setValue('specifications', updatedSpecs, { 
-      shouldValidate: true, 
-      shouldDirty: true 
-    });
+  const toggleSpecialEffect = (effect: string) => {
+    setSpecs(prev => ({
+      ...prev,
+      specialEffects: prev.specialEffects.includes(effect)
+        ? prev.specialEffects.filter(e => e !== effect)
+        : [...prev.specialEffects, effect]
+    }));
   };
 
   if (isLoading) {
@@ -309,7 +258,7 @@ export default function QuoteFormUVDTF() {
               Dashboard'a Dön
             </Button>
           </Link>
-          
+
           {/* Header Card */}
           <Card className="mb-8 border-0 shadow-xl bg-gradient-to-r from-white to-purple-50">
             <CardContent className="p-8">
@@ -326,7 +275,7 @@ export default function QuoteFormUVDTF() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
                   <div className="text-sm text-gray-500 mb-1">Teknoloji</div>
@@ -429,106 +378,99 @@ export default function QuoteFormUVDTF() {
                 </TabsContent>
 
                 <TabsContent value="specifications" className="space-y-8">
-                  {/* UV DTF Etiket Boyutu */}
+                  {/* Boyut ve Miktar */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
                       <Target className="h-5 w-5 text-purple-600 mr-2" />
-                      UV DTF Etiket Boyutu
+                      Etiket Boyutu ve Miktar
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">Etiket Boyutu *</Label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label className="text-xs text-gray-500">Genişlik (mm)</Label>
-                            <Input 
-                              placeholder="Örn: 50" 
-                              value={formData?.width || ''}
-                              onChange={(e) => updateFormData('width', e.target.value)}
-                              className="h-12"
-                            />
+                      <div className="space-y-4">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700">Etiket Boyutu (mm)</Label>
+                          <div className="grid grid-cols-2 gap-3 mt-2">
+                            <div>
+                              <Label className="text-xs text-gray-500">Genişlik</Label>
+                              <Input 
+                                placeholder="50" 
+                                value={specs.width}
+                                onChange={(e) => updateSpec('width', e.target.value)}
+                                className="h-10"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs text-gray-500">Yükseklik</Label>
+                              <Input 
+                                placeholder="30" 
+                                value={specs.height}
+                                onChange={(e) => updateSpec('height', e.target.value)}
+                                className="h-10"
+                              />
+                            </div>
                           </div>
-                          <div>
-                            <Label className="text-xs text-gray-500">Yükseklik (mm)</Label>
-                            <Input 
-                              placeholder="Örn: 30" 
-                              value={formData?.height || ''}
-                              onChange={(e) => updateFormData('height', e.target.value)}
-                              className="h-12"
-                            />
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700">Hazır Boyutlar</Label>
+                          <div className="grid grid-cols-3 gap-2 mt-2">
+                            {[
+                              { label: '20x20', w: '20', h: '20' },
+                              { label: '30x30', w: '30', h: '30' },
+                              { label: '40x40', w: '40', h: '40' },
+                              { label: '50x50', w: '50', h: '50' },
+                              { label: '60x60', w: '60', h: '60' },
+                              { label: '70x70', w: '70', h: '70' },
+                            ].map((size) => (
+                              <Button
+                                key={size.label}
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  updateSpec('width', size.w);
+                                  updateSpec('height', size.h);
+                                }}
+                                className="text-xs"
+                              >
+                                {size.label}mm
+                              </Button>
+                            ))}
                           </div>
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">Hazır Boyutlar</Label>
-                        <div className="grid grid-cols-2 gap-2">
-                          {[
-                            { label: '20x20mm', width: '20', height: '20' },
-                            { label: '30x30mm', width: '30', height: '30' },
-                            { label: '40x40mm', width: '40', height: '40' },
-                            { label: '50x50mm', width: '50', height: '50' },
-                            { label: '60x60mm', width: '60', height: '60' },
-                            { label: '70x70mm', width: '70', height: '70' },
-                          ].map((size) => (
-                            <Button
-                              key={size.label}
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                updateFormData('width', size.width);
-                                updateFormData('height', size.height);
-                              }}
-                              className="text-xs"
-                            >
-                              {size.label}
-                            </Button>
-                          ))}
+                      <div className="space-y-4">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700">Miktar (Adet)</Label>
+                          <Input
+                            type="number"
+                            min="100"
+                            placeholder="100"
+                            value={specs.quantity}
+                            onChange={(e) => updateSpec('quantity', e.target.value)}
+                            className="h-10 mt-2"
+                          />
+                          {specs.quantity && parseInt(specs.quantity) < 100 && parseInt(specs.quantity) > 0 && (
+                            <p className="text-sm text-red-500 mt-1">Minimum sipariş miktarı 100 adettir.</p>
+                          )}
                         </div>
-                      </div>
 
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">Miktar (Adet) *</Label>
-                        <Input
-                          type="number"
-                          min="100"
-                          placeholder="Minimum 100 adet"
-                          value={formData?.quantity || ''}
-                          onChange={(e) => {
-                            const value = parseInt(e.target.value) || 0;
-                            updateFormData('quantity', e.target.value);
-                            
-                            if (value > 0 && value < 100) {
-                              toast({
-                                title: "Uyarı",
-                                description: "Minimum sipariş miktarı 100 adettir.",
-                                variant: "destructive",
-                              });
-                            }
-                          }}
-                          className="h-12"
-                        />
-                        {formData?.quantity && parseInt(formData.quantity) < 100 && parseInt(formData.quantity) > 0 && (
-                          <p className="text-sm text-red-500">Minimum sipariş miktarı 100 adettir.</p>
-                        )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">Hızlı Miktar Seçimi</Label>
-                        <div className="grid grid-cols-3 gap-2">
-                          {['100', '250', '500', '1000', '2500', '5000'].map((qty) => (
-                            <Button
-                              key={qty}
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => updateFormData('quantity', qty)}
-                              className="text-xs"
-                            >
-                              {qty} adet
-                            </Button>
-                          ))}
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700">Hızlı Seçim</Label>
+                          <div className="grid grid-cols-3 gap-2 mt-2">
+                            {['100', '250', '500', '1000', '2500', '5000'].map((qty) => (
+                              <Button
+                                key={qty}
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => updateSpec('quantity', qty)}
+                                className="text-xs"
+                              >
+                                {qty}
+                              </Button>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -536,45 +478,42 @@ export default function QuoteFormUVDTF() {
 
                   <Separator />
 
-                  {/* UV DTF Malzeme ve Film Özellikleri */}
+                  {/* Malzeme Özellikleri */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
                       <Layers className="h-5 w-5 text-purple-600 mr-2" />
-                      UV DTF Malzeme ve Film Özellikleri
+                      Malzeme ve Film Özellikleri
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium text-gray-700">Film Türü</Label>
-                          <div className="grid grid-cols-1 gap-3">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Film Türü</Label>
+                          <div className="space-y-2">
                             {[
-                              { value: 'premium-uv-dtf', label: 'Premium UV DTF Film', desc: '0.7mm kalınlık, yüksek dayanıklılık', price: '+%30' },
-                              { value: 'standard-uv-dtf', label: 'Standart UV DTF Film', desc: '0.5mm kalınlık, ekonomik seçenek', price: 'Standart' },
-                              { value: 'ultra-thin-uv-dtf', label: 'Ultra İnce UV DTF Film', desc: '0.3mm kalınlık, hassas uygulamalar', price: '+%15' },
+                              { value: 'premium-uv-dtf', label: 'Premium UV DTF Film', desc: '0.7mm kalınlık, yüksek dayanıklılık' },
+                              { value: 'standard-uv-dtf', label: 'Standart UV DTF Film', desc: '0.5mm kalınlık, ekonomik seçenek' },
+                              { value: 'ultra-thin-uv-dtf', label: 'Ultra İnce UV DTF Film', desc: '0.3mm kalınlık, hassas uygulamalar' },
                             ].map((material) => (
-                              <Button
+                              <div
                                 key={material.value}
-                                type="button"
-                                variant={formData?.material === material.value ? 'default' : 'outline'}
-                                onClick={() => updateFormData('material', material.value)}
-                                className="h-auto p-4 justify-start"
+                                className={`border rounded-lg p-3 cursor-pointer transition-all ${
+                                  specs.material === material.value 
+                                    ? 'border-purple-500 bg-purple-50' 
+                                    : 'border-gray-200 hover:border-purple-300'
+                                }`}
+                                onClick={() => updateSpec('material', material.value)}
                               >
-                                <div className="text-left w-full">
-                                  <div className="flex justify-between items-start">
-                                    <div className="font-medium">{material.label}</div>
-                                    <Badge variant="secondary" className="text-xs">{material.price}</Badge>
-                                  </div>
-                                  <div className="text-sm text-gray-500 mt-1">{material.desc}</div>
-                                </div>
-                              </Button>
+                                <div className="font-medium text-sm">{material.label}</div>
+                                <div className="text-xs text-gray-500 mt-1">{material.desc}</div>
+                              </div>
                             ))}
                           </div>
                         </div>
 
-                        <div className="space-y-2">
+                        <div>
                           <Label className="text-sm font-medium text-gray-700">Yapışkanlık Türü</Label>
-                          <Select onValueChange={(value) => updateFormData('adhesiveType', value)}>
-                            <SelectTrigger>
+                          <Select onValueChange={(value) => updateSpec('adhesiveType', value)} value={specs.adhesiveType}>
+                            <SelectTrigger className="mt-2">
                               <SelectValue placeholder="Yapışkanlık seçin" />
                             </SelectTrigger>
                             <SelectContent>
@@ -588,34 +527,34 @@ export default function QuoteFormUVDTF() {
                       </div>
 
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium text-gray-700">Şeffaflık Derecesi</Label>
-                          <div className="grid grid-cols-1 gap-2">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Şeffaflık Derecesi</Label>
+                          <div className="space-y-2">
                             {[
                               { value: 'opaque', label: 'Opak (Tamamen Kapalı)', desc: 'Arka plan tamamen gizlenir' },
                               { value: 'semi-transparent', label: 'Yarı Şeffaf', desc: 'Hafif geçirgenlik' },
                               { value: 'transparent', label: 'Şeffaf', desc: 'Arka plan görünür' },
                             ].map((transparency) => (
-                              <Button
+                              <div
                                 key={transparency.value}
-                                type="button"
-                                variant={formData.transparency === transparency.value ? 'default' : 'outline'}
-                                onClick={() => updateFormData('transparency', transparency.value)}
-                                className="h-auto p-3 justify-start"
+                                className={`border rounded-lg p-2 cursor-pointer transition-all ${
+                                  specs.transparency === transparency.value 
+                                    ? 'border-purple-500 bg-purple-50' 
+                                    : 'border-gray-200 hover:border-purple-300'
+                                }`}
+                                onClick={() => updateSpec('transparency', transparency.value)}
                               >
-                                <div className="text-left">
-                                  <div className="font-medium text-sm">{transparency.label}</div>
-                                  <div className="text-xs text-gray-500">{transparency.desc}</div>
-                                </div>
-                              </Button>
+                                <div className="font-medium text-sm">{transparency.label}</div>
+                                <div className="text-xs text-gray-500">{transparency.desc}</div>
+                              </div>
                             ))}
                           </div>
                         </div>
 
-                        <div className="space-y-2">
+                        <div>
                           <Label className="text-sm font-medium text-gray-700">Dayanıklılık</Label>
-                          <Select onValueChange={(value) => updateFormData('durability', value)}>
-                            <SelectTrigger>
+                          <Select onValueChange={(value) => updateSpec('durability', value)} value={specs.durability}>
+                            <SelectTrigger className="mt-2">
                               <SelectValue placeholder="Dayanıklılık seçin" />
                             </SelectTrigger>
                             <SelectContent>
@@ -633,7 +572,7 @@ export default function QuoteFormUVDTF() {
 
                   <Separator />
 
-                  {/* Baskı ve Renk Özellikleri */}
+                  {/* Baskı Özellikleri */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
                       <Palette className="h-5 w-5 text-purple-600 mr-2" />
@@ -641,90 +580,76 @@ export default function QuoteFormUVDTF() {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium text-gray-700">Renk Modeli</Label>
-                          <div className="grid grid-cols-1 gap-2">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Renk Modeli</Label>
+                          <div className="space-y-2">
                             {[
-                              { value: 'cmyk', label: 'CMYK (4 Renk)', desc: 'Standart renkli baskı', price: 'Standart' },
-                              { value: 'cmyk-white', label: 'CMYK + Beyaz', desc: 'Şeffaf yüzeylerde kullanım', price: '+%20' },
-                              { value: 'cmyk-spot', label: 'CMYK + Spot Renk', desc: 'Özel renk ekleme', price: '+%35' },
-                              { value: 'spot-colors', label: 'Sadece Spot Renkler', desc: '1-4 özel renk', price: '+%25' },
+                              { value: 'cmyk', label: 'CMYK (4 Renk)', desc: 'Standart renkli baskı' },
+                              { value: 'cmyk-white', label: 'CMYK + Beyaz', desc: 'Şeffaf yüzeylerde kullanım' },
+                              { value: 'cmyk-spot', label: 'CMYK + Spot Renk', desc: 'Özel renk ekleme' },
+                              { value: 'spot-colors', label: 'Sadece Spot Renkler', desc: '1-4 özel renk' },
                             ].map((color) => (
-                              <Button
+                              <div
                                 key={color.value}
-                                type="button"
-                                variant={formData.colorOption === color.value ? 'default' : 'outline'}
-                                onClick={() => updateFormData('colorOption', color.value)}
-                                className="h-auto p-3 justify-start"
+                                className={`border rounded-lg p-3 cursor-pointer transition-all ${
+                                  specs.colorOption === color.value 
+                                    ? 'border-purple-500 bg-purple-50' 
+                                    : 'border-gray-200 hover:border-purple-300'
+                                }`}
+                                onClick={() => updateSpec('colorOption', color.value)}
                               >
-                                <div className="text-left w-full">
-                                  <div className="flex justify-between items-start">
-                                    <div className="font-medium text-sm">{color.label}</div>
-                                    <Badge variant="secondary" className="text-xs">{color.price}</Badge>
-                                  </div>
-                                  <div className="text-xs text-gray-500 mt-1">{color.desc}</div>
-                                </div>
-                              </Button>
+                                <div className="font-medium text-sm">{color.label}</div>
+                                <div className="text-xs text-gray-500 mt-1">{color.desc}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Özel Efektler</Label>
+                          <div className="space-y-2">
+                            {[
+                              { value: 'uv-varnish', label: 'UV Vernik' },
+                              { value: 'metallic', label: 'Metalik Efekt' },
+                              { value: 'holographic', label: 'Holografik' },
+                              { value: 'glitter', label: 'Simli Efekt' },
+                            ].map((effect) => (
+                              <div key={effect.value} className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id={effect.value}
+                                  checked={specs.specialEffects.includes(effect.value)}
+                                  onChange={() => toggleSpecialEffect(effect.value)}
+                                  className="rounded border-gray-300"
+                                />
+                                <Label htmlFor={effect.value} className="text-sm cursor-pointer">{effect.label}</Label>
+                              </div>
                             ))}
                           </div>
                         </div>
                       </div>
 
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium text-gray-700">Yüzey Finish</Label>
-                          <div className="grid grid-cols-1 gap-2">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700 mb-2 block">Yüzey Finish</Label>
+                          <div className="space-y-2">
                             {[
                               { value: 'gloss', label: 'Parlak (Gloss)', desc: 'Yüksek parlaklık, canlı renkler' },
                               { value: 'semi-gloss', label: 'Yarı Parlak', desc: 'Orta parlaklık, dengeli görünüm' },
                               { value: 'satin', label: 'Saten', desc: 'Yumuşak parlaklık, premium görünüm' },
                               { value: 'matte', label: 'Mat', desc: 'Parlaksız, şık görünüm' },
                             ].map((finish) => (
-                              <Button
+                              <div
                                 key={finish.value}
-                                type="button"
-                                variant={formData.finishType === finish.value ? 'default' : 'outline'}
-                                onClick={() => updateFormData('finishType', finish.value)}
-                                className="h-auto p-3 justify-start"
+                                className={`border rounded-lg p-2 cursor-pointer transition-all ${
+                                  specs.finishType === finish.value 
+                                    ? 'border-purple-500 bg-purple-50' 
+                                    : 'border-gray-200 hover:border-purple-300'
+                                }`}
+                                onClick={() => updateSpec('finishType', finish.value)}
                               >
-                                <div className="text-left">
-                                  <div className="font-medium text-sm">{finish.label}</div>
-                                  <div className="text-xs text-gray-500">{finish.desc}</div>
-                                </div>
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium text-gray-700">Özel Efektler</Label>
-                          <div className="grid grid-cols-1 gap-2">
-                            {[
-                              { value: 'none', label: 'Efekt Yok', checked: !formData.specialEffects },
-                              { value: 'uv-varnish', label: 'UV Vernik', checked: formData.specialEffects?.includes('uv-varnish') },
-                              { value: 'metallic', label: 'Metalik Efekt', checked: formData.specialEffects?.includes('metallic') },
-                              { value: 'holographic', label: 'Holografik', checked: formData.specialEffects?.includes('holographic') },
-                            ].map((effect) => (
-                              <div key={effect.value} className="flex items-center space-x-2">
-                                <input
-                                  type="checkbox"
-                                  id={effect.value}
-                                  checked={effect.checked || false}
-                                  onChange={(e) => {
-                                    if (effect.value === 'none') {
-                                      updateFormData('specialEffects', []);
-                                    } else {
-                                      const current = formData.specialEffects || [];
-                                      if (e.target.checked) {
-                                        updateFormData('specialEffects', [...current, effect.value]);
-                                      } else {
-                                        updateFormData('specialEffects', current.filter(item => item !== effect.value));
-                                      }
-                                    }
-                                  }}
-                                  className="rounded border-gray-300"
-                                />
-                                <Label htmlFor={effect.value} className="text-sm cursor-pointer">{effect.label}</Label>
+                                <div className="font-medium text-sm">{finish.label}</div>
+                                <div className="text-xs text-gray-500">{finish.desc}</div>
                               </div>
                             ))}
                           </div>
@@ -735,7 +660,7 @@ export default function QuoteFormUVDTF() {
 
                   <Separator />
 
-                  {/* Uygulama ve Transfer Özellikleri */}
+                  {/* Uygulama Özellikleri */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4 text-gray-900 flex items-center">
                       <Zap className="h-5 w-5 text-purple-600 mr-2" />
@@ -743,63 +668,40 @@ export default function QuoteFormUVDTF() {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-4">
-                        <div className="space-y-2">
+                        <div>
                           <Label className="text-sm font-medium text-gray-700">Transfer Yöntemi</Label>
-                          <div className="grid grid-cols-1 gap-3">
-                            {[
-                              { value: 'dry-transfer', label: 'Kuru Transfer', desc: 'Transfer tape ile kolay uygulama', temp: 'Oda sıcaklığı' },
-                              { value: 'wet-transfer', label: 'Islak Transfer', desc: 'Sabunlu su ile hassas uygulama', temp: 'Oda sıcaklığı' },
-                              { value: 'heat-transfer', label: 'Sıcak Transfer', desc: 'Isı ile güçlü yapışma', temp: '60-80°C' },
-                            ].map((transfer) => (
-                              <Button
-                                key={transfer.value}
-                                type="button"
-                                variant={formData.applicationType === transfer.value ? 'default' : 'outline'}
-                                onClick={() => updateFormData('applicationType', transfer.value)}
-                                className="h-auto p-4 justify-start"
-                              >
-                                <div className="text-left w-full">
-                                  <div className="flex justify-between items-start">
-                                    <div className="font-medium">{transfer.label}</div>
-                                    <Badge variant="outline" className="text-xs">{transfer.temp}</Badge>
-                                  </div>
-                                  <div className="text-sm text-gray-500 mt-1">{transfer.desc}</div>
-                                </div>
-                              </Button>
-                            ))}
-                          </div>
+                          <Select onValueChange={(value) => updateSpec('applicationType', value)} value={specs.applicationType}>
+                            <SelectTrigger className="mt-2">
+                              <SelectValue placeholder="Transfer yöntemi seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="dry-transfer">Kuru Transfer (Oda sıcaklığı)</SelectItem>
+                              <SelectItem value="wet-transfer">Islak Transfer (Sabunlu su)</SelectItem>
+                              <SelectItem value="heat-transfer">Sıcak Transfer (60-80°C)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700">Kesim Özellikleri</Label>
+                          <Select onValueChange={(value) => updateSpec('cuttingType', value)} value={specs.cuttingType}>
+                            <SelectTrigger className="mt-2">
+                              <SelectValue placeholder="Kesim türü seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="kiss-cut">Kiss Cut (Sadece etiket kesilir)</SelectItem>
+                              <SelectItem value="through-cut">Through Cut (Tamamen kesilir)</SelectItem>
+                              <SelectItem value="perforated">Perforeli (Kolay ayırma)</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
 
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium text-gray-700">Kesim Özellikleri</Label>
-                          <div className="grid grid-cols-1 gap-2">
-                            {[
-                              { value: 'kiss-cut', label: 'Kiss Cut', desc: 'Sadece etiket kesilir, arka kağıt kesilmez' },
-                              { value: 'through-cut', label: 'Through Cut', desc: 'Etiket ve arka kağıt tamamen kesilir' },
-                              { value: 'perforated', label: 'Perforeli', desc: 'Kolay ayırma için perforasyon' },
-                            ].map((cutting) => (
-                              <Button
-                                key={cutting.value}
-                                type="button"
-                                variant={formData.cuttingType === cutting.value ? 'default' : 'outline'}
-                                onClick={() => updateFormData('cuttingType', cutting.value)}
-                                className="h-auto p-3 justify-start"
-                              >
-                                <div className="text-left">
-                                  <div className="font-medium text-sm">{cutting.label}</div>
-                                  <div className="text-xs text-gray-500">{cutting.desc}</div>
-                                </div>
-                              </Button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
+                        <div>
                           <Label className="text-sm font-medium text-gray-700">Köşe Şekli</Label>
-                          <Select onValueChange={(value) => updateFormData('cornerType', value)}>
-                            <SelectTrigger>
+                          <Select onValueChange={(value) => updateSpec('cornerType', value)} value={specs.cornerType}>
+                            <SelectTrigger className="mt-2">
                               <SelectValue placeholder="Köşe şekli seçin" />
                             </SelectTrigger>
                             <SelectContent>
@@ -812,10 +714,10 @@ export default function QuoteFormUVDTF() {
                           </Select>
                         </div>
 
-                        <div className="space-y-2">
+                        <div>
                           <Label className="text-sm font-medium text-gray-700">Ambalajlama</Label>
-                          <Select onValueChange={(value) => updateFormData('packaging', value)}>
-                            <SelectTrigger>
+                          <Select onValueChange={(value) => updateSpec('packaging', value)} value={specs.packaging}>
+                            <SelectTrigger className="mt-2">
                               <SelectValue placeholder="Ambalaj seçin" />
                             </SelectTrigger>
                             <SelectContent>
@@ -859,7 +761,7 @@ export default function QuoteFormUVDTF() {
                     <p className="text-gray-600 mb-4">
                       UV DTF etiket tasarımlarınızı yükleyin. Yüksek çözünürlüklü dosyalar en iyi sonuçları verir.
                     </p>
-                    
+
                     <FileUpload
                       onFileUpload={handleFileUpload}
                       maxFiles={10}
@@ -867,7 +769,7 @@ export default function QuoteFormUVDTF() {
                       acceptedTypes={['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/postscript', 'image/vnd.adobe.photoshop']}
                       className="mb-4"
                     />
-                    
+
                     {uploadedFiles.length > 0 && (
                       <div className="mt-4">
                         <h4 className="font-medium mb-2">Yüklenen Dosyalar:</h4>
@@ -909,9 +811,7 @@ export default function QuoteFormUVDTF() {
                       <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
                       UV DTF Teklif Özeti
                     </h3>
-                    
-                    
-                    
+
                     <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Proje Tipi:</span>
@@ -927,27 +827,25 @@ export default function QuoteFormUVDTF() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Miktar:</span>
-                        <span className="font-medium">{formData.quantity || form.watch("specifications.quantity") || "Belirtilmedi"} adet</span>
+                        <span className="font-medium">{specs.quantity || "Belirtilmedi"} adet</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Boyut:</span>
                         <span className="font-medium">
-                          {(formData.width && formData.height) || (form.watch("specifications.width") && form.watch("specifications.height")) 
-                            ? `${formData.width || form.watch("specifications.width")}x${formData.height || form.watch("specifications.height")}mm` 
-                            : "Belirtilmedi"}
+                          {specs.width && specs.height ? `${specs.width}x${specs.height}mm` : "Belirtilmedi"}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Malzeme:</span>
-                        <span className="font-medium">{formData.material || form.watch("specifications.material") || "Belirtilmedi"}</span>
+                        <span className="font-medium">{specs.material || "Belirtilmedi"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Yapışkanlık:</span>
-                        <span className="font-medium">{formData.adhesiveType || form.watch("specifications.adhesiveType") || "Belirtilmedi"}</span>
+                        <span className="font-medium">{specs.adhesiveType || "Belirtilmedi"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Renk Modeli:</span>
-                        <span className="font-medium">{formData.colorOption || form.watch("specifications.colorOption") || "Belirtilmedi"}</span>
+                        <span className="font-medium">{specs.colorOption || "Belirtilmedi"}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Yüklenen Dosya:</span>
