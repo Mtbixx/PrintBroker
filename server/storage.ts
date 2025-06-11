@@ -973,7 +973,7 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error fetching design history:', error);
       return {
-        designs: [],```text
+        designs: [],
         total: 0,
         page: options.page,
         totalPages: 0
