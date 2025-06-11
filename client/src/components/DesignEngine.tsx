@@ -562,7 +562,7 @@ export default function DesignEngine() {
                     <Label>En-Boy Oranı</Label>
                     <Select
                       value={designOptions.aspectRatio}
-                      onValueChange={(value) => setDesignOptions({...designOptions, aspectRatio: value})}
+                      onValueChange={(value) => setDesignOptions({...designOptions, aspectRatio: value as DesignOptions['aspectRatio']})}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -585,7 +585,7 @@ export default function DesignEngine() {
                     <Label>Stil Türü</Label>
                     <Select
                       value={designOptions.styleType}
-                      onValueChange={(value) => setDesignOptions({...designOptions, styleType: value})}
+                      onValueChange={(value) => setDesignOptions({...designOptions, styleType: value as DesignOptions['styleType']})}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -606,7 +606,7 @@ export default function DesignEngine() {
                     <Label htmlFor="model">Model</Label>
                     <Select 
                       value={designOptions.model} 
-                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, model: value }))}
+                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, model: value as DesignOptions['model'] }))}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -622,20 +622,20 @@ export default function DesignEngine() {
                     <Label htmlFor="resolution">Çözünürlük (Opsiyonel)</Label>
                     <Select 
                       value={designOptions.resolution} 
-                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, resolution: value }))}
+                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, resolution: value as DesignOptions['resolution'] }))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Varsayılan" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="default">Varsayılan</SelectItem>
-                        <SelectItem value="512x512">512x512</SelectItem>
-                        <SelectItem value="768x768">768x768</SelectItem>
-                        <SelectItem value="1024x1024">1024x1024 (HD)</SelectItem>
-                        <SelectItem value="1360x768">1360x768 (Geniş)</SelectItem>
-                        <SelectItem value="768x1360">768x1360 (Dikey)</SelectItem>
-                        <SelectItem value="1536x640">1536x640 (Ultra Geniş)</SelectItem>
-                        <SelectItem value="640x1536">640x1536 (Ultra Dikey)</SelectItem>
+                        <SelectItem value="RESOLUTION_1024_1024">1024x1024 (HD)</SelectItem>
+                        <SelectItem value="RESOLUTION_768_1024">768x1024 (Dikey)</SelectItem>
+                        <SelectItem value="RESOLUTION_1024_768">1024x768 (Yatay)</SelectItem>
+                        <SelectItem value="RESOLUTION_1152_896">1152x896 (Geniş)</SelectItem>
+                        <SelectItem value="RESOLUTION_1344_768">1344x768 (Ultra Geniş)</SelectItem>
+                        <SelectItem value="RESOLUTION_1536_640">1536x640 (Panorama)</SelectItem>
+                        <SelectItem value="RESOLUTION_640_1536">640x1536 (Ultra Dikey)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

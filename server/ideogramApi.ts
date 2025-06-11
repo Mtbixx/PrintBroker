@@ -48,11 +48,11 @@ class IdeogramService {
   async generateImage(prompt: string, options: {
     aspectRatio?: 'ASPECT_1_1' | 'ASPECT_10_16' | 'ASPECT_16_10' | 'ASPECT_9_16' | 'ASPECT_16_9' | 'ASPECT_3_2' | 'ASPECT_2_3' | 'ASPECT_4_3' | 'ASPECT_3_4';
     model?: 'V_2' | 'V_2_TURBO';
-    styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME' | 'CONCEPTUAL_ART' | 'ILLUSTRATION' | 'PHOTOGRAPHY';
+    styleType?: 'AUTO' | 'GENERAL' | 'REALISTIC' | 'DESIGN' | 'RENDER_3D' | 'ANIME';
     magicPrompt?: 'AUTO' | 'ON' | 'OFF';
     negativePrompt?: string;
     seed?: number;
-    resolution?: '512x512' | '768x768' | '1024x1024' | '1360x768' | '768x1360' | '1024x768' | '768x1024' | '1536x640' | '640x1536';
+    resolution?: 'RESOLUTION_512_1536' | 'RESOLUTION_576_1408' | 'RESOLUTION_640_1024' | 'RESOLUTION_768_1024' | 'RESOLUTION_1024_1024' | 'RESOLUTION_1152_896' | 'RESOLUTION_1216_832' | 'RESOLUTION_1344_768' | 'RESOLUTION_1536_640';
     colorPalette?: {
       name?: string;
       members?: Array<{
