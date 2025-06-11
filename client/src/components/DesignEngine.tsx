@@ -67,7 +67,7 @@ export default function DesignEngine() {
     model: "V_2",
     styleType: "AUTO",
     magicPrompt: "AUTO",
-    resolution: "",
+    resolution: "default",
     colorPalette: []
   });
 
@@ -223,6 +223,10 @@ export default function DesignEngine() {
           }
         })
       };
+	  const finalOptions = {
+      ...designOptions,
+      resolution: designOptions.resolution === 'default' ? undefined : designOptions.resolution
+    };
       generateMutation.mutate({ prompt, options: requestOptions });
     }
   };
@@ -619,8 +623,8 @@ export default function DesignEngine() {
                   <div>
                     <Label htmlFor="resolution">Çözünürlük (Opsiyonel)</Label>
                     <Select 
-                      value={designOptions.resolution || "default"} 
-                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, resolution: value === "default" ? "" : value }))}
+                      value={designOptions.resolution} 
+                      onValueChange={(value) => setDesignOptions(prev => ({ ...prev, resolution: value }))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Varsayılan" />
