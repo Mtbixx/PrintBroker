@@ -39,7 +39,8 @@ import {
   Eye,
   Download,
   Trash2,
-  Send
+  Send,
+  Filter
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Chat from "@/components/Chat";
