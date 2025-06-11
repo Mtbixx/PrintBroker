@@ -32,7 +32,7 @@ export default function QuoteCard({
   showActions = true, 
   onViewDetails 
 }: QuoteCardProps) {
-
+  
   const getStatusConfig = (status: string) => {
     const statusMap = {
       pending: { 
@@ -66,7 +66,7 @@ export default function QuoteCard({
         color: "bg-red-100 text-red-800"
       }
     };
-
+    
     return statusMap[status as keyof typeof statusMap] || statusMap.pending;
   };
 
@@ -88,7 +88,7 @@ export default function QuoteCard({
         color: "text-green-600"
       }
     };
-
+    
     return typeMap[type as keyof typeof typeMap] || typeMap.general_printing;
   };
 
@@ -111,10 +111,10 @@ export default function QuoteCard({
 
   const getSpecificationSummary = () => {
     if (!quote.specifications) return null;
-
+    
     const specs = quote.specifications;
     const summaryItems: string[] = [];
-
+    
     // Common specifications to show
     if (specs.quantity) summaryItems.push(`${specs.quantity} adet`);
     if (specs.width && specs.height) summaryItems.push(`${specs.width}x${specs.height}mm`);
@@ -122,7 +122,7 @@ export default function QuoteCard({
     if (specs.size) summaryItems.push(specs.size);
     if (specs.paperType) summaryItems.push(specs.paperType);
     if (specs.material) summaryItems.push(specs.material);
-
+    
     return summaryItems.slice(0, 3).join(', ');
   };
 
@@ -148,7 +148,7 @@ export default function QuoteCard({
               </p>
             </div>
           </div>
-
+          
           <div className="text-right flex flex-col items-end">
             <Badge className={statusConfig.color}>
               {statusConfig.label}
@@ -188,7 +188,7 @@ export default function QuoteCard({
               </div>
             )}
           </div>
-
+          
           {showActions && (
             <div className="flex items-center space-x-2">
               {onViewDetails && (
@@ -202,7 +202,7 @@ export default function QuoteCard({
                   Detay
                 </Button>
               )}
-
+              
               {quote.status === 'received_quotes' && (
                 <Button
                   size="sm"

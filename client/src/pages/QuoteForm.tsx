@@ -66,76 +66,8 @@ export default function QuoteForm() {
   const queryClient = useQueryClient();
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [currentTab, setCurrentTab] = useState("details");
-  const [formData, setFormData] = useState({
-    // Basic form fields
-    title: '',
-    description: '',
-    quantity: '',
-    deadline: '',
-    budget: '',
-
-    // Sheet label fields
-    labelSize: '',
-    material: '',
-    printColor: '',
-    finish: '',
-    lamination: '',
-    cutting: '',
-
-    // Roll label fields
-    rollWidth: '',
-    rollLength: '',
-    labelSpacing: '',
-    windingDirection: '',
-    coreSize: '',
-
-    // General printing fields
-    printType: '',
-    printSize: '',
-    printPaper: '',
-    printFinish: '',
-    printBinding: '',
-    printPages: '',
-    printCover: '',
-
-    // UV DTF specific fields
-    adhesiveType: '',
-    transferType: '',
-    cuttingType: '',
-    backing: ''
-  });
+  const [formData, setFormData] = useState<any>({});
   const [surfaceProcessingTab, setSurfaceProcessingTab] = useState("cellophane");
-  const printingTypes = {
-    'sheet_label': {
-      requiredFields: ['size', 'material', 'quantity'],
-      optionalFields: ['finish', 'lamination', 'cutting'],
-      sizeOptions: ['custom'],
-      paperOptions: ['transparent', 'opaque', 'kraft', 'metallic', 'textured']
-    },
-    'roll_label': {
-      requiredFields: ['rollWidth', 'rollLength', 'quantity', 'material', 'adhesive'],
-      optionalFields: ['windingDirection', 'coreSize', 'perforationGap'],
-      sizeOptions: ['custom'],
-      materialOptions: ['pp-white', 'pp-transparent', 'pe-white', 'paper-white', 'polyester'],
-      adhesiveOptions: ['permanent', 'removable', 'ultra-removable', 'freezer', 'high-temp']
-    },
-    'general_printing': {
-      requiredFields: ['type', 'size', 'material', 'quantity', 'color'],
-      optionalFields: ['finish', 'handle'],
-      sizeOptions: ['custom'],
-      paperOptions: ['kraft', 'bristol-250', 'corrugated']
-    },
-    'uv_dtf_label': {
-        requiredFields: ['size', 'material', 'quantity', 'adhesiveType', 'transferType'],
-        optionalFields: ['cuttingType', 'backing'],
-        sizeOptions: ['50x30', '60x40', '70x50', '100x70', '150x100', 'custom'],
-        materialOptions: ['transparent_film', 'white_film', 'clear_film', 'holographic_film'],
-        adhesiveOptions: ['permanent', 'removable', 'repositionable', 'high_tack'],
-        transferOptions: ['cold_peel', 'hot_peel', 'warm_peel'],
-        cuttingOptions: ['kiss_cut', 'through_cut', 'perforation_cut'],
-        backingOptions: ['paper_backing', 'pet_backing', 'no_backing']
-      }
-  };
 
   const form = useForm<QuoteFormData>({
     resolver: zodResolver(quoteSchema),
@@ -295,18 +227,6 @@ export default function QuoteForm() {
           color: 'green',
           bgGradient: 'from-green-500 to-emerald-600'
         };
-        case 'uv_dtf_label':
-        return {
-          title: 'UV DTF Etiket Teklifi',
-          description: 'Yüksek kaliteli UV DTF etiket baskısı',
-          icon: <Sparkles className="h-8 w-8 text-white" />,
-          color: 'purple',
-          bgGradient: 'from-purple-500 to-pink-600',
-          adhesiveOptions: ['permanent', 'removable', 'repositionable', 'high_tack'],
-          transferOptions: ['cold_peel', 'hot_peel', 'warm_peel'],
-          cuttingOptions: ['kiss_cut', 'through_cut', 'perforation_cut'],
-          backingOptions: ['paper_backing', 'pet_backing', 'no_backing']
-        };
       default:
         return {
           title: 'Teklif Talebi',
@@ -319,31 +239,6 @@ export default function QuoteForm() {
   };
 
   const typeConfig = getTypeConfig();
-
-  const getFieldOptions = (field: string) => {
-    const typeConfig = printingTypes[type];
-    switch (field) {
-      case 'size':
-        return typeConfig?.sizeOptions || [];
-      case 'paper':
-        return typeConfig?.paperOptions || [];
-      case 'material':
-        if (type === 'uv_dtf_label') {
-          return typeConfig?.materialOptions || [];
-        }
-        return typeConfig?.paperOptions || [];
-      case 'adhesive':
-        return typeConfig?.adhesiveOptions || [];
-      case 'transfer':
-        return typeConfig?.transferOptions || [];
-      case 'cutting':
-        return typeConfig?.cuttingOptions || [];
-      case 'backing':
-        return typeConfig?.backingOptions || [];
-      default:
-        return [];
-    }
-  };
 
   const renderSurfaceProcessingOptions = () => (
     <div className="space-y-4">
@@ -604,7 +499,7 @@ export default function QuoteForm() {
               onChange={(e) => {
                 const value = parseInt(e.target.value) || 0;
                 updateFormData('quantity', e.target.value);
-
+                
                 if (value > 0 && value < 100) {
                   toast({
                     title: "Uyarı",
@@ -620,7 +515,7 @@ export default function QuoteForm() {
             )}
           </div>
 
-
+          
         </div>
       </div>
 
@@ -694,9 +589,9 @@ export default function QuoteForm() {
         </div>
       </div>
 
+      
 
-
-
+      
     </div>
   );
 
@@ -738,10 +633,10 @@ export default function QuoteForm() {
                 // Sadece sayı girişine izin ver
                 const numericValue = e.target.value.replace(/[^0-9]/g, '');
                 e.target.value = numericValue;
-
+                
                 const value = parseInt(numericValue) || 0;
                 updateFormData('totalQuantity', numericValue);
-
+                
                 if (value > 0 && value < 5000) {
                   toast({
                     title: "Uyarı",
@@ -786,7 +681,7 @@ export default function QuoteForm() {
                 <SelectValue placeholder="Yön seçin" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="out">Dışarı Sarım</SelectItem>```text
+                <SelectItem value="out">Dışarı Sarım</SelectItem>
                 <SelectItem value="in">İçeri Sarım</SelectItem>
               </SelectContent>
             </Select>
@@ -891,430 +786,299 @@ export default function QuoteForm() {
     </div>
   );
 
-  const renderGeneralPrintingForm = () => (
-    <div className="space-y-8">
-      {/* Ürün Seçimi */}
-      <div>
-        <h3 className="text-lg font-semibold mb-4 text-gray-900">Ürün Seçimi</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[
-            { value: 'business-card', label: 'Kartvizit', desc: 'Profesyonel kartvizitler' },
-            { value: 'brochure', label: 'Broşür', desc: 'Tanıtım broşürleri' },
-            { value: 'catalog', label: 'Katalog', desc: 'Ürün katalogları' },
-            { value: 'flyer', label: 'Flyer', desc: 'Reklam flyerleri' },
-            { value: 'poster', label: 'Poster', desc: 'Büyük boy posterler' },
-            { value: 'book', label: 'Kitap', desc: 'Kitap ve yayın' },
-            { value: 'magazine', label: 'Dergi', desc: 'Dergi baskısı' },
-            { value: 'packaging', label: 'Ambalaj', desc: 'Özel ambalajlar' },
-            { value: 'sticker', label: 'Çıkartma', desc: 'Promosyon etiketleri' },
-            { value: 'banner', label: 'Banner', desc: 'Geniş format baskılar' }
-          ].map((product) => (
-            <Button
-              key={product.value}
-              variant={formData.printType === product.value ? 'default' : 'outline'}
-              onClick={() => updateFormData('printType', product.value)}
-              className="h-auto p-4 justify-start"
-            >
-              <div className="text-left">
-                <div className="font-medium">{product.label}</div>
-                <div className="text-sm text-gray-500">{product.desc}</div>
-              </div>
-            </Button>
-          ))}
+  const renderGeneralPrintingForm = () => {
+    const printTypes = {
+      'business-card': {
+        requiredFields: ['size', 'paper', 'quantity', 'color'],
+        optionalFields: ['finish', 'cutting'],
+        sizeOptions: ['85x55', '90x50', '85x54', 'custom'],
+        paperOptions: ['coated-300', 'coated-350', 'bristol-300', 'textured']
+      },
+      'brochure': {
+        requiredFields: ['size', 'paper', 'quantity', 'color', 'pages', 'folding'],
+        optionalFields: ['finish', 'binding'],
+        sizeOptions: ['a4', 'a5', 'a6', 'custom'],
+        paperOptions: ['coated-120', 'coated-150', 'coated-200', 'offset-90']
+      },
+      'catalog': {
+        requiredFields: ['size', 'paper', 'quantity', 'color', 'pages', 'binding'],
+        optionalFields: ['finish', 'cover'],
+        sizeOptions: ['a4', 'a5', '21x21', 'custom'],
+        paperOptions: ['coated-120', 'coated-150', 'coated-200']
+      },
+      'magazine': {
+        requiredFields: ['size', 'paper', 'quantity', 'color', 'pages', 'binding'],
+        optionalFields: ['finish', 'cover'],
+        sizeOptions: ['a4', '21x28', '19x27', 'custom'],
+        paperOptions: ['coated-90', 'coated-120', 'coated-150']
+      },
+      'flyer': {
+        requiredFields: ['size', 'paper', 'quantity', 'color'],
+        optionalFields: ['finish'],
+        sizeOptions: ['a4', 'a5', 'a6', '21x21', 'custom'],
+        paperOptions: ['coated-120', 'coated-150', 'coated-200']
+      },
+      'poster': {
+        requiredFields: ['size', 'paper', 'quantity', 'color'],
+        optionalFields: ['finish'],
+        sizeOptions: ['a3', 'a2', 'a1', '50x70', '70x100', 'custom'],
+        paperOptions: ['coated-150', 'coated-200', 'poster-paper']
+      },
+      'book': {
+        requiredFields: ['size', 'paper', 'quantity', 'color', 'pages', 'binding', 'cover'],
+        optionalFields: ['finish'],
+        sizeOptions: ['a4', 'a5', '13.5x21', '16x24', 'custom'],
+        paperOptions: ['offset-80', 'offset-90', 'book-paper']
+      },
+      'packaging': {
+        requiredFields: ['type', 'size', 'material', 'quantity', 'color'],
+        optionalFields: ['finish', 'handle'],
+        sizeOptions: ['custom'],
+        paperOptions: ['kraft', 'bristol-250', 'corrugated']
+      }
+    };
+
+    const selectedType = formData.printType ? printTypes[formData.printType as keyof typeof printTypes] : null;
+
+    return (
+      <div className="space-y-8">
+        {/* Baskı Türü Seçimi */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4 text-gray-900">Baskı Türü Seçimi</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Object.entries({
+              'business-card': { label: 'Kartvizit', desc: 'Profesyonel kartvizitler' },
+              'brochure': { label: 'Broşür', desc: 'Tanıtım broşürleri' },
+              'catalog': { label: 'Katalog', desc: 'Ürün katalogları' },
+              'magazine': { label: 'Dergi', desc: 'Dergi ve gazete' },
+              'flyer': { label: 'Flyer', desc: 'Reklam flyerleri' },
+              'poster': { label: 'Poster', desc: 'Büyük boy posterler' },
+              'book': { label: 'Kitap', desc: 'Kitap ve yayın' },
+              'packaging': { label: 'Ambalaj', desc: 'Özel ambalajlar' }
+            }).map(([value, config]) => (
+              <Button
+                key={value}
+                variant={formData.printType === value ? 'default' : 'outline'}
+                onClick={() => updateFormData('printType', value)}
+                className="h-auto p-4 justify-start"
+              >
+                <div className="text-left">
+                  <div className="font-medium">{config.label}</div>
+                  <div className="text-sm text-gray-500">{config.desc}</div>
+                </div>
+              </Button>
+            ))}
+          </div>
         </div>
+
+        {selectedType && (
+          <>
+            <Separator />
+
+            {/* Temel Özellikler */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">Temel Özellikler</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Boyut */}
+                {selectedType.requiredFields.includes('size') && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700 flex items-center">
+                      Boyut <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <Select onValueChange={(value) => updateFormData('printSize', value)}>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Boyut seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selectedType.sizeOptions.map(size => {
+                          const sizeLabels: Record<string, string> = {
+                            '85x55': '85 x 55 mm (Standart Kartvizit)',
+                            '90x50': '90 x 50 mm (Avrupa Kartvizit)', 
+                            'a6': 'A6 (105 x 148 mm)',
+                            'a5': 'A5 (148 x 210 mm)',
+                            'a4': 'A4 (210 x 297 mm)',
+                            'a3': 'A3 (297 x 420 mm)',
+                            'a2': 'A2 (420 x 594 mm)',
+                            'a1': 'A1 (594 x 841 mm)',
+                            '21x21': '21 x 21 cm (Kare)',
+                            '21x28': '21 x 28 cm (Dergi)',
+                            '19x27': '19 x 27 cm (Küçük Dergi)',
+                            '50x70': '50 x 70 cm',
+                            '70x100': '70 x 100 cm',
+                            'custom': 'Özel Boyut'
+                          };
+                          return (
+                            <SelectItem key={size} value={size}>
+                              {sizeLabels[size] || size}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Miktar */}
+                {selectedType.requiredFields.includes('quantity') && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700 flex items-center">
+                      Miktar <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <Select onValueChange={(value) => updateFormData('printQuantity', value)}>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Miktar seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="100">100 Adet</SelectItem>
+                        <SelectItem value="250">250 Adet</SelectItem>
+                        <SelectItem value="500">500 Adet</SelectItem>
+                        <SelectItem value="1000">1.000 Adet</SelectItem>
+                        <SelectItem value="2500">2.500 Adet</SelectItem>
+                        <SelectItem value="5000">5.000 Adet</SelectItem>
+                        <SelectItem value="custom">Özel Miktar</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Renk */}
+                {selectedType.requiredFields.includes('color') && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700 flex items-center">
+                      Renk <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <Select onValueChange={(value) => updateFormData('printColor', value)}>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Renk seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="4-0">4+0 (Tek Yüz Renkli)</SelectItem>
+                        <SelectItem value="4-4">4+4 (Çift Yüz Renkli)</SelectItem>
+                        <SelectItem value="1-0">1+0 (Tek Yüz Siyah)</SelectItem>
+                        <SelectItem value="1-1">1+1 (Çift Yüz Siyah)</SelectItem>
+                        <SelectItem value="pantone">Pantone Renk</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Sayfa ve Ciltleme (Gerekirse) */}
+            {(selectedType.requiredFields.includes('pages') || selectedType.requiredFields.includes('binding')) && (
+              <>
+                <Separator />
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900">Sayfa ve Ciltleme</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {selectedType.requiredFields.includes('pages') && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700 flex items-center">
+                          Sayfa Sayısı <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <Input 
+                          placeholder="Örn: 24"
+                          onChange={(e) => updateFormData('pageCount', e.target.value)}
+                        />
+                      </div>
+                    )}
+
+                    {selectedType.requiredFields.includes('binding') && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700 flex items-center">
+                          Ciltleme <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <Select onValueChange={(value) => updateFormData('binding', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Ciltleme seçin" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="saddle-stitch">Tel Dikiş</SelectItem>
+                            <SelectItem value="perfect-binding">Termal Cilt</SelectItem>
+                            <SelectItem value="spiral">Spiral Cilt</SelectItem>
+                            <SelectItem value="wire-o">Wire-O Cilt</SelectItem>
+                            <SelectItem value="hardcover">Sert Kapak</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+
+                    {selectedType.requiredFields.includes('folding') && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700 flex items-center">
+                          Katlama <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <Select onValueChange={(value) => updateFormData('folding', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Katlama seçin" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Katlama Yok</SelectItem>
+                            <SelectItem value="half">Yarı Katlama</SelectItem>
+                            <SelectItem value="tri-fold">Üç Katlama</SelectItem>
+                            <SelectItem value="z-fold">Z Katlama</SelectItem>
+                            <SelectItem value="gate-fold">Kapı Katlama</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+
+            <Separator />
+
+            {/* Malzeme Seçimi */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">Malzeme Seçimi</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {selectedType.paperOptions.map((paper) => {
+                  const paperLabels: Record<string, { label: string, desc: string }> = {
+                    'coated-90': { label: 'Kuşe 90gr', desc: 'Ekonomik, günlük kullanım' },
+                    'coated-120': { label: 'Kuşe 120gr', desc: 'Standart kalite' },
+                    'coated-150': { label: 'Kuşe 150gr', desc: 'İyi kalite' },
+                    'coated-200': { label: 'Kuşe 200gr', desc: 'Yüksek kalite' },
+                    'coated-300': { label: 'Kuşe 300gr', desc: 'Premium kalite' },
+                    'coated-350': { label: 'Kuşe 350gr', desc: 'Ultra kalite' },
+                    'bristol-300': { label: 'Bristol 300gr', desc: 'Kalın, dayanıklı' },
+                    'offset-80': { label: 'Offset 80gr', desc: 'Hafif, ekonomik' },
+                    'offset-90': { label: 'Offset 90gr', desc: 'Standart iç sayfa' },
+                    'textured': { label: 'Dokulu Kağıt', desc: 'Premium doku' },
+                    'kraft': { label: 'Kraft Kağıt', desc: 'Doğal, çevre dostu' },
+                    'poster-paper': { label: 'Poster Kağıdı', desc: 'Büyük boy baskılar' },
+                    'book-paper': { label: 'Kitap Kağıdı', desc: 'Okuma dostu' },
+                    'corrugated': { label: 'Oluklu Karton', desc: 'Ambalaj için' }
+                  };
+
+                  const paperInfo = paperLabels[paper] || { label: paper, desc: '' };
+
+                  return (
+                    <Button
+                      key={paper}
+                      variant={formData.printPaper === paper ? 'default' : 'outline'}
+                      onClick={() => updateFormData('printPaper', paper)}
+                      className="h-auto p-4 justify-start"
+                    >
+                      <div className="text-left">
+                        <div className="font-medium">{paperInfo.label}</div>
+                        <div className="text-sm text-gray-500">{paperInfo.desc}</div>
+                      </div>
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Yüzey İşlemleri */}
+            {selectedType.optionalFields.includes('finish') && renderSurfaceProcessingOptions()}
+          </>
+        )}
       </div>
-
-      {/* Seçilen Ürün Özellikleri */}
-      {formData.printType && (
-        <>
-          <Separator />
-          
-          {/* Kartvizit Özellikleri */}
-          {formData.printType === 'business-card' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">Kartvizit Özellikleri</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Boyut</Label>
-                  <Select onValueChange={(value) => updateFormData('cardSize', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Boyut seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="85x55">85x55 mm (Standart)</SelectItem>
-                      <SelectItem value="90x50">90x50 mm (Büyük)</SelectItem>
-                      <SelectItem value="85x54">85x54 mm (Kredi Kartı)</SelectItem>
-                      <SelectItem value="custom">Özel Boyut</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Kağıt Türü</Label>
-                  <Select onValueChange={(value) => updateFormData('cardPaper', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Kağıt türü seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="coated-300">Kuşe 300gr</SelectItem>
-                      <SelectItem value="coated-350">Kuşe 350gr</SelectItem>
-                      <SelectItem value="bristol-300">Bristol 300gr</SelectItem>
-                      <SelectItem value="textured">Dokulu Kağıt</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Miktar</Label>
-                  <Select onValueChange={(value) => updateFormData('cardQuantity', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Miktar seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="100">100 Adet</SelectItem>
-                      <SelectItem value="250">250 Adet</SelectItem>
-                      <SelectItem value="500">500 Adet</SelectItem>
-                      <SelectItem value="1000">1.000 Adet</SelectItem>
-                      <SelectItem value="custom">Özel Miktar</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Baskı Rengi</Label>
-                  <Select onValueChange={(value) => updateFormData('cardColor', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Renk seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="4-0">4+0 (Tek Yüz Renkli)</SelectItem>
-                      <SelectItem value="4-4">4+4 (Çift Yüz Renkli)</SelectItem>
-                      <SelectItem value="1-0">1+0 (Tek Yüz Siyah)</SelectItem>
-                      <SelectItem value="1-1">1+1 (Çift Yüz Siyah)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Yüzey İşlemleri */}
-              {renderSurfaceProcessingOptions()}
-            </div>
-          )}
-
-          {/* Broşür Özellikleri */}
-          {formData.printType === 'brochure' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">Broşür Özellikleri</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Boyut</Label>
-                  <Select onValueChange={(value) => updateFormData('brochureSize', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Boyut seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="a4">A4 (21x29.7 cm)</SelectItem>
-                      <SelectItem value="a5">A5 (14.8x21 cm)</SelectItem>
-                      <SelectItem value="a6">A6 (10.5x14.8 cm)</SelectItem>
-                      <SelectItem value="custom">Özel Boyut</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Kağıt Türü</Label>
-                  <Select onValueChange={(value) => updateFormData('brochurePaper', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Kağıt türü seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="coated-120">Kuşe 120gr</SelectItem>
-                      <SelectItem value="coated-150">Kuşe 150gr</SelectItem>
-                      <SelectItem value="coated-200">Kuşe 200gr</SelectItem>
-                      <SelectItem value="offset-90">Offset 90gr</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Katlama</Label>
-                  <Select onValueChange={(value) => updateFormData('brochureFolding', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Katlama seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Katlama Yok</SelectItem>
-                      <SelectItem value="half">Yarı Katlama</SelectItem>
-                      <SelectItem value="tri-fold">Üç Katlama</SelectItem>
-                      <SelectItem value="z-fold">Z Katlama</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Miktar</Label>
-                  <Select onValueChange={(value) => updateFormData('brochureQuantity', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Miktar seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="100">100 Adet</SelectItem>
-                      <SelectItem value="250">250 Adet</SelectItem>
-                      <SelectItem value="500">500 Adet</SelectItem>
-                      <SelectItem value="1000">1.000 Adet</SelectItem>
-                      <SelectItem value="custom">Özel Miktar</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Katalog Özellikleri */}
-          {formData.printType === 'catalog' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">Katalog Özellikleri</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Boyut</Label>
-                  <Select onValueChange={(value) => updateFormData('catalogSize', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Boyut seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="a4">A4 (21x29.7 cm)</SelectItem>
-                      <SelectItem value="a5">A5 (14.8x21 cm)</SelectItem>
-                      <SelectItem value="21x21">21x21 cm (Kare)</SelectItem>
-                      <SelectItem value="custom">Özel Boyut</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Sayfa Sayısı</Label>
-                  <Input 
-                    placeholder="Örn: 32" 
-                    onChange={(e) => updateFormData('catalogPages', e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Ciltleme</Label>
-                  <Select onValueChange={(value) => updateFormData('catalogBinding', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Ciltleme seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="saddle-stitch">Tel Dikiş</SelectItem>
-                      <SelectItem value="perfect-binding">Termal Cilt</SelectItem>
-                      <SelectItem value="spiral">Spiral Cilt</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Miktar</Label>
-                  <Select onValueChange={(value) => updateFormData('catalogQuantity', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Miktar seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="50">50 Adet</SelectItem>
-                      <SelectItem value="100">100 Adet</SelectItem>
-                      <SelectItem value="250">250 Adet</SelectItem>
-                      <SelectItem value="500">500 Adet</SelectItem>
-                      <SelectItem value="custom">Özel Miktar</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Flyer Özellikleri */}
-          {formData.printType === 'flyer' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">Flyer Özellikleri</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Boyut</Label>
-                  <Select onValueChange={(value) => updateFormData('flyerSize', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Boyut seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="a4">A4 (21x29.7 cm)</SelectItem>
-                      <SelectItem value="a5">A5 (14.8x21 cm)</SelectItem>
-                      <SelectItem value="a6">A6 (10.5x14.8 cm)</SelectItem>
-                      <SelectItem value="21x21">21x21 cm (Kare)</SelectItem>
-                      <SelectItem value="custom">Özel Boyut</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Kağıt Türü</Label>
-                  <Select onValueChange={(value) => updateFormData('flyerPaper', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Kağıt türü seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="coated-120">Kuşe 120gr</SelectItem>
-                      <SelectItem value="coated-150">Kuşe 150gr</SelectItem>
-                      <SelectItem value="coated-200">Kuşe 200gr</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Baskı Rengi</Label>
-                  <Select onValueChange={(value) => updateFormData('flyerColor', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Renk seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="4-0">4+0 (Tek Yüz Renkli)</SelectItem>
-                      <SelectItem value="4-4">4+4 (Çift Yüz Renkli)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Miktar</Label>
-                  <Select onValueChange={(value) => updateFormData('flyerQuantity', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Miktar seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="100">100 Adet</SelectItem>
-                      <SelectItem value="250">250 Adet</SelectItem>
-                      <SelectItem value="500">500 Adet</SelectItem>
-                      <SelectItem value="1000">1.000 Adet</SelectItem>
-                      <SelectItem value="custom">Özel Miktar</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Poster Özellikleri */}
-          {formData.printType === 'poster' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">Poster Özellikleri</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Boyut</Label>
-                  <Select onValueChange={(value) => updateFormData('posterSize', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Boyut seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="a3">A3 (29.7x42 cm)</SelectItem>
-                      <SelectItem value="a2">A2 (42x59.4 cm)</SelectItem>
-                      <SelectItem value="a1">A1 (59.4x84.1 cm)</SelectItem>
-                      <SelectItem value="50x70">50x70 cm</SelectItem>
-                      <SelectItem value="70x100">70x100 cm</SelectItem>
-                      <SelectItem value="custom">Özel Boyut</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Kağıt Türü</Label>
-                  <Select onValueChange={(value) => updateFormData('posterPaper', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Kağıt türü seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="coated-150">Kuşe 150gr</SelectItem>
-                      <SelectItem value="coated-200">Kuşe 200gr</SelectItem>
-                      <SelectItem value="poster-paper">Poster Kağıdı</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Baskı Rengi</Label>
-                  <Select onValueChange={(value) => updateFormData('posterColor', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Renk seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="4-0">4+0 (Tek Yüz Renkli)</SelectItem>
-                      <SelectItem value="4-4">4+4 (Çift Yüz Renkli)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Miktar</Label>
-                  <Select onValueChange={(value) => updateFormData('posterQuantity', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Miktar seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10">10 Adet</SelectItem>
-                      <SelectItem value="25">25 Adet</SelectItem>
-                      <SelectItem value="50">50 Adet</SelectItem>
-                      <SelectItem value="100">100 Adet</SelectItem>
-                      <SelectItem value="custom">Özel Miktar</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Diğer ürün tipleri için de benzer özellik formları eklenebilir */}
-          {formData.printType && !['business-card', 'brochure', 'catalog', 'flyer', 'poster'].includes(formData.printType) && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900">{formData.printType === 'book' ? 'Kitap' : formData.printType === 'magazine' ? 'Dergi' : formData.printType === 'packaging' ? 'Ambalaj' : formData.printType === 'sticker' ? 'Çıkartma' : 'Banner'} Özellikleri</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Boyut</Label>
-                  <Input 
-                    placeholder="Örn: A4, 21x29.7 cm" 
-                    onChange={(e) => updateFormData('customSize', e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Miktar</Label>
-                  <Input 
-                    placeholder="Örn: 100" 
-                    onChange={(e) => updateFormData('customQuantity', e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Kağıt/Malzeme</Label>
-                  <Input 
-                    placeholder="Örn: Kuşe 150gr" 
-                    onChange={(e) => updateFormData('customMaterial', e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Özel İstekler</Label>
-                  <Textarea 
-                    placeholder="Özel isteklerinizi yazın..." 
-                    onChange={(e) => updateFormData('customRequests', e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -1330,46 +1094,39 @@ export default function QuoteForm() {
           </Link>
 
           {/* Header Card */}
-          <Card className="mb-8 bg-gradient-to-r from-blue-600 to-indigo-700 border-0 shadow-2xl">
+          <Card className="mb-8 border-0 shadow-xl bg-gradient-to-r from-white to-blue-50">
             <CardContent className="p-8">
-              <div className="flex items-start justify-between text-white">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                    {typeConfig.icon}
-                  </div>
-                  <div>
-                    <h1 className="text-3xl font-bold mb-2">
-                      Baskı Teklif Formu
-                    </h1>
-                    <p className="text-blue-100 text-lg">
-                      Kartvizit, broşür, katalog, UV DTF etiket ve daha fazlası için profesyonel baskı hizmeti
-                    </p>
-                  </div>
+              <div className="flex items-center space-x-4 mb-4">
+                <div className={`w-16 h-16 bg-gradient-to-r ${typeConfig.bgGradient} rounded-full flex items-center justify-center shadow-lg`}>
+                  {typeConfig.icon}
                 </div>
+                <div>
+                  <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                    {typeConfig.title}
+                  </h1>
+                  <p className="text-xl text-gray-600">
+                    {typeConfig.description}
+                  </p>
+                </div>
+              </div>
 
-                <div className="hidden lg:flex space-x-8">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">
-                      Hızlı Teklif
-                    </div>
-                    <div className="text-blue-200">5 Dakika</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">
-                      Matbaa Sayısı
-                    </div>
-                    <div className="text-blue-200">50+</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold">
-                      Ortalama Tasarruf
-                    </div>
-                    <div className="text-blue-200">%25</div>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                  <div className="text-sm text-gray-500 mb-1">Hızlı Teklif</div>
+                  <div className="text-2xl font-bold text-blue-600">5 Dakika</div>
+                </div>
+                <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                  <div className="text-sm text-gray-500 mb-1">Matbaa Sayısı</div>
+                  <div className="text-2xl font-bold text-green-600">50+</div>
+                </div>
+                <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                  <div className="text-sm text-gray-500 mb-1">Ortalama Tasarruf</div>
+                  <div className="text-2xl font-bold text-orange-600">%25</div>
                 </div>
               </div>
             </CardContent>
           </Card>
+        </div>
 
         {/* Form Card */}
         <Card className="border-0 shadow-xl">
@@ -1409,7 +1166,10 @@ export default function QuoteForm() {
                         <p className="text-sm text-red-500">{form.formState.errors.title.message}</p>
                       )}
                     </div>
-                  </div>
+
+                    
+
+                    </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="description">Proje Açıklaması</Label>
@@ -1571,7 +1331,6 @@ export default function QuoteForm() {
             </Tabs>
           </CardContent>
         </Card>
-        </div>
       </div>
     </div>
   );

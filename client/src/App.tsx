@@ -21,7 +21,6 @@ import References from "./pages/References";
 import ReferencesNew from "./pages/ReferencesNew";
 import DesignQuote from "./pages/DesignQuote";
 import NotFound from "./pages/not-found";
-import QuoteFormNew from "./pages/QuoteFormNew";
 
 function AppRouter() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -92,14 +91,6 @@ function AppRouter() {
               return null;
             }
             return <QuoteForm />;
-          }} />
-        <Route path="/quote-new/:type" component={() => {
-            const userRole = (user as any)?.role;
-            if (userRole !== 'customer') {
-              window.location.href = '/';
-              return null;
-            }
-            return <QuoteFormNew />;
           }} />
 
           <Route path="/payment" component={Payment} />
