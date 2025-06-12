@@ -104,11 +104,7 @@ export default function Navigation() {
         href: "/",
         label: "Ana Sayfa",
         icon: <Home className="h-4 w-4" />,
-        active: location === "/",
-        onClick: () => {
-          // Force navigation to landing page and logout user
-          window.location.href = "/api/logout";
-        }
+        active: location === "/"
       },
     ];
 
@@ -212,10 +208,8 @@ export default function Navigation() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-1">
             {navigationItems.map((item) => (
-              item.onClick ? (
-                <button
-                  key={item.href}
-                  onClick={item.onClick}
+              <Link key={item.href} href={item.href}>
+                <a
                   className={`flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
                     item.active
                       ? "bg-primary text-white"
@@ -224,21 +218,8 @@ export default function Navigation() {
                 >
                   {item.icon}
                   <span className="ml-2">{item.label}</span>
-                </button>
-              ) : (
-                <Link key={item.href} href={item.href}>
-                  <a
-                    className={`flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
-                      item.active
-                        ? "bg-primary text-white"
-                        : "text-gray-700 hover:text-primary hover:bg-gray-100"
-                    }`}
-                  >
-                    {item.icon}
-                    <span className="ml-2">{item.label}</span>
-                  </a>
-                </Link>
-              )
+                </a>
+              </Link>
             ))}
           </nav>
 
@@ -426,37 +407,19 @@ export default function Navigation() {
 
               <div className="mt-6 space-y-1">
                 {navigationItems.map((item) => (
-                  item.onClick ? (
-                    <button
-                      key={item.href}
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        item.onClick();
-                      }}
+                  <Link key={item.href} href={item.href}>
+                    <a
                       className={`w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
                         item.active
                           ? "bg-primary text-white"
                           : "text-gray-700 hover:text-primary hover:bg-gray-100"
                       }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {item.icon}
                       <span className="ml-2">{item.label}</span>
-                    </button>
-                  ) : (
-                    <Link key={item.href} href={item.href}>
-                      <a
-                        className={`w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
-                          item.active
-                            ? "bg-primary text-white"
-                            : "text-gray-700 hover:text-primary hover:bg-gray-100"
-                        }`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {item.icon}
-                        <span className="ml-2">{item.label}</span>
-                      </a>
-                    </Link>
-                  )
+                    </a>
+                  </Link>
                 ))}
 
                 <div className="pt-4 space-y-1">
