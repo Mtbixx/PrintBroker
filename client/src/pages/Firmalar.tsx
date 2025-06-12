@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -65,27 +65,45 @@ export default function Firmalar() {
   const [filterRole, setFilterRole] = useState<'all' | 'printer' | 'customer'>('all');
   const [sortBy, setSortBy] = useState<'name' | 'rating' | 'projects' | 'date'>('name');
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const queryClient = useQueryClient();
 
-  // Fetch all companies
+  // Function to refresh data
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+  };
+
+  // Fetch all companies from the API
   const { data: companies = [], isLoading } = useQuery({
     queryKey: ["/api/admin/users"],
+    queryFn: async () => {
+      const response = await apiRequest("/api/admin/users");
+      if (!response.ok) {
+        throw new Error('Failed to fetch companies');
+      }
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    },
     refetchInterval: 30000,
+    retry: 3,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Filter and sort companies
   const filteredCompanies = companies
     .filter((company: Company) => {
+      // Only show printer companies (firms)
+      if (company.role !== 'printer') {
+        return false;
+      }
+
+      // Search filter
       const matchesSearch = 
         company.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         company.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         company.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         company.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      //const matchesRole = filterRole === 'all' || company.role === filterRole;
-      const matchesRole = company.role === 'printer';
-
-
-      return matchesSearch && matchesRole;
+      return matchesSearch;
     })
     .sort((a: Company, b: Company) => {
       switch (sortBy) {
@@ -136,9 +154,10 @@ export default function Firmalar() {
     }
   };
 
-  const printerCompanies = filteredCompanies.filter((c: Company) => c.role === 'printer');
-  const customerCompanies = filteredCompanies.filter((c: Company) => c.role === 'customer');
-  const adminUsers = filteredCompanies.filter((c: Company) => c.role === 'admin');
+  // Calculate stats from real data
+  const printerCompanies = companies.filter((c: Company) => c.role === 'printer');
+  const customerCompanies = companies.filter((c: Company) => c.role === 'customer');
+  const adminUsers = companies.filter((c: Company) => c.role === 'admin');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
@@ -157,7 +176,7 @@ export default function Firmalar() {
                   </span>
                 </h1>
                 <p className="text-xl lg:text-2xl text-blue-100 mb-2">
-                  Kayıtlı {companies.length} firma ve müşteri
+                  Kayıtlı {printerCompanies.length} matbaa firması
                 </p>
                 <p className="text-blue-200">
                   Premium üye ağımızdaki tüm aktif firmalar
@@ -195,14 +214,15 @@ export default function Firmalar() {
               
             </div>
 
-            <div className="flex flex-wrap gap-2 mt-4">
-              <Button
-                variant={sortBy === 'name' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setSortBy('name')}
-              >
-                A-Z Sırala
-              </Button>
+            <div className="flex items-center justify-between mt-4">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={sortBy === 'name' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setSortBy('name')}
+                  >
+                    A-Z Sırala
+                  </Button>
               <Button
                 variant={sortBy === 'rating' ? 'default' : 'ghost'}
                 size="sm"
@@ -226,8 +246,22 @@ export default function Firmalar() {
               >
                 <Calendar className="h-3 w-3 mr-1" />
                 Kayıt Tarihi
-              </Button>
-            </div>
+                  </Button>
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={refreshData}
+                  disabled={isLoading}
+                  className="flex items-center gap-2"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Yenile
+                </Button>
+              </div>
           </CardContent>
         </Card>
 
@@ -235,6 +269,13 @@ export default function Firmalar() {
         {isLoading ? (
           <div className="flex justify-center py-16">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+            <p className="ml-4 text-lg text-gray-600">Firmalar yükleniyor...</p>
+          </div>
+        ) : companies.length === 0 ? (
+          <div className="text-center py-16">
+            <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">Henüz kayıtlı firma bulunmuyor</h3>
+            <p className="text-gray-500">Sistem kullanıma alındığında kayıtlı firmalar burada görünecektir.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

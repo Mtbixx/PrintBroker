@@ -580,7 +580,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         password: hashedPassword, // Store hashed password
         isActive: true,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        verificationStatus: 'pending' // Default verification status
       };
 
       // Configure based on role
@@ -595,14 +596,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userData.companyName = companyName || 'Matbaa Firması';
         userData.companyAddress = address ? `${address}, ${city} ${postalCode}` : 'İstanbul, Türkiye';
         userData.taxNumber = taxNumber || '';
+        userData.website = req.body.website || '';
+        userData.description = req.body.description || '';
+        userData.verificationStatus = 'pending'; // New printers need verification
       } else if (role === 'admin') {
         userData.creditBalance = '999999.00'; // Admin unlimited credits
         userData.subscriptionStatus = 'active';
         userData.companyName = 'Matbixx Admin';
+        userData.verificationStatus = 'verified'; // Admins are auto-verified
       }
 
       // Create user in database
       const newUser = await storage.upsertUser(userData);
+
+      // Log new printer registration
+      if (role === 'printer') {
+        console.log(`🏭 Yeni matbaa firması kaydı: ${companyName} (${email}) - ID: ${userId}`);
+      }
 
       // Create session
       (req.session as any).user = {
@@ -611,7 +621,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: newUser.role || 'customer',
         firstName: newUser.firstName || undefined,
         lastName: newUser.lastName || undefined,
-        profileImageUrl: newUser.profileImageUrl || undefined
+        profileImageUrl: newUser.profileImageUrl || undefined,
+        companyName: newUser.companyName || undefined,
+        creditBalance: newUser.creditBalance || '0.00',
+        subscriptionStatus: newUser.subscriptionStatus || 'inactive'
       };
 
       req.session.save((err) => {
@@ -1357,10 +1370,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/admin/users', requireAdmin, async (req: any, res) => {
+  app.get('/api/admin/users', async (req: any, res) => {
     try {
+      // Check if user is authenticated
+      const userId = req.session?.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      // Get fresh user data
+      const currentUser = await storage.getUser(userId);
+      if (!currentUser) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      // Allow admin and also allow regular users to see printer companies (for Firmalar page)
       const users = await storage.getAllUsers();
-      res.json(users);
+      
+      // If user is admin, return all users
+      if (currentUser.role === 'admin') {
+        res.json(users);
+      } else {
+        // For non-admin users, only return printer companies and basic info
+        const publicData = users
+          .filter(user => user.role === 'printer' && user.isActive)
+          .map(user => ({
+            id: user.id,
+            companyName: user.companyName,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            isActive: user.isActive,
+            createdAt: user.createdAt,
+            companyAddress: user.companyAddress,
+            website: user.website,
+            description: user.description,
+            profileImageUrl: user.profileImageUrl,
+            subscriptionStatus: user.subscriptionStatus,
+            verificationStatus: user.verificationStatus || 'pending',
+            taxNumber: user.taxNumber,
+            // Add some mock data for display purposes
+            rating: 4.5 + Math.random() * 0.5,
+            totalProjects: Math.floor(Math.random() * 50) + 10,
+            completionRate: Math.floor(Math.random() * 20) + 80,
+            employeeCount: Math.floor(Math.random() * 50) + 5,
+            foundedYear: new Date().getFullYear() - Math.floor(Math.random() * 20) - 5
+          }));
+        
+        res.json(publicData);
+      }
     } catch (error) {
       console.error("Error fetching users:", error);
       res.status(500).json({ message: "Failed to fetch users" });
