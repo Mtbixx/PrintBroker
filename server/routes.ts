@@ -1634,6 +1634,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Image proxy endpoint for both preview and download
+  app.get('/api/proxy/image', async (req, res) => {
+    try {
+      const { url, download, filename } = req.query;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ message: "URL parameter required" });
+      }
+
+      // Fetch the image from external URL
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.status}`);
+      }
+
+      // Get content type and set appropriate headers
+      const contentType = response.headers.get('content-type') || 'image/png';
+      
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+
+      // If download is requested, set download headers
+      if (download === 'true') {
+        const sanitizedFilename = (filename as string) || `matbixx-design-${Date.now()}.png`;
+        res.setHeader('Content-Disposition', `attachment; filename="${sanitizedFilename}"`);
+      }
+
+      // Stream the image data
+      const buffer = await response.arrayBuffer();
+      res.send(Buffer.from(buffer));
+
+    } catch (error) {
+      console.error("Image proxy error:", error);
+      res.status(500).json({ message: "Failed to load image" });
+    }
+  });
+
+  // Image download proxy endpoint
+  app.get('/api/download/image', async (req, res) => {
+    try {
+      const { url, filename } = req.query;
+      
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ message: "URL parameter required" });
+      }
+
+      // Fetch the image from external URL
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.status}`);
+      }
+
+      // Get content type and set appropriate headers
+      const contentType = response.headers.get('content-type') || 'image/png';
+      const sanitizedFilename = (filename as string) || `matbixx-design-${Date.now()}.png`;
+
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Disposition', `attachment; filename="${sanitizedFilename}"`);
+      res.setHeader('Access-Control-Allow-Origin', '*');
+
+      // Stream the image data
+      const buffer = await response.arrayBuffer();
+      res.send(Buffer.from(buffer));
+
+    } catch (error) {
+      console.error("Image download error:", error);
+      res.status(500).json({ message: "Failed to download image" });
+    }
+  });
+
   // Public quote submission for non-authenticated users
   app.post('/api/quotes/public', async (req, res) => {
     try {

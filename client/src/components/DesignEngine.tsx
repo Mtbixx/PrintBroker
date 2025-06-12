@@ -243,10 +243,14 @@ export default function DesignEngine() {
     }
 
     try {
-      // Simple and reliable download method
+      const sanitizedFilename = filename || `matbixx-tasarim-${Date.now()}.png`;
+      
+      // Use proxy endpoint for reliable downloading
+      const downloadUrl = `/api/download/image?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(sanitizedFilename)}`;
+      
       const link = document.createElement('a');
-      link.href = url;
-      link.download = filename || `matbixx-tasarim-${Date.now()}.png`;
+      link.href = downloadUrl;
+      link.download = sanitizedFilename;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
 
