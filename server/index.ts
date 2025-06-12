@@ -134,9 +134,6 @@ async function initializePythonServices() {
   // SEO middleware for bots
   app.use(handleSEORoute);
 
-  // API routes
-  app.use('/api', routes);
-
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
