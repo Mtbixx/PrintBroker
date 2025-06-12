@@ -464,6 +464,8 @@ export default function CustomerDashboard() {
                                       src={imageUrl} 
                                       alt={design.prompt || 'Tasarım'}
                                       className="w-full h-full object-cover rounded-lg transition-all duration-200"
+                                      crossOrigin="anonymous"
+                                      referrerPolicy="no-referrer"
                                       onError={(e) => {
                                         console.error('❌ Image failed to load:', imageUrl);
                                         const target = e.currentTarget as HTMLImageElement;
@@ -742,8 +744,7 @@ export default function CustomerDashboard() {
                                       }
                                     } catch (error) {
                                       console.error('Delete error:', error);
-                                      toast({
-                                        title: "Hata",
+                                      toast({                                        title: "Hata",
                                         description: "Tasarım silinemedi.",
                                         variant: "destructive",
                                       });
