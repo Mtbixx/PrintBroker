@@ -817,7 +817,7 @@ export class DatabaseStorage implements IStorage {
       ...notification
     };
     notifications.push(newNotification);
-    this.storeNotifications(notifications);
+    await this.storeNotifications(notifications);
     return newNotification;
   }
 
@@ -834,7 +834,7 @@ export class DatabaseStorage implements IStorage {
     const notification = notifications.find(n => n.id === notificationId && n.userId === userId);
     if (notification) {
       notification.isRead = true;
-      this.storeNotifications(notifications);
+      await this.storeNotifications(notifications);
     }
   }
 
@@ -852,10 +852,10 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  private storeNotifications(notifications: any[]) {
+  private async storeNotifications(notifications: any[]) {
     try {
-      const fs = require('fs');
-      const path = require('path');
+      const fs = await import('fs');
+      const path = await import('path');
       const filePath = path.join(process.cwd(), 'notifications.json');
       fs.writeFileSync(filePath, JSON.stringify(notifications, null, 2));
     } catch (error) {
