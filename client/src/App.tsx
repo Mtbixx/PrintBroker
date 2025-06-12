@@ -25,7 +25,10 @@ import NotFound from "./pages/not-found";
 function AppRouter() {
   const { isAuthenticated, isLoading, user } = useAuth();
 
-  // Don't show loading screen during page transitions
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return <LoadingPage message="Hesap bilgileriniz kontrol ediliyor..." />;
+  }
 
   return (
     <Switch>

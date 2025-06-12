@@ -1,5 +1,38 @@
 [
   {
+    "id": "3b7e0e41-49a9-4479-b6e2-1d138d47a6c3",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Zenge Parfüm, 50ml, etiket baskısında kullanmak için tasarım yap",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A minimalist product label design for \"Zenge Parfüm\" featuring a single elegant sprig of lavender in full bloom against a matte black background. The lavender stem extends diagonally from the lower left corner, with its delicate purple flowers facing towards the right. \"50ml\" is displayed in a small, clean sans-serif font in the bottom right corner and the full name \"Zenge Parfüm\" is presented in a sophisticated serif font centered at the top of the label. The overall design conveys luxury and natural fragrance through its simplicity and subtle details.",
+        "resolution": "1024x1024",
+        "seed": 927418935,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/jZsdhGLCSbuLs7pCaJun0Q.png?exp=1749775160&sig=aa1329a3322636675e7cde14d7d77eca5561d2145c77d5d528ce40cc0ff9fe1f"
+      },
+      "generationId": "707dac9b-170e-464c-a53c-805b92e35f7a",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/jZsdhGLCSbuLs7pCaJun0Q.png?exp=1749775160&sig=aa1329a3322636675e7cde14d7d77eca5561d2145c77d5d528ce40cc0ff9fe1f",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T00:39:20.247Z"
+  },
+  {
     "id": "e480c066-45f4-4891-8edb-34bb9017a815",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Ecesu & Batuhan 06.06.2026 düğün hatırası etiket tasarımı yap",
