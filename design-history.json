@@ -1,5 +1,38 @@
 [
   {
+    "id": "2d361644-0dd1-4c43-b39a-63af86e9df5d",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Serhat İlik Parfüm, 50ml, kırmızı zemin üzerine gold çerçeve detayları olan etiket baskısında kullanılacak bi tasarım yap",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A label design for \"Serhat İlik Parfüm\" featuring a minimalist aesthetic with a vibrant crimson background. A sleek gold frame encircles the central text, creating a luxurious visual contrast. The text \"50ml\" is subtly incorporated within the gold frame, alongside delicate gold filigree patterns. The overall design exudes elegance and sophistication, suitable for a high-end perfume bottle.",
+        "resolution": "1024x1024",
+        "seed": 1538374053,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/LgOQ_c3gTmSOjCcIf-8oUg.png?exp=1749776529&sig=9ac7ebd18c61dc45e5d27123e08e8c06061709c08d6da924323bc30ffb2947ad"
+      },
+      "generationId": "216809e8-2e1a-4097-9b01-8704d0966d5c",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/LgOQ_c3gTmSOjCcIf-8oUg.png?exp=1749776529&sig=9ac7ebd18c61dc45e5d27123e08e8c06061709c08d6da924323bc30ffb2947ad",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:02:09.665Z"
+  },
+  {
     "id": "3b7e0e41-49a9-4479-b6e2-1d138d47a6c3",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Zenge Parfüm, 50ml, etiket baskısında kullanmak için tasarım yap",

@@ -416,7 +416,7 @@ export default function DesignEngine() {
                       {generatedImages.filter(image => image && image.url).map((image, index) => (
                         <div key={`${image.url}-${index}`} className="relative group">
                           <img
-                            src={image.url}
+                            src={`/api/proxy/image?url=${encodeURIComponent(image.url)}`}
                             alt={`Generated design ${index + 1}`}
                             className="w-full h-64 object-cover rounded-lg border"
                             onError={(e) => {
@@ -448,7 +448,7 @@ export default function DesignEngine() {
                                     </DialogDescription>
                                   </DialogHeader>
                                   <img
-                                    src={image.url}
+                                    src={`/api/proxy/image?url=${encodeURIComponent(image.url)}`}
                                     alt={`Design preview ${index + 1}`}
                                     className="w-full h-auto rounded-lg"
                                   />

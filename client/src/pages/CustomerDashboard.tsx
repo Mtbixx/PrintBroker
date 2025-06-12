@@ -664,48 +664,25 @@ export default function CustomerDashboard() {
 
                                     if (imageUrl) {
                                       try {
-                                        // Use proxy URL to avoid CORS issues
-                                        const proxyUrl = `https://cors-anywhere.herokuapp.com/${imageUrl}`;
+                                        const sanitizedFilename = `tasarim-${design.id}-${Date.now()}.png`;
+                                        
+                                        // Use proxy endpoint for reliable downloading
+                                        const downloadUrl = `/api/download/image?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(sanitizedFilename)}`;
+                                        
+                                        const link = document.createElement('a');
+                                        link.href = downloadUrl;
+                                        link.download = sanitizedFilename;
+                                        link.target = '_blank';
+                                        link.rel = 'noopener noreferrer';
 
-                                        // Try direct download first
-                                        try {
-                                          const response = await fetch(imageUrl, {
-                                            mode: 'no-cors'
-                                          });
-                                          const blob = await response.blob();
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
 
-                                          const link = document.createElement('a');
-                                          link.href = URL.createObjectURL(blob);
-                                          link.download = `tasarim-${design.id}-${Date.now()}.png`;
-                                          link.style.display = 'none';
-
-                                          document.body.appendChild(link);
-                                          link.click();
-                                          document.body.removeChild(link);
-
-                                          URL.revokeObjectURL(link.href);
-
-                                          toast({
-                                            title: "İndirme Başlatıldı",
-                                            description: "Tasarım başarıyla indirildi.",
-                                          });
-                                        } catch (fetchError) {
-                                          // Fallback: Open in new window with download intent
-                                          const link = document.createElement('a');
-                                          link.href = imageUrl;
-                                          link.download = `tasarim-${design.id}-${Date.now()}.png`;
-                                          link.target = '_blank';
-                                          link.rel = 'noopener noreferrer';
-
-                                          document.body.appendChild(link);
-                                          link.click();
-                                          document.body.removeChild(link);
-
-                                          toast({
-                                            title: "İndirme Başlatıldı",
-                                            description: "Tasarım yeni sekmede açıldı. Sağ tıklayıp 'Resmi farklı kaydet' seçeneğini kullanabilirsiniz.",
-                                          });
-                                        }
+                                        toast({
+                                          title: "İndirme Başlatıldı",
+                                          description: "Tasarım indiriliyor. İndirme klasörünüzü kontrol edin.",
+                                        });
                                       } catch (error) {
                                         console.error('Download error:', error);
                                         toast({
