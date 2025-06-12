@@ -84,25 +84,10 @@ export default function Navigation() {
   };
 
   const getNavigationItems = () => {
-    // Determine the correct home URL based on user role
-    const getHomeUrl = () => {
-      switch (user.role) {
-        case 'customer':
-          return "/customer-dashboard";
-        case 'printer':
-          return "/printer-dashboard";
-        case 'admin':
-          return "/admin-dashboard";
-        default:
-          return "/";
-      }
-    };
-
-    const homeUrl = getHomeUrl();
     const baseItems = [
       {
         href: "/",
-        label: "Ana Sayfa", 
+        label: "Ana Sayfa",
         icon: <Home className="h-4 w-4" />,
         active: location === "/"
       },
@@ -113,10 +98,10 @@ export default function Navigation() {
         return [
           ...baseItems,
           {
-            href: "/customer-dashboard",
-            label: "Panel",
+            href: "/dashboard",
+            label: "Dashboard",
             icon: <BarChart3 className="h-4 w-4" />,
-            active: location === "/customer-dashboard"
+            active: location === "/dashboard"
           },
         ];
 
@@ -124,10 +109,10 @@ export default function Navigation() {
         return [
           ...baseItems,
           {
-            href: "/printer-dashboard",
-            label: "Panel",
+            href: "/dashboard",
+            label: "Dashboard",
             icon: <Building2 className="h-4 w-4" />,
-            active: location === "/printer-dashboard"
+            active: location === "/dashboard"
           },
         ];
 
@@ -135,10 +120,10 @@ export default function Navigation() {
         return [
           ...baseItems,
           {
-            href: "/admin-dashboard",
+            href: "/dashboard",
             label: "Admin Panel",
             icon: <Users className="h-4 w-4" />,
-            active: location === "/admin-dashboard"
+            active: location === "/dashboard"
           },
         ];
 
@@ -209,8 +194,9 @@ export default function Navigation() {
           <nav className="hidden md:flex space-x-1">
             {navigationItems.map((item) => (
               <Link key={item.href} href={item.href}>
-                <span
-                  className={`flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
+                <Button
+                  variant={item.active ? "default" : "ghost"}
+                  className={`flex items-center px-3 py-2 text-sm font-medium transition-colors ${
                     item.active
                       ? "bg-primary text-white"
                       : "text-gray-700 hover:text-primary hover:bg-gray-100"
@@ -218,7 +204,7 @@ export default function Navigation() {
                 >
                   {item.icon}
                   <span className="ml-2">{item.label}</span>
-                </span>
+                </Button>
               </Link>
             ))}
           </nav>
@@ -408,8 +394,9 @@ export default function Navigation() {
               <div className="mt-6 space-y-1">
                 {navigationItems.map((item) => (
                   <Link key={item.href} href={item.href}>
-                    <span
-                      className={`w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
+                    <Button
+                      variant={item.active ? "default" : "ghost"}
+                      className={`w-full justify-start ${
                         item.active
                           ? "bg-primary text-white"
                           : "text-gray-700 hover:text-primary hover:bg-gray-100"
@@ -418,7 +405,7 @@ export default function Navigation() {
                     >
                       {item.icon}
                       <span className="ml-2">{item.label}</span>
-                    </span>
+                    </Button>
                   </Link>
                 ))}
 
@@ -443,20 +430,22 @@ export default function Navigation() {
                     </>
                   )}
 
-                  <a
-                    className="w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer text-gray-700 hover:text-primary hover:bg-gray-100"
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-gray-700"
                   >
                     <Settings className="h-4 w-4 mr-2" />
                     Ayarlar
-                  </a>
+                  </Button>
 
-                  <a
-                    className="w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer text-red-600 hover:bg-red-50"
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-red-600"
                     onClick={handleLogout}
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Çıkış Yap
-                  </a>
+                  </Button>
                 </div>
               </div>
             </SheetContent>

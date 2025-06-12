@@ -5,7 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingPage from "@/components/LoadingPage";
+import Landing from "./pages/Landing";
 import LandingNew from "./pages/LandingNew";
+import Home from "./pages/Home";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import PrinterDashboard from "@/pages/PrinterDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -58,10 +60,7 @@ function AppRouter() {
         </>
       ) : (
         <>
-          <Route path="/" component={() => {
-            // Show LandingNew for all users, authenticated or not
-            return <LandingNew />;
-          }} />
+          <Route path="/" component={Home} />
 
           <Route path="/dashboard" component={() => {
             // Universal dashboard route that redirects based on role
