@@ -967,15 +967,21 @@ export default function LandingNew() {
               © 2024 MatBixx. Tüm hakları saklıdır.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
-                Gizlilik Politikası
-              </a>
-              <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
-                Kullanım Koşulları
-              </a>
-              <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
-                KVKK
-              </a>
+              <Link href="/privacy-policy">
+                <a className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Gizlilik Politikası
+                </a>
+              </Link>
+              <Link href="/terms-of-service">
+                <a className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Kullanım Koşulları
+                </a>
+              </Link>
+              <Link href="/kvkk">
+                <a className="text-sm text-gray-400 hover:text-white transition-colors">
+                  KVKK
+                </a>
+              </Link>
             </div>
           </div>
         </div>

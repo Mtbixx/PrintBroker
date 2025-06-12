@@ -97,6 +97,9 @@ function AppRouter() {
         </>
       )}
       <Route path="/design-quote" component={DesignQuote} />
+      <Route path="/privacy-policy" component={() => import('./pages/PrivacyPolicy').then(m => m.default)} />
+      <Route path="/terms-of-service" component={() => import('./pages/TermsOfService').then(m => m.default)} />
+      <Route path="/kvkk" component={() => import('./pages/KVKK').then(m => m.default)} />
       <Route component={NotFound} />
     </Switch>
   );
