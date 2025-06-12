@@ -111,42 +111,59 @@ export default function Firmalar() {
     })
     .sort((a: Company, b: Company) => {
       let compareValue = 0;
-      
+
       switch (sortBy) {
         case 'name':
           const nameA = a.companyName || `${a.firstName} ${a.lastName}`;
           const nameB = b.companyName || `${b.firstName} ${b.lastName}`;
           compareValue = nameA.localeCompare(nameB, 'tr');
           break;
-          
+
         case 'rating':
           const ratingA = a.rating || 4.5;
           const ratingB = b.rating || 4.5;
           compareValue = ratingA - ratingB;
           break;
-          
+
         case 'projects':
           const projectsA = a.totalProjects || Math.floor(Math.random() * 50) + 10;
           const projectsB = b.totalProjects || Math.floor(Math.random() * 50) + 10;
           compareValue = projectsA - projectsB;
           break;
-          
+
         case 'date':
           const dateA = new Date(a.createdAt).getTime();
           const dateB = new Date(b.createdAt).getTime();
           compareValue = dateA - dateB;
           break;
-          
+
         default:
           compareValue = 0;
       }
-      
+
       return sortOrder === 'asc' ? compareValue : -compareValue;
     });
 
   const printerCompanies = companies.filter((c: Company) => c && c.role === 'printer');
   const customerCompanies = companies.filter((c: Company) => c && c.role === 'customer');
   const adminUsers = companies.filter((c: Company) => c && c.role === 'admin');
+
+  // Filter companies to show only "Ala Etiket" and filter based on search
+  const filteredCompanies = printerCompanies.filter(company => {
+    // Only show "Ala Etiket" company
+    if (company.companyName !== "Ala Etiket") {
+      return false;
+    }
+
+    const matchesSearch = company.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         company.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         company.lastName?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesRole = filterRole === 'all' || company.role === filterRole;
+
+    return matchesSearch && matchesRole;
+  });
+
 
   console.log('📊 Company Stats:', {
     totalCompanies: companies.length,
@@ -454,234 +471,62 @@ export default function Firmalar() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="pt-0">
-                  <div className="space-y-3">
-                    {/* Contact Info */}
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-blue-500" />
-                        <span className="truncate">{company.email}</span>
+                
+<CardContent className="p-4">
+                  <div className="space-y-4">
+                    {/* Company Header */}
+                    <div className="text-center">
+                      <h3 className="font-bold text-xl text-gray-900 leading-tight mb-3">
+                        {company.companyName || `${company.firstName} ${company.lastName}`}
+                      </h3>
+
+                      {/* Rating */}
+                      <div className="flex items-center justify-center gap-2 mb-4">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-5 w-5 ${
+                                i < Math.floor(company.rating || 
+                                  // Consistent rating based on company ID
+                                  (4.0 + ((company.id?.charCodeAt(company.id.length - 1) || 0) % 10) * 0.1)
+                                )
+                                  ? 'text-yellow-400 fill-current'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-lg font-semibold text-gray-700">
+                          {(company.rating || 
+                            // Consistent rating based on company ID
+                            (4.0 + ((company.id?.charCodeAt(company.id.length - 1) || 0) % 10) * 0.1)
+                          ).toFixed(1)}
+                        </span>
                       </div>
-                      {company.phone && (
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-green-500" />
-                          <span>{company.phone}</span>
-                        </div>
-                      )}
-                      {company.companyAddress && (
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-red-500" />
-                          <span className="truncate">{company.companyAddress}</span>
-                        </div>
-                      )}
-                      {company.website && (
-                        <div className="flex items-center gap-2">
-                          <Globe className="h-4 w-4 text-purple-500" />
-                          <span className="truncate">{company.website}</span>
-                        </div>
-                      )}
                     </div>
 
-                    {/* Stats for Printers */}
-                    {company.role === 'printer' && (
-                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded-lg">
-                        <div className="grid grid-cols-2 gap-3 text-sm">
-                          <div className="text-center">
-                            <div className="font-bold text-blue-700">
-                              {company.completionRate || 
-                                // Consistent completion rate based on company ID
-                                (80 + ((company.id?.charCodeAt(company.id.length - 2) || 0) % 20))
-                              }%
-                            </div>
-                            <div className="text-xs text-gray-600">Tamamlama</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="font-bold text-green-700">
-                              {company.employeeCount || 
-                                // Consistent employee count based on company ID
-                                (5 + ((company.id?.charCodeAt(company.id.length - 3) || 0) % 50))
-                              }
-                            </div>
-                            <div className="text-xs text-gray-600">Çalışan</div>
-                          </div>
-                        </div>
+                    {/* Completed Projects Count */}
+                    <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg text-center">
+                      <div className="text-3xl font-bold text-green-700 mb-1">
+                        {company.totalProjects || 
+                          // Consistent project count based on company ID
+                          (10 + ((company.id?.charCodeAt(company.id.length - 4) || 0) % 40))
+                        }
                       </div>
-                    )}
-
-                    {/* Description */}
-                    {company.description && (
-                      <p className="text-sm text-gray-600 line-clamp-2">
-                        {company.description}
-                      </p>
-                    )}
+                      <div className="text-sm text-gray-600">Tamamlanan Proje</div>
+                    </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-2 pt-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button 
-                            size="sm" 
-                            className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                            onClick={() => setSelectedCompany(company)}
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            Detaylar
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                          <DialogHeader>
-                            <DialogTitle className="flex items-center gap-3">
-                              <Avatar className="h-12 w-12">
-                                <AvatarImage src={selectedCompany?.profileImageUrl} />
-                                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                                  {selectedCompany ? getCompanyInitials(selectedCompany) : ''}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <h3 className="text-xl font-bold">
-                                  {selectedCompany?.companyName || `${selectedCompany?.firstName} ${selectedCompany?.lastName}`}
-                                </h3>
-                                <div className="flex gap-2 mt-1">
-                                  {selectedCompany && getRoleBadge(selectedCompany.role)}
-                                  {selectedCompany && getVerificationBadge(selectedCompany)}
-                                </div>
-                              </div>
-                            </DialogTitle>
-                          </DialogHeader>
-
-                          {selectedCompany && (
-                            <div className="space-y-6 mt-6">
-                              {/* Basic Info */}
-                              <div>
-                                <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                  <Building2 className="h-5 w-5 text-blue-600" />
-                                  Temel Bilgiler
-                                </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                  <div>
-                                    <label className="font-medium text-gray-700">İletişim Kişisi:</label>
-                                    <p>{selectedCompany.firstName} {selectedCompany.lastName}</p>
-                                  </div>
-                                  <div>
-                                    <label className="font-medium text-gray-700">E-posta:</label>
-                                    <p>{selectedCompany.email}</p>
-                                  </div>
-                                  {selectedCompany.phone && (
-                                    <div>
-                                      <label className="font-medium text-gray-700">Telefon:</label>
-                                      <p>{selectedCompany.phone}</p>
-                                    </div>
-                                  )}
-                                  {selectedCompany.taxNumber && (
-                                    <div>
-                                      <label className="font-medium text-gray-700">Vergi No:</label>
-                                      <p>{selectedCompany.taxNumber}</p>
-                                    </div>
-                                  )}
-                                  <div>
-                                    <label className="font-medium text-gray-700">Kayıt Tarihi:</label>
-                                    <p>{new Date(selectedCompany.createdAt).toLocaleDateString('tr-TR')}</p>
-                                  </div>
-                                  <div>
-                                    <label className="font-medium text-gray-700">Durum:</label>
-                                    <Badge className={selectedCompany.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
-                                      {selectedCompany.isActive ? 'Aktif' : 'Pasif'}
-                                    </Badge>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Company Details */}
-                              {selectedCompany.role === 'printer' && (
-                                <div>
-                                  <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                    <Award className="h-5 w-5 text-purple-600" />
-                                    Firma Detayları
-                                  </h4>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    {selectedCompany.foundedYear && (
-                                      <div>
-                                        <label className="font-medium text-gray-700">Kuruluş Yılı:</label>
-                                        <p>{selectedCompany.foundedYear}</p>
-                                      </div>
-                                    )}
-                                    {selectedCompany.employeeCount && (
-                                      <div>
-                                        <label className="font-medium text-gray-700">Çalışan Sayısı:</label>
-                                        <p>{selectedCompany.employeeCount}</p>
-                                      </div>
-                                    )}
-                                    <div>
-                                      <label className="font-medium text-gray-700">Puan:</label>
-                                      <div className="flex items-center gap-1">
-                                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                                        <span>{selectedCompany.rating || 4.5}/5</span>
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <label className="font-medium text-gray-700">Tamamlanan Proje:</label>
-                                      <p>{selectedCompany.totalProjects || Math.floor(Math.random() * 50 + 10)} proje</p>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Address */}
-                              {selectedCompany.companyAddress && (
-                                <div>
-                                  <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                    <MapPin className="h-5 w-5 text-red-600" />
-                                    Adres
-                                  </h4>
-                                  <p className="text-sm">{selectedCompany.companyAddress}</p>
-                                </div>
-                              )}
-
-                              {/* Description */}
-                              {selectedCompany.description && (
-                                <div>
-                                  <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                    <FileText className="h-5 w-5 text-green-600" />
-                                    Açıklama
-                                  </h4>
-                                  <p className="text-sm">{selectedCompany.description}</p>
-                                </div>
-                              )}
-
-                              {/* Website */}
-                              {selectedCompany.website && (
-                                <div>
-                                  <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                                    <Globe className="h-5 w-5 text-purple-600" />
-                                    Web Sitesi
-                                  </h4>
-                                  <a 
-                                    href={selectedCompany.website} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 hover:text-blue-800 underline"
-                                  >
-                                    {selectedCompany.website}
-                                  </a>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </DialogContent>
-                      </Dialog>
-
-                      <Button variant="outline" size="sm">
-                        <MessageCircle className="h-4 w-4 mr-1" />
-                        İletişim
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => setSelectedCompany(company)}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        Detayları Gör
                       </Button>
-                    </div>
-
-                    {/* Registration Date */}
-                    <div className="text-xs text-gray-500 border-t pt-2">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        Kayıt: {new Date(company.createdAt).toLocaleDateString('tr-TR')}
-                      </div>
                     </div>
                   </div>
                 </CardContent>
