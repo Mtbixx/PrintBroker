@@ -556,23 +556,36 @@ export default function CustomerDashboard() {
                                             <img 
                                               src={imageUrl} 
                                               alt={design.prompt || 'Tasarım'}
-                                              className="w-full h-auto rounded-lg max-h-96 object-contain mx-auto transition-opacity duration-200"
+                                              className="w-full h-auto rounded-lg max-h-96 object-contain mx-auto"
+                                              style={{ opacity: 0 }}
+                                              crossOrigin="anonymous"
                                               onError={(e) => {
                                                 console.error('Preview image failed to load:', imageUrl);
                                                 const target = e.currentTarget as HTMLImageElement;
                                                 target.style.display = 'none';
                                                 const fallback = target.parentElement?.querySelector('.preview-fallback') as HTMLElement;
-                                                if (fallback) fallback.classList.remove('hidden');
+                                                if (fallback) {
+                                                  fallback.classList.remove('hidden');
+                                                  fallback.style.display = 'flex';
+                                                }
                                               }}
                                               onLoad={(e) => {
+                                                console.log('Image loaded successfully:', imageUrl);
                                                 const target = e.currentTarget as HTMLImageElement;
                                                 target.style.opacity = '1';
+                                                target.style.transition = 'opacity 0.3s ease-in-out';
                                               }}
                                               style={{ opacity: '0' }}
                                             />
-                                            <div className="preview-fallback hidden w-full h-64 bg-gray-100 flex items-center justify-center rounded-lg">
-                                              <ImageIcon className="h-16 w-16 text-gray-400" />
-                                              <span className="text-gray-500 ml-2">Görsel yüklenemedi</span>
+                                            <div className="preview-fallback hidden w-full h-64 bg-gray-100 flex flex-col items-center justify-center rounded-lg">
+                                              <ImageIcon className="h-16 w-16 text-gray-400 mb-2" />
+                                              <span className="text-gray-500 text-center text-sm">Görsel yüklenemedi</span>
+                                              <button 
+                                                onClick={() => window.open(imageUrl, '_blank')}
+                                                className="mt-2 text-blue-500 hover:text-blue-700 text-xs underline"
+                                              >
+                                                Orijinal linki aç
+                                              </button>
                                             </div>
                                           </div>
                                         ) : (

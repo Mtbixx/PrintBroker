@@ -680,6 +680,23 @@ export default function AutomationPanelNew() {
                       alt={displayName}
                       className="w-full h-full object-contain"
                       style={{ imageRendering: 'crisp-edges' }}
+                      crossOrigin="anonymous"
+                      onError={(e) => {
+                        console.error('Thumbnail failed to load:', design.thumbnailPath);
+                        const target = e.currentTarget as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `
+                            <div class="w-full h-full flex items-center justify-center bg-gray-100">
+                              <div class="text-center">
+                                <div class="text-2xl mb-1">📷</div>
+                                <span class="text-xs text-gray-500">Önizleme yok</span>
+                              </div>
+                            </div>
+                          `;
+                        }
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-purple-50">
