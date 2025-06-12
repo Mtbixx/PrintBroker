@@ -287,8 +287,8 @@ export default function LandingNew() {
               <Link href="/products" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Ürünler
               </Link>
-              <Link href="/printers" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                Matbaacılar
+              <Link href="/firmalar" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                Firmalar
               </Link>
               <Link href="/references" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Referanslar
@@ -462,8 +462,8 @@ export default function LandingNew() {
                 <Link href="/products" className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium">
                   Ürünler
                 </Link>
-                <Link href="/printers" className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium">
-                  Matbaacılar
+                <Link href="/firmalar" className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium">
+                  Firmalar
                 </Link>
                 <Link href="/references" className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium">
                   Referanslar
