@@ -192,32 +192,7 @@ export default function Firmalar() {
                   className="pl-10 h-12 text-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
-              <div className="flex gap-3">
-                <Button
-                  variant={filterRole === 'all' ? 'default' : 'outline'}
-                  onClick={() => setFilterRole('all')}
-                  className="h-12 px-6"
-                >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Tümü ({companies.length})
-                </Button>
-                <Button
-                  variant={filterRole === 'printer' ? 'default' : 'outline'}
-                  onClick={() => setFilterRole('printer')}
-                  className="h-12 px-6"
-                >
-                  <Building2 className="h-4 w-4 mr-2" />
-                  Matbaalar ({printerCompanies.length})
-                </Button>
-                <Button
-                  variant={filterRole === 'customer' ? 'default' : 'outline'}
-                  onClick={() => setFilterRole('customer')}
-                  className="h-12 px-6"
-                >
-                  <Users className="h-4 w-4 mr-2" />
-                  Müşteriler ({customerCompanies.length})
-                </Button>
-              </div>
+              
             </div>
 
             <div className="flex flex-wrap gap-2 mt-4">
