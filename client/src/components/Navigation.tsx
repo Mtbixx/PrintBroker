@@ -209,9 +209,8 @@ export default function Navigation() {
           <nav className="hidden md:flex space-x-1">
             {navigationItems.map((item) => (
               <Link key={item.href} href={item.href}>
-                <Button
-                  variant={item.active ? "default" : "ghost"}
-                  className={`flex items-center px-3 py-2 text-sm font-medium transition-colors ${
+                <a
+                  className={`flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
                     item.active
                       ? "bg-primary text-white"
                       : "text-gray-700 hover:text-primary hover:bg-gray-100"
@@ -219,7 +218,7 @@ export default function Navigation() {
                 >
                   {item.icon}
                   <span className="ml-2">{item.label}</span>
-                </Button>
+                </a>
               </Link>
             ))}
           </nav>
@@ -409,9 +408,8 @@ export default function Navigation() {
               <div className="mt-6 space-y-1">
                 {navigationItems.map((item) => (
                   <Link key={item.href} href={item.href}>
-                    <Button
-                      variant={item.active ? "default" : "ghost"}
-                      className={`w-full justify-start ${
+                    <a
+                      className={`w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
                         item.active
                           ? "bg-primary text-white"
                           : "text-gray-700 hover:text-primary hover:bg-gray-100"
@@ -420,7 +418,7 @@ export default function Navigation() {
                     >
                       {item.icon}
                       <span className="ml-2">{item.label}</span>
-                    </Button>
+                    </a>
                   </Link>
                 ))}
 
@@ -445,22 +443,20 @@ export default function Navigation() {
                     </>
                   )}
 
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-gray-700"
+                  <a
+                    className="w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer text-gray-700 hover:text-primary hover:bg-gray-100"
                   >
                     <Settings className="h-4 w-4 mr-2" />
                     Ayarlar
-                  </Button>
+                  </a>
 
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-red-600"
+                  <a
+                    className="w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer text-red-600 hover:bg-red-50"
                     onClick={handleLogout}
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Çıkış Yap
-                  </Button>
+                  </a>
                 </div>
               </div>
             </SheetContent>
