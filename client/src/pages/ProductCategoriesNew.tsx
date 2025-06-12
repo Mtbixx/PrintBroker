@@ -1,32 +1,47 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { 
-  Building2, 
-  Target, 
-  Award, 
-  Users, 
-  Package,
-  Star,
-  TrendingUp,
   Search,
   Filter,
-  Zap,
-  Clock,
+  Star,
   CheckCircle,
+  Clock,
+  Shield,
+  Truck,
+  FileText,
+  Package,
+  Calculator,
+  Eye,
+  Download,
+  Sparkles,
   ArrowRight,
   ArrowLeft,
-  ShoppingCart,
-  Printer,
+  Target,
+  Award,
+  Zap,
+  TrendingUp,
+  Factory,
+  Layers,
+  Building2,
   Palette,
-  FileText,
-  Shield,
-  Truck
-} from 'lucide-react';
+  Printer,
+  Globe,
+  Users,
+  DollarSign,
+  BarChart3,
+  MessageSquare,
+  Phone,
+  Mail
+} from "lucide-react";
 
 // Professional Quote Dialog Component
 const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
@@ -603,7 +618,7 @@ export default function ProductCategoriesNew() {
           <div className="mb-8">
             <Button 
               variant="outline" 
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
               onClick={() => window.location.href = '/'}
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -773,7 +788,7 @@ export default function ProductCategoriesNew() {
                           <span className="text-gray-700">{feature}</span>
                         </div>
                       ))}
-                    </div>```text
+                    </div>
 
                   </div>
 
@@ -832,7 +847,6 @@ export default function ProductCategoriesNew() {
                       <Truck className="w-4 h-4 mr-1" />
                       Ücretsiz Kargo
                     </span>
-
                   </div>
 
                   {/* Action Buttons */}
