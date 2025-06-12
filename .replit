@@ -9,7 +9,7 @@ packages = ["cairo", "ffmpeg-full", "file", "freetype", "ghostscript", "glibcLoc
 [deployment]
 deploymentTarget = "autoscale"
 build = ["npm", "run", "build"]
-run = ["npm", "run", "start"]
+run = ["sh", "-c", "npm run dev"]
 
 [[ports]]
 localPort = 3000
@@ -60,6 +60,9 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
+
+[env]
+REPLIT_DISABLE_PACKAGE_LAYER = "1"
 
 [[workflows.workflow]]
 name = "Start Python Service"
