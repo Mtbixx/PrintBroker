@@ -1,5 +1,71 @@
 [
   {
+    "id": "2f73b9e7-3d2a-4a5d-bfce-ce7f8a0ac67c",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "\"Ömer Kaplan\", \"0544 447 5824\", \"Göç Vize Turizm Danışmanlık Uzmanı\". baskı için 8x5 modern kartvizit tasarımı fotoğrafsız, arkalı önlü.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design for \"Ömer Kaplan\", \"Göç Vize Turizm Danışmanlık Uzmanı\", featuring a sleek, minimalist geometric pattern in shades of deep teal and charcoal gray that subtly suggests global connections and expertise. The contact information \"0544 447 5824\" is elegantly integrated within the pattern, while the name and title are prominently displayed in a clean, sans-serif font, using white text for maximum readability against the darker background. The front of the card uses a bold, yet understated design, while the back offers a blank space for a handwritten note, conveying professionalism and approachability with an overall sophisticated and trustworthy emotional tone. The 8x5 format ensures a comfortable and modern feel suitable for a professional setting, promoting a sense of reliability and modern competence.",
+        "resolution": "1024x1024",
+        "seed": 1633096022,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/lOGRx3t9QAm1kbufJqFIBg.png?exp=1749779942&sig=e2d9510948735b0b1d4a840bca52f8bb683a18d1cb0af974022b42a0253a30a7"
+      },
+      "generationId": "68751ff2-d6d5-4f31-8aef-80d87f1f63f6",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/lOGRx3t9QAm1kbufJqFIBg.png?exp=1749779942&sig=e2d9510948735b0b1d4a840bca52f8bb683a18d1cb0af974022b42a0253a30a7",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:59:02.707Z"
+  },
+  {
+    "id": "5e03e8d1-f99e-4349-aafe-39c646e5f40a",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Fuat Kaya Elektrik firması için modern logo tasarımı ",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern logo design featuring the text \"Fuat Kaya Elektrik\" in a sleek sans-serif typeface with a dark gray color scheme. A stylized lightning bolt icon, formed from negative space within the letters \"F\" and \"K\", subtly suggests electrical power. The logo is set against a minimalist white background with a faint, radial gradient emanating from the center to create a sense of energy. The overall aesthetic is clean, professional, and conveys reliability and innovation.",
+        "resolution": "1024x1024",
+        "seed": 673480058,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/vYVX0WbcQD-g-6U6v7S9Dg.png?exp=1749779906&sig=eb3475da31790b235d28d80aa82f5156e26ca1452af1d6a202518c71ca2d1665"
+      },
+      "generationId": "bfeb8ef2-656f-47ee-83d7-75f4dd3cd5d1",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/vYVX0WbcQD-g-6U6v7S9Dg.png?exp=1749779906&sig=eb3475da31790b235d28d80aa82f5156e26ca1452af1d6a202518c71ca2d1665",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:58:26.438Z"
+  },
+  {
     "id": "40c9b40b-e41d-4464-8f69-5ccf364e1410",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "MatBixx için modern logo tasarımı",
