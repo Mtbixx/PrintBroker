@@ -94,56 +94,6 @@ export default function Firmalar() {
     refetchInterval: 30000,
   });
 
-  // Filter and sort companies based on search term, role, and sort criteria
-  const filteredCompanies = companies
-    .filter((company: Company) => {
-      if (!company) return false;
-
-      const matchesSearch = !searchTerm || 
-        company.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        company.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        company.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        company.email?.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const matchesRole = filterRole === 'all' || company.role === filterRole;
-
-      return matchesSearch && matchesRole;
-    })
-    .sort((a: Company, b: Company) => {
-      let compareValue = 0;
-
-      switch (sortBy) {
-        case 'name':
-          const nameA = a.companyName || `${a.firstName} ${a.lastName}`;
-          const nameB = b.companyName || `${b.firstName} ${b.lastName}`;
-          compareValue = nameA.localeCompare(nameB, 'tr');
-          break;
-
-        case 'rating':
-          const ratingA = a.rating || 4.5;
-          const ratingB = b.rating || 4.5;
-          compareValue = ratingA - ratingB;
-          break;
-
-        case 'projects':
-          const projectsA = a.totalProjects || Math.floor(Math.random() * 50) + 10;
-          const projectsB = b.totalProjects || Math.floor(Math.random() * 50) + 10;
-          compareValue = projectsA - projectsB;
-          break;
-
-        case 'date':
-          const dateA = new Date(a.createdAt).getTime();
-          const dateB = new Date(b.createdAt).getTime();
-          compareValue = dateA - dateB;
-          break;
-
-        default:
-          compareValue = 0;
-      }
-
-      return sortOrder === 'asc' ? compareValue : -compareValue;
-    });
-
   const printerCompanies = companies.filter((c: Company) => c && c.role === 'printer');
   const customerCompanies = companies.filter((c: Company) => c && c.role === 'customer');
   const adminUsers = companies.filter((c: Company) => c && c.role === 'admin');
