@@ -1,46 +1,32 @@
-import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
+  Building2, 
+  Target, 
+  Award, 
+  Users, 
+  Package,
+  Star,
+  TrendingUp,
   Search,
   Filter,
-  Star,
-  CheckCircle,
-  Clock,
-  Shield,
-  Truck,
-  FileText,
-  Package,
-  Calculator,
-  Eye,
-  Download,
-  Sparkles,
-  ArrowRight,
-  Target,
-  Award,
   Zap,
-  TrendingUp,
-  Factory,
-  Layers,
-  Building2,
-  Palette,
+  Clock,
+  CheckCircle,
+  ArrowRight,
+  ArrowLeft,
+  ShoppingCart,
   Printer,
-  Globe,
-  Users,
-  DollarSign,
-  BarChart3,
-  MessageSquare,
-  Phone,
-  Mail
-} from "lucide-react";
+  Palette,
+  FileText,
+  Shield,
+  Truck
+} from 'lucide-react';
 
 // Professional Quote Dialog Component
 const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
@@ -613,6 +599,17 @@ export default function ProductCategoriesNew() {
       {/* SEO Optimized Header */}
       <section className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* Back to Home Button */}
+          <div className="mb-8">
+            <Button 
+              variant="outline" 
+              className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+              onClick={() => window.location.href = '/'}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Ana Sayfaya Dön
+            </Button>
+          </div>
           <div className="text-center">
             <div className="inline-flex items-center px-4 py-2 bg-blue-50 rounded-full text-blue-800 text-sm font-medium mb-6">
               <Sparkles className="h-4 w-4 mr-2" />
@@ -776,7 +773,8 @@ export default function ProductCategoriesNew() {
                           <span className="text-gray-700">{feature}</span>
                         </div>
                       ))}
-                    </div>
+                    </div>```text
+
                   </div>
 
                   {/* Quality Standards */}
@@ -834,7 +832,6 @@ export default function ProductCategoriesNew() {
                       <Truck className="w-4 h-4 mr-1" />
                       Ücretsiz Kargo
                     </span>
-                  ```text
 
                   </div>
 
