@@ -19,7 +19,6 @@ import ProductCategories from "./pages/ProductCategories";
 import ProductCategoriesNew from "./pages/ProductCategoriesNew";
 import References from "./pages/References";
 import ReferencesNew from "./pages/ReferencesNew";
-import Examples from "./pages/Examples";
 import DesignQuote from "./pages/DesignQuote";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -40,7 +39,6 @@ function AppRouter() {
         <>
           <Route path="/" component={LandingNew} />
           <Route path="/products" component={ProductCategoriesNew} />
-          <Route path="/examples/:category" component={Examples} />
           <Route path="/old" component={Landing} />
           <Route path="/old-products" component={ProductCategories} />
           <Route path="/references" component={ReferencesNew} />
@@ -99,7 +97,6 @@ function AppRouter() {
           }} />
 
           <Route path="/payment" component={Payment} />
-          <Route path="/examples/:category" component={Examples} />
         </>
       )}
       <Route path="/design-quote" component={DesignQuote} />

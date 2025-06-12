@@ -816,10 +816,10 @@ export default function LandingNew() {
                   </div>
 
                   {/* Actions */}
-                  <div className="grid grid-cols-2 gap-2 pt-4">
+                  <div className="pt-4">
                     <Button 
                       size="sm" 
-                      className={`${
+                      className={`w-full ${
                         isAuthenticated 
                           ? "bg-blue-600 hover:bg-blue-700" 
                           : "bg-gray-400 cursor-not-allowed"
@@ -827,7 +827,7 @@ export default function LandingNew() {
                       disabled={!isAuthenticated}
                       onClick={() => {
                         if (isAuthenticated) {
-                          window.location.href = '/quote-form';
+                          window.location.href = '/customer-dashboard';
                         } else {
                           window.location.href = '/api/login';
                         }
@@ -835,17 +835,6 @@ export default function LandingNew() {
                     >
                       <Calculator className="h-4 w-4 mr-1" />
                       {isAuthenticated ? 'Teklif Al' : 'Giriş Yapın'}
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => {
-                        // Örnekler sayfasına yönlendir - tüm kullanıcılar için aktif
-                        window.open(`/examples/${category.category}`, '_blank');
-                      }}
-                    >
-                      <Eye className="h-4 w-4 mr-1" />
-                      Örnekler
                     </Button>
                   </div>
                 </CardContent>

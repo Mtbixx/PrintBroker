@@ -913,20 +913,8 @@ export default function ProductCategoriesNew() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="grid grid-cols-2 gap-3 pt-4">
+                  <div className="pt-4">
                     <ProfessionalQuoteDialog category={category} />
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={() => {
-                        // Örnekler sayfasına yönlendir - tüm kullanıcılar için aktif
-                        window.open(`/examples/${category.category}`, '_blank');
-                      }}
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Örnekleri Gör
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
