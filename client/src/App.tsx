@@ -64,7 +64,7 @@ function AppRouter() {
       ) : (
         <>
           <Route path="/" component={LandingNew} />
-
+          <Route path="/products" component={ProductCategoriesNew} />
           <Route path="/dashboard" component={() => {
             // Universal dashboard route that redirects based on role
             const userRole = (user as any)?.role || 'customer';
