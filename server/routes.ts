@@ -1374,25 +1374,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Check if user is authenticated
       const userId = req.session?.user?.id;
-      if (!userId) {
-        return res.status(401).json({ message: "Authentication required" });
-      }
-
-      // Get fresh user data
-      const currentUser = await storage.getUser(userId);
-      if (!currentUser) {
-        return res.status(401).json({ message: "User not found" });
-      }
-
-      // Allow admin and also allow regular users to see printer companies (for Firmalar page)
       const users = await storage.getAllUsers();
       
-      // If user is admin, return all users
-      if (currentUser.role === 'admin') {
-        console.log(`✅ Admin ${userId} fetched ${users.length} users`);
-        res.json(users);
+      if (userId) {
+        // User is authenticated
+        const currentUser = await storage.getUser(userId);
+        if (!currentUser) {
+          return res.status(401).json({ message: "User not found" });
+        }
+
+        // If user is admin, return all users
+        if (currentUser.role === 'admin') {
+          console.log(`✅ Admin ${userId} fetched ${users.length} users`);
+          res.json(users);
+        } else {
+          // For non-admin authenticated users, return printer companies
+          const activePrinters = users.filter(user => user.role === 'printer' && user.isActive);
+          
+          const publicData = activePrinters.map(user => ({
+              id: user.id,
+              companyName: user.companyName,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email,
+              phone: user.phone,
+              role: user.role,
+              isActive: user.isActive,
+              createdAt: user.createdAt,
+              companyAddress: user.companyAddress,
+              website: user.website,
+              description: user.description,
+              profileImageUrl: user.profileImageUrl,
+              subscriptionStatus: user.subscriptionStatus,
+              verificationStatus: user.verificationStatus || 'pending',
+              taxNumber: user.taxNumber,
+              // Add some mock data for display purposes
+              rating: 4.5 + Math.random() * 0.5,
+              totalProjects: Math.floor(Math.random() * 50) + 10,
+              completionRate: Math.floor(Math.random() * 20) + 80,
+              employeeCount: Math.floor(Math.random() * 50) + 5,
+              foundedYear: new Date().getFullYear() - Math.floor(Math.random() * 20) - 5
+            }));
+          
+          console.log(`📤 User ${userId} fetched ${publicData.length} printer companies`);
+          res.json(publicData);
+        }
       } else {
-        // For non-admin users, only return printer companies and basic info
+        // User is NOT authenticated - allow public access to printer companies for Firmalar page
         const activePrinters = users.filter(user => user.role === 'printer' && user.isActive);
         
         const publicData = activePrinters.map(user => ({
@@ -1420,7 +1448,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             foundedYear: new Date().getFullYear() - Math.floor(Math.random() * 20) - 5
           }));
         
-        console.log(`📤 User ${userId} fetched ${publicData.length} printer companies`);
+        console.log(`🌐 Public access: ${publicData.length} printer companies fetched`);
         res.json(publicData);
       }
     } catch (error) {
