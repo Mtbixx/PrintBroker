@@ -957,10 +957,7 @@ export default function LandingNew() {
                   <Mail className="h-4 w-4 mr-2" />
                   info@matbixx.com
                 </li>
-                <li className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  İstanbul, Türkiye
-                </li>
+                
               </ul>
             </div>
           </div>
