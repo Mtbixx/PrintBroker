@@ -18,6 +18,9 @@ export default function Home() {
       } else {
         window.location.href = '/customer-dashboard';
       }
+    } else if (!isLoading && !user) {
+      // If user is not logged in, stay on landing page
+      window.location.href = '/';
     }
   }, [user, isLoading]);
 

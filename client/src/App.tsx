@@ -60,7 +60,26 @@ function AppRouter() {
         </>
       ) : (
         <>
-          <Route path="/" component={Home} />
+          <Route path="/" component={() => {
+            // Check if user is authenticated and redirect to appropriate dashboard
+            const userRole = (user as any)?.role;
+            
+            if (userRole === 'admin') {
+              window.location.href = '/admin-dashboard';
+              return null;
+            }
+            if (userRole === 'printer') {
+              window.location.href = '/printer-dashboard';
+              return null;
+            }
+            if (userRole === 'customer') {
+              window.location.href = '/customer-dashboard';
+              return null;
+            }
+            
+            // Fallback to Home component if no specific role
+            return <Home />;
+          }} />
 
           <Route path="/dashboard" component={() => {
             // Universal dashboard route that redirects based on role

@@ -84,12 +84,27 @@ export default function Navigation() {
   };
 
   const getNavigationItems = () => {
+    // Determine the correct home URL based on user role
+    const getHomeUrl = () => {
+      switch (user.role) {
+        case 'customer':
+          return "/customer-dashboard";
+        case 'printer':
+          return "/printer-dashboard";
+        case 'admin':
+          return "/admin-dashboard";
+        default:
+          return "/";
+      }
+    };
+
+    const homeUrl = getHomeUrl();
     const baseItems = [
       {
-        href: "/",
+        href: homeUrl,
         label: "Ana Sayfa",
         icon: <Home className="h-4 w-4" />,
-        active: location === "/"
+        active: location === homeUrl || (location === "/" && user.role)
       },
     ];
 
@@ -98,10 +113,10 @@ export default function Navigation() {
         return [
           ...baseItems,
           {
-            href: "/dashboard",
+            href: "/customer-dashboard",
             label: "Dashboard",
             icon: <BarChart3 className="h-4 w-4" />,
-            active: location === "/dashboard"
+            active: location === "/customer-dashboard"
           },
         ];
 
@@ -109,10 +124,10 @@ export default function Navigation() {
         return [
           ...baseItems,
           {
-            href: "/dashboard",
+            href: "/printer-dashboard",
             label: "Dashboard",
             icon: <Building2 className="h-4 w-4" />,
-            active: location === "/dashboard"
+            active: location === "/printer-dashboard"
           },
         ];
 
@@ -120,10 +135,10 @@ export default function Navigation() {
         return [
           ...baseItems,
           {
-            href: "/dashboard",
+            href: "/admin-dashboard",
             label: "Admin Panel",
             icon: <Users className="h-4 w-4" />,
-            active: location === "/dashboard"
+            active: location === "/admin-dashboard"
           },
         ];
 
