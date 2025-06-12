@@ -1,3 +1,4 @@
+import React from 'react';
 import { Switch, Route, Router } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -26,14 +27,29 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import KVKK from "./pages/KVKK";
 import NotFound from "./pages/not-found";
+import LoadingIndicator from './components/LoadingIndicator';
+import ErrorAlert from './components/ErrorAlert';
+import { useState } from 'react';
 
 function AppRouter() {
   const { isAuthenticated, isLoading, user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Show loading spinner while checking authentication
   if (isLoading) {
     return <LoadingPage message="Hesap bilgileriniz kontrol ediliyor..." />;
   }
+
+  // Örnek: Yükleme ve hata simülasyonu
+  const handleSimulate = () => {
+    setLoading(true);
+    setError(null);
+    setTimeout(() => {
+      setLoading(false);
+      setError('Bir hata oluştu!');
+    }, 2000);
+  };
 
   return (
     <Switch>
@@ -115,15 +131,40 @@ function AppRouter() {
 }
 
 function App() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Örnek: Yükleme ve hata simülasyonu
+  const handleSimulate = () => {
+    setLoading(true);
+    setError(null);
+    setTimeout(() => {
+      setLoading(false);
+      setError('Bir hata oluştu!');
+    }, 2000);
+  };
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Router>
-          <AppRouter />
-          <Toaster />
-        </Router>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">PrintBroker Demo</h1>
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        onClick={handleSimulate}
+        disabled={loading}
+      >
+        Yükleme ve Hata Simüle Et
+      </button>
+      {loading && <LoadingIndicator />}
+      {error && <ErrorAlert message={error} />}
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Router>
+            <AppRouter />
+            <Toaster />
+          </Router>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </div>
   );
 }
 

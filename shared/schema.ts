@@ -10,9 +10,10 @@ import {
   decimal,
   boolean,
   uuid,
+  json,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // Session storage table.
@@ -30,13 +31,13 @@ export const sessions = pgTable(
 // User storage table.
 // (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey().notNull(),
-  email: varchar("email").unique(),
-  password: varchar("password"),
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
-  role: varchar("role", { enum: ["customer", "printer", "admin"] }).notNull().default("customer"),
+  role: text("role").notNull().default("customer"),
   creditBalance: decimal("credit_balance", { precision: 10, scale: 2 }).default("0.00"),
   subscriptionStatus: varchar("subscription_status", { enum: ["active", "inactive", "suspended"] }).default("inactive"),
   phone: varchar("phone"),
@@ -48,37 +49,55 @@ export const users = pgTable("users", {
   rating: decimal("rating", { precision: 3, scale: 2 }).default("0.00"),
   totalRatings: integer("total_ratings").default(0),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => ({
+  emailIdx: index("users_email_idx").on(table.email),
+  roleIdx: index("users_role_idx").on(table.role),
+  companyNameIdx: index("users_company_name_idx").on(table.companyName),
+  createdAtIdx: index("users_created_at_idx").on(table.createdAt)
+}));
 
 export const quotes = pgTable("quotes", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  customerId: varchar("customer_id").notNull().references(() => users.id),
-  type: varchar("type", { enum: ["sheet_label", "roll_label", "general_printing"] }).notNull(),
-  status: varchar("status", { enum: ["pending", "received_quotes", "approved", "in_progress", "completed", "cancelled"] }).notNull().default("pending"),
+  id: serial("id").primaryKey(),
+  customerId: integer("customer_id").notNull().references(() => users.id),
+  type: text("type").notNull(),
+  status: text("status").notNull().default("pending"),
   title: varchar("title").notNull(),
-  description: text("description"),
+  description: text("description").notNull(),
   specifications: jsonb("specifications").notNull(),
   fileUrls: text("file_urls").array(),
   deadline: timestamp("deadline"),
   budget: decimal("budget", { precision: 10, scale: 2 }),
   selectedQuoteId: uuid("selected_quote_id"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => ({
+  customerIdIdx: index("quotes_customer_id_idx").on(table.customerId),
+  statusIdx: index("quotes_status_idx").on(table.status),
+  typeIdx: index("quotes_type_idx").on(table.type),
+  createdAtIdx: index("quotes_created_at_idx").on(table.createdAt),
+  deadlineIdx: index("quotes_deadline_idx").on(table.deadline),
+  customerStatusIdx: index("quotes_customer_status_idx").on(table.customerId, table.status)
+}));
 
 export const printerQuotes = pgTable("printer_quotes", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  quoteId: uuid("quote_id").notNull().references(() => quotes.id, { onDelete: "cascade" }),
-  printerId: varchar("printer_id").notNull().references(() => users.id),
+  id: serial("id").primaryKey(),
+  quoteId: integer("quote_id").notNull().references(() => quotes.id),
+  printerId: integer("printer_id").notNull().references(() => users.id),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   estimatedDays: integer("estimated_days").notNull(),
   notes: text("notes"),
-  status: varchar("status", { enum: ["pending", "accepted", "rejected"] }).notNull().default("pending"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => ({
+  quoteIdIdx: index("printer_quotes_quote_id_idx").on(table.quoteId),
+  printerIdIdx: index("printer_quotes_printer_id_idx").on(table.printerId),
+  statusIdx: index("printer_quotes_status_idx").on(table.status),
+  createdAtIdx: index("printer_quotes_created_at_idx").on(table.createdAt),
+  quotePrinterIdx: index("printer_quotes_quote_printer_idx").on(table.quoteId, table.printerId)
+}));
 
 export const orders = pgTable("orders", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -106,7 +125,7 @@ export const ratings = pgTable("ratings", {
 });
 
 export const files = pgTable("files", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: serial("id").primaryKey(),
   filename: varchar("filename").notNull(),
   originalName: varchar("original_name").notNull(),
   mimeType: varchar("mime_type").notNull(),
@@ -125,9 +144,15 @@ export const files = pgTable("files", {
   processingNotes: text("processing_notes"),
   downloadCount: integer("download_count").default(0),
   isPublic: boolean("is_public").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+  metadata: json("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => ({
+  userIdIdx: index("files_user_id_idx").on(table.userId),
+  mimeTypeIdx: index("files_mime_type_idx").on(table.mimeType),
+  createdAtIdx: index("files_created_at_idx").on(table.createdAt),
+  userTypeIdx: index("files_user_type_idx").on(table.userId, table.type)
+}));
 
 // Contracts table
 export const contracts = pgTable("contracts", {
@@ -153,27 +178,40 @@ export const contracts = pgTable("contracts", {
 
 // Chat system tables
 export const chatRooms = pgTable("chat_rooms", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  quoteId: uuid("quote_id").references(() => quotes.id).notNull(),
-  customerId: varchar("customer_id").references(() => users.id).notNull(),
-  printerId: varchar("printer_id").references(() => users.id).notNull(),
-  status: varchar("status", { enum: ["active", "closed"] }).default("active"),
+  id: serial("id").primaryKey(),
+  quoteId: integer("quote_id").notNull().references(() => quotes.id),
+  customerId: integer("customer_id").notNull().references(() => users.id),
+  printerId: integer("printer_id").notNull().references(() => users.id),
+  status: text("status").notNull().default("active"),
   lastMessageAt: timestamp("last_message_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => ({
+  quoteIdIdx: index("chat_rooms_quote_id_idx").on(table.quoteId),
+  customerIdIdx: index("chat_rooms_customer_id_idx").on(table.customerId),
+  printerIdIdx: index("chat_rooms_printer_id_idx").on(table.printerId),
+  statusIdx: index("chat_rooms_status_idx").on(table.status),
+  createdAtIdx: index("chat_rooms_created_at_idx").on(table.createdAt),
+  quoteStatusIdx: index("chat_rooms_quote_status_idx").on(table.quoteId, table.status)
+}));
 
 export const chatMessages = pgTable("chat_messages", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  roomId: uuid("room_id").references(() => chatRooms.id).notNull(),
-  senderId: varchar("sender_id").references(() => users.id).notNull(),
-  message: text("message").notNull(),
+  id: serial("id").primaryKey(),
+  roomId: integer("room_id").notNull().references(() => chatRooms.id),
+  senderId: integer("sender_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
   messageType: varchar("message_type", { enum: ["text", "file", "image"] }).default("text"),
   fileUrl: varchar("file_url"),
   fileName: varchar("file_name"),
-  isRead: boolean("is_read").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+  isRead: boolean("is_read").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => ({
+  roomIdIdx: index("chat_messages_room_id_idx").on(table.roomId),
+  senderIdIdx: index("chat_messages_sender_id_idx").on(table.senderId),
+  isReadIdx: index("chat_messages_is_read_idx").on(table.isRead),
+  createdAtIdx: index("chat_messages_created_at_idx").on(table.createdAt),
+  roomCreatedIdx: index("chat_messages_room_created_idx").on(table.roomId, table.createdAt)
+}));
 
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
@@ -305,21 +343,22 @@ export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users);
-export const insertQuoteSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  type: z.enum(["sheet_label", "roll_label", "general_printing"]),
-  customerId: z.string(),
-  specifications: z.record(z.any()).default({}),
-  description: z.string().optional(),
-  deadline: z.union([z.date(), z.string().transform((str) => new Date(str))]).optional(),
-  budget: z.string().optional(),
-});
-export const insertPrinterQuoteSchema = createInsertSchema(printerQuotes).omit({ id: true, createdAt: true, updatedAt: true });
+export const selectUserSchema = createSelectSchema(users);
+
+export const insertQuoteSchema = createInsertSchema(quotes);
+export const selectQuoteSchema = createSelectSchema(quotes);
+
+export const insertPrinterQuoteSchema = createInsertSchema(printerQuotes);
+export const selectPrinterQuoteSchema = createSelectSchema(printerQuotes);
+
 export const insertOrderSchema = createInsertSchema(orders).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertRatingSchema = createInsertSchema(ratings).omit({ id: true, createdAt: true });
 export const insertFileSchema = createInsertSchema(files).omit({ id: true, createdAt: true });
+export const selectFileSchema = createSelectSchema(files);
 export const insertChatRoomSchema = createInsertSchema(chatRooms).omit({ id: true, createdAt: true, updatedAt: true });
+export const selectChatRoomSchema = createSelectSchema(chatRooms);
 export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({ id: true, createdAt: true });
+export const selectChatMessageSchema = createSelectSchema(chatMessages);
 export const insertContractSchema = createInsertSchema(contracts).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Types
@@ -341,3 +380,11 @@ export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type InsertContract = z.infer<typeof insertContractSchema>;
 export type Contract = typeof contracts.$inferSelect;
+
+// Tip tanımlamaları
+export type NewUser = z.infer<typeof insertUserSchema>;
+export type NewQuote = z.infer<typeof insertQuoteSchema>;
+export type NewPrinterQuote = z.infer<typeof insertPrinterQuoteSchema>;
+export type NewFile = z.infer<typeof insertFileSchema>;
+export type NewChatRoom = z.infer<typeof insertChatRoomSchema>;
+export type NewChatMessage = z.infer<typeof insertChatMessageSchema>;

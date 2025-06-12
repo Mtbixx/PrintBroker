@@ -7,6 +7,7 @@ import { execSync } from 'child_process';
 import { corsOptions, securityHeaders } from './corsConfig';
 import { generalLimiter } from './rateLimiter';
 import { handleSEORoute } from './seoRenderer';
+import { errorHandler } from './errors';
 
 const app = express();
 
@@ -23,13 +24,13 @@ app.use('/api/', generalLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
+  res.json = function (bodyJson: any, ...args: any[]) {
     capturedJsonResponse = bodyJson;
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
@@ -91,13 +92,22 @@ async function initializePythonServices() {
   }
 }
 
+// Versiyonlu API örneği
+const v1Router = express.Router();
+
+v1Router.get('/health', (req: Request, res: Response) => {
+  res.json({ status: 'ok', version: 'v1' });
+});
+
+app.use('/api/v1', v1Router);
+
 (async () => {
   // Python servislerini başlat
   await initializePythonServices();
   const server = await registerRoutes(app);
 
   // Global unhandled promise rejection handler
-  process.on('unhandledRejection', (reason, promise) => {
+  process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
     console.error('🔥 Unhandled Rejection at:', promise, 'reason:', reason);
     // Log stack trace if available
     if (reason instanceof Error) {
@@ -106,21 +116,12 @@ async function initializePythonServices() {
   });
 
   // Global uncaught exception handler
-  process.on('uncaughtException', (error) => {
+  process.on('uncaughtException', (error: Error) => {
     console.error('Uncaught Exception:', error);
     process.exit(1);
   });
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    console.error('Express Error Handler:', err);
-
-    if (!res.headersSent) {
-      res.status(status).json({ message });
-    }
-  });
+  app.use(errorHandler);
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
