@@ -42,7 +42,6 @@ function AppRouter() {
           <Route path="/" component={LandingNew} />
           <Route path="/products" component={ProductCategoriesNew} />
           <Route path="/blog" component={Blog} />
-          <Route path="/firmalar" component={Firmalar} />
           <Route path="/old" component={Landing} />
           <Route path="/old-products" component={ProductCategories} />
           <Route path="/references" component={ReferencesNew} />
@@ -105,6 +104,7 @@ function AppRouter() {
           <Route path="/payment" component={Payment} />
         </>
       )}
+      <Route path="/firmalar" component={Firmalar} />
       <Route path="/design-quote" component={DesignQuote} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
