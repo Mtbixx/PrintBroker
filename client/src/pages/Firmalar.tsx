@@ -373,72 +373,46 @@ export default function Firmalar() {
             <p className="text-gray-500">Sistem kullanıma alındığında kayıtlı firmalar burada görünecektir.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-max">
             {filteredCompanies.map((company: Company) => (
-              <Card key={company.id} className="group hover:shadow-2xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white/95 cursor-pointer transform hover:-translate-y-1 h-fit">
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-14 w-14 ring-4 ring-blue-100 group-hover:ring-blue-200 transition-all">
+              <Card key={company.id} className="group hover:shadow-2xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white/95 cursor-pointer transform hover:-translate-y-1 h-full flex flex-col">
+                <CardHeader className="pb-3 flex-shrink-0">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-3 flex-1 min-w-0">
+                      <Avatar className="h-12 w-12 ring-4 ring-blue-100 group-hover:ring-blue-200 transition-all flex-shrink-0">
                         <AvatarImage src={company.profileImageUrl} />
-                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-sm">
                           {getCompanyInitials(company)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-lg text-gray-900 truncate group-hover:text-blue-700 transition-colors">
+                        <h3 className="font-bold text-base text-gray-900 truncate group-hover:text-blue-700 transition-colors">
                           {company.companyName || `${company.firstName} ${company.lastName}`}
                         </h3>
-                        <p className="text-sm text-gray-600 truncate">
+                        <p className="text-xs text-gray-600 truncate">
                           {company.firstName} {company.lastName}
                         </p>
-                        <div className="flex gap-1 mt-1">
-                          {getRoleBadge(company.role)}
-                          {getVerificationBadge(company)}
-                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1 mb-1">
-                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                        <span className="font-semibold text-gray-700">
-                          {company.rating || 
-                            // Consistent mock rating based on company ID for stable sorting
-                            (4.0 + ((company.id?.charCodeAt(company.id.length - 1) || 0) % 10) / 10).toFixed(1)
-                          }
-                        </span>
-                      </div>
-                      {company.role === 'printer' && (
-                        <Badge variant="outline" className="text-xs">
-                          <Trophy className="h-3 w-3 mr-1" />
-                          {company.totalProjects || 
-                            // Consistent mock data based on company ID for stable sorting
-                            Math.floor((company.id?.charCodeAt(company.id.length - 1) || 0) % 50) + 10
-                          } proje
-                        </Badge>
-                      )}
-                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {getRoleBadge(company.role)}
+                    {getVerificationBadge(company)}
                   </div>
                 </CardHeader>
 
-                
-<CardContent className="p-4 h-auto min-h-[280px] flex flex-col">
-                  <div className="flex-1 space-y-3">
-                    {/* Company Header */}
-                    <div className="text-center">
-                      <h3 className="font-bold text-lg text-gray-900 leading-tight mb-2 line-clamp-2 min-h-[3rem]">
-                        {company.companyName || `${company.firstName} ${company.lastName}`}
-                      </h3>
-
-                      {/* Rating */}
-                      <div className="flex items-center justify-center gap-2 mb-3">
+                <CardContent className="p-4 pt-0 flex-1 flex flex-col justify-between">
+                  <div className="space-y-3 flex-1">
+                    {/* Rating Section */}
+                    <div className="text-center py-2">
+                      <div className="flex items-center justify-center gap-2 mb-2">
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`h-4 w-4 ${
+                              className={`h-3 w-3 ${
                                 i < Math.floor(company.rating || 
-                                  // Consistent rating based on company ID
                                   (4.0 + ((company.id?.charCodeAt(company.id.length - 1) || 0) % 10) * 0.1)
                                 )
                                   ? 'text-yellow-400 fill-current'
@@ -447,20 +421,18 @@ export default function Firmalar() {
                             />
                           ))}
                         </div>
-                        <span className="text-base font-semibold text-gray-700 ml-1">
+                        <span className="text-sm font-semibold text-gray-700 ml-1">
                           {(company.rating || 
-                            // Consistent rating based on company ID
                             (4.0 + ((company.id?.charCodeAt(company.id.length - 1) || 0) % 10) * 0.1)
                           ).toFixed(1)}
                         </span>
                       </div>
                     </div>
 
-                    {/* Completed Projects Count */}
-                    <div className="bg-gradient-to-r from-green-50 to-blue-50 p-3 rounded-lg text-center flex-shrink-0">
-                      <div className="text-2xl font-bold text-green-700 mb-1">
+                    {/* Projects Count */}
+                    <div className="bg-gradient-to-r from-green-50 to-blue-50 p-3 rounded-lg text-center">
+                      <div className="text-xl font-bold text-green-700 mb-1">
                         {company.totalProjects || 
-                          // Consistent project count based on company ID
                           (10 + ((company.id?.charCodeAt(company.id.length - 4) || 0) % 40))
                         }
                       </div>
@@ -468,11 +440,11 @@ export default function Firmalar() {
                     </div>
                   </div>
 
-                  {/* Action Buttons - Fixed at bottom */}
-                  <div className="flex gap-2 mt-3 pt-2 border-t border-gray-100">
+                  {/* Action Button - Always at bottom */}
+                  <div className="mt-4 pt-3 border-t border-gray-100">
                     <Button 
                       size="sm" 
-                      className="flex-1 text-xs"
+                      className="w-full text-xs h-8"
                       onClick={() => setSelectedCompany(company)}
                     >
                       <Eye className="h-3 w-3 mr-1" />
