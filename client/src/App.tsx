@@ -60,7 +60,7 @@ function AppRouter() {
         </>
       ) : (
         <>
-          <Route path="/" component={Home} />
+          <Route path="/" component={LandingNew} />
 
           <Route path="/dashboard" component={() => {
             // Universal dashboard route that redirects based on role
