@@ -5,9 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingPage from "@/components/LoadingPage";
-import Landing from "./pages/Landing";
 import LandingNew from "./pages/LandingNew";
-import Home from "./pages/Home";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import PrinterDashboard from "@/pages/PrinterDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -63,7 +61,7 @@ function AppRouter() {
           <Route path="/" component={() => {
             // Check if user is authenticated and redirect to appropriate dashboard
             const userRole = (user as any)?.role;
-            
+
             if (userRole === 'admin') {
               window.location.href = '/admin-dashboard';
               return null;
@@ -76,9 +74,9 @@ function AppRouter() {
               window.location.href = '/customer-dashboard';
               return null;
             }
-            
+
             // Fallback to Home component if no specific role
-            return <Home />;
+            return <LandingNew />;
           }} />
 
           <Route path="/dashboard" component={() => {

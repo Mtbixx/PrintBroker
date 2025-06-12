@@ -101,10 +101,10 @@ export default function Navigation() {
     const homeUrl = getHomeUrl();
     const baseItems = [
       {
-        href: homeUrl,
+        href: "/",
         label: "Ana Sayfa",
         icon: <Home className="h-4 w-4" />,
-        active: location === homeUrl || (location === "/" && user.role)
+        active: location === "/"
       },
     ];
 
@@ -114,7 +114,7 @@ export default function Navigation() {
           ...baseItems,
           {
             href: "/customer-dashboard",
-            label: "Dashboard",
+            label: "Panel",
             icon: <BarChart3 className="h-4 w-4" />,
             active: location === "/customer-dashboard"
           },
@@ -125,7 +125,7 @@ export default function Navigation() {
           ...baseItems,
           {
             href: "/printer-dashboard",
-            label: "Dashboard",
+            label: "Panel",
             icon: <Building2 className="h-4 w-4" />,
             active: location === "/printer-dashboard"
           },
