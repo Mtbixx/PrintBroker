@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -81,9 +80,11 @@ export default function Firmalar() {
         company.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         company.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         company.email?.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesRole = filterRole === 'all' || company.role === filterRole;
-      
+
+      //const matchesRole = filterRole === 'all' || company.role === filterRole;
+      const matchesRole = company.role === 'printer';
+
+
       return matchesSearch && matchesRole;
     })
     .sort((a: Company, b: Company) => {
@@ -163,18 +164,14 @@ export default function Firmalar() {
                 </p>
               </div>
               <div className="text-center">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="text-2xl font-bold text-gray-900">{printerCompanies.length}</div>
+                <div className="text-sm text-gray-600">Kayıtlı Matbaa Firması</div>
+              </div>
+              <div className="text-center">
+                <div className="grid grid-cols-1 gap-4">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-yellow-400">{printerCompanies.length}</div>
-                    <div className="text-sm text-blue-200">Matbaa</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-green-400">{customerCompanies.length}</div>
-                    <div className="text-sm text-blue-200">Müşteri</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-400">{adminUsers.length}</div>
-                    <div className="text-sm text-blue-200">Admin</div>
+                    <div className="text-4xl font-bold text-blue-400">{printerCompanies.length}</div>
+                    <div className="text-lg text-blue-200">Aktif Matbaa Firması</div>
                   </div>
                 </div>
               </div>
@@ -222,7 +219,7 @@ export default function Firmalar() {
                 </Button>
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-2 mt-4">
               <Button
                 variant={sortBy === 'name' ? 'default' : 'ghost'}
