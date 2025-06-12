@@ -1,5 +1,38 @@
 [
   {
+    "id": "3d720230-61d4-40a0-a6ff-14f0d12f336e",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Matbixx için modern logo tasarla",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern logo design featuring the stylized text \"Matbixx\" in a bold, sans-serif font with a subtle gradient transitioning from deep teal to a vibrant turquoise. The text is positioned centrally against a clean, white background, conveying a sense of professionalism and innovation. Below \"Matbixx\" is a minimalistic geometric icon—a single, upward-pointing arrow formed from interconnected triangles—in a matching teal color. The overall aesthetic is clean, contemporary, and easily recognizable, suitable for a technology or finance-related brand.",
+        "resolution": "1024x1024",
+        "seed": 1402659722,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/FGJ3844dSc2cGwgGmhKkRA.png?exp=1749832232&sig=bab30b8da4cfba5e690a53322111f122d4bd1b2045924740acb0e71df076dc55"
+      },
+      "generationId": "fb40e280-4904-4653-b4a5-86e5ef42b29d",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/FGJ3844dSc2cGwgGmhKkRA.png?exp=1749832232&sig=bab30b8da4cfba5e690a53322111f122d4bd1b2045924740acb0e71df076dc55",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T16:30:32.171Z"
+  },
+  {
     "id": "c052dbc8-c14e-49e4-8bf9-60b75519d137",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "\"Ecesu & Batuhan 06.06.2026, Mutlu Günümüzde Sizi Aramızda Görmek İsteriz\" davetiye tasarımı yap",
