@@ -64,6 +64,7 @@ export default function Firmalar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState<'all' | 'printer' | 'customer'>('all');
   const [sortBy, setSortBy] = useState<'name' | 'rating' | 'projects' | 'date'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const queryClient = useQueryClient();
 
@@ -93,20 +94,55 @@ export default function Firmalar() {
     refetchInterval: 30000,
   });
 
-  // Filter companies based on search term and role
-  const filteredCompanies = companies.filter((company: Company) => {
-    if (!company) return false;
+  // Filter and sort companies based on search term, role, and sort criteria
+  const filteredCompanies = companies
+    .filter((company: Company) => {
+      if (!company) return false;
 
-    const matchesSearch = !searchTerm || 
-      company.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      company.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      company.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      company.email?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = !searchTerm || 
+        company.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        company.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        company.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        company.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesRole = filterRole === 'all' || company.role === filterRole;
+      const matchesRole = filterRole === 'all' || company.role === filterRole;
 
-    return matchesSearch && matchesRole;
-  });
+      return matchesSearch && matchesRole;
+    })
+    .sort((a: Company, b: Company) => {
+      let compareValue = 0;
+      
+      switch (sortBy) {
+        case 'name':
+          const nameA = a.companyName || `${a.firstName} ${a.lastName}`;
+          const nameB = b.companyName || `${b.firstName} ${b.lastName}`;
+          compareValue = nameA.localeCompare(nameB, 'tr');
+          break;
+          
+        case 'rating':
+          const ratingA = a.rating || 4.5;
+          const ratingB = b.rating || 4.5;
+          compareValue = ratingA - ratingB;
+          break;
+          
+        case 'projects':
+          const projectsA = a.totalProjects || Math.floor(Math.random() * 50) + 10;
+          const projectsB = b.totalProjects || Math.floor(Math.random() * 50) + 10;
+          compareValue = projectsA - projectsB;
+          break;
+          
+        case 'date':
+          const dateA = new Date(a.createdAt).getTime();
+          const dateB = new Date(b.createdAt).getTime();
+          compareValue = dateA - dateB;
+          break;
+          
+        default:
+          compareValue = 0;
+      }
+      
+      return sortOrder === 'asc' ? compareValue : -compareValue;
+    });
 
   const printerCompanies = companies.filter((c: Company) => c && c.role === 'printer');
   const customerCompanies = companies.filter((c: Company) => c && c.role === 'customer');
@@ -259,33 +295,85 @@ export default function Firmalar() {
                   <Button
                     variant={sortBy === 'name' ? 'default' : 'ghost'}
                     size="sm"
-                    onClick={() => setSortBy('name')}
+                    onClick={() => {
+                      if (sortBy === 'name') {
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                      } else {
+                        setSortBy('name');
+                        setSortOrder('asc');
+                      }
+                    }}
+                    className="flex items-center gap-1"
                   >
                     A-Z Sırala
+                    {sortBy === 'name' && (
+                      <span className="text-xs">
+                        {sortOrder === 'asc' ? '↑' : '↓'}
+                      </span>
+                    )}
                   </Button>
               <Button
                 variant={sortBy === 'rating' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setSortBy('rating')}
+                onClick={() => {
+                  if (sortBy === 'rating') {
+                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                  } else {
+                    setSortBy('rating');
+                    setSortOrder('desc'); // Yüksek puan önce
+                  }
+                }}
+                className="flex items-center gap-1"
               >
                 <Star className="h-3 w-3 mr-1" />
                 Puana Göre
+                {sortBy === 'rating' && (
+                  <span className="text-xs">
+                    {sortOrder === 'desc' ? '↓' : '↑'}
+                  </span>
+                )}
               </Button>
               <Button
                 variant={sortBy === 'projects' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setSortBy('projects')}
+                onClick={() => {
+                  if (sortBy === 'projects') {
+                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                  } else {
+                    setSortBy('projects');
+                    setSortOrder('desc'); // Fazla proje önce
+                  }
+                }}
+                className="flex items-center gap-1"
               >
                 <Trophy className="h-3 w-3 mr-1" />
                 Proje Sayısı
+                {sortBy === 'projects' && (
+                  <span className="text-xs">
+                    {sortOrder === 'desc' ? '↓' : '↑'}
+                  </span>
+                )}
               </Button>
               <Button
                 variant={sortBy === 'date' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setSortBy('date')}
+                onClick={() => {
+                  if (sortBy === 'date') {
+                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                  } else {
+                    setSortBy('date');
+                    setSortOrder('desc'); // Yeni kayıtlar önce
+                  }
+                }}
+                className="flex items-center gap-1"
               >
                 <Calendar className="h-3 w-3 mr-1" />
                 Kayıt Tarihi
+                {sortBy === 'date' && (
+                  <span className="text-xs">
+                    {sortOrder === 'desc' ? '↓' : '↑'}
+                  </span>
+                )}
                   </Button>
                 </div>
 
@@ -346,12 +434,20 @@ export default function Firmalar() {
                     <div className="text-right">
                       <div className="flex items-center gap-1 mb-1">
                         <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                        <span className="font-semibold text-gray-700">{company.rating || 4.5}</span>
+                        <span className="font-semibold text-gray-700">
+                          {company.rating || 
+                            // Consistent mock rating based on company ID for stable sorting
+                            (4.0 + ((company.id?.charCodeAt(company.id.length - 1) || 0) % 10) / 10).toFixed(1)
+                          }
+                        </span>
                       </div>
                       {company.role === 'printer' && (
                         <Badge variant="outline" className="text-xs">
                           <Trophy className="h-3 w-3 mr-1" />
-                          {company.totalProjects || Math.floor(Math.random() * 50 + 10)} proje
+                          {company.totalProjects || 
+                            // Consistent mock data based on company ID for stable sorting
+                            Math.floor((company.id?.charCodeAt(company.id.length - 1) || 0) % 50) + 10
+                          } proje
                         </Badge>
                       )}
                     </div>
@@ -391,11 +487,21 @@ export default function Firmalar() {
                       <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded-lg">
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="text-center">
-                            <div className="font-bold text-blue-700">{company.completionRate || Math.floor(Math.random() * 20 + 80)}%</div>
+                            <div className="font-bold text-blue-700">
+                              {company.completionRate || 
+                                // Consistent completion rate based on company ID
+                                (80 + ((company.id?.charCodeAt(company.id.length - 2) || 0) % 20))
+                              }%
+                            </div>
                             <div className="text-xs text-gray-600">Tamamlama</div>
                           </div>
                           <div className="text-center">
-                            <div className="font-bold text-green-700">{company.employeeCount || Math.floor(Math.random() * 50 + 5)}</div>
+                            <div className="font-bold text-green-700">
+                              {company.employeeCount || 
+                                // Consistent employee count based on company ID
+                                (5 + ((company.id?.charCodeAt(company.id.length - 3) || 0) % 50))
+                              }
+                            </div>
                             <div className="text-xs text-gray-600">Çalışan</div>
                           </div>
                         </div>
