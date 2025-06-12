@@ -201,11 +201,16 @@ const ProfessionalQuoteDialog = ({ category }: { category: any }) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
-          className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold"
+          className={`flex-1 font-semibold ${
+            isAuthenticated 
+              ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white" 
+              : "bg-gray-400 cursor-not-allowed text-gray-200"
+          }`}
+          disabled={!isAuthenticated}
           onClick={handleQuoteRequest}
         >
           <Sparkles className="w-4 h-4 mr-2" />
-          Otomatik Teklif Al
+          {isAuthenticated ? 'Otomatik Teklif Al' : 'Giriş Yapın'}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -910,7 +915,15 @@ export default function ProductCategoriesNew() {
                   {/* Action Buttons */}
                   <div className="grid grid-cols-2 gap-3 pt-4">
                     <ProfessionalQuoteDialog category={category} />
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => {
+                        // Örnekler sayfasına yönlendir - tüm kullanıcılar için aktif
+                        window.open(`/examples/${category.category}`, '_blank');
+                      }}
+                    >
                       <Eye className="w-4 h-4 mr-2" />
                       Örnekleri Gör
                     </Button>

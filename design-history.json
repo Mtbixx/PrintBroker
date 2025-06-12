@@ -1,5 +1,137 @@
 [
   {
+    "id": "b3849408-bc29-4176-adf2-e033639d7804",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "T-shirt, Forma & Kurumsal Tekstil\n\n\"Matbixx\", logolu web site ürün kategorısı başlığına koymak için bi görsel tasarlar mısın",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern, vector-style graphic suitable for a t-shirt design and website header, featuring the stylized logo \"Matbixx\". The logo is rendered in a bold, sans-serif font with a subtle gradient transitioning from deep teal to vibrant turquoise, creating a sense of depth and professionalism. Below the logo, a clean and minimalist illustration depicts a neatly folded stack of quality textiles, showcasing a range of textures and subtle color variations, arranged in a dynamic, slightly tilted composition. The background is a solid, pale gray, allowing the logo and textile stack to stand out, creating a visually appealing and brand-consistent representation of \"Forma & Kurumsal Tekstil\".",
+        "resolution": "1024x1024",
+        "seed": 1342926738,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/eJUucKUaQfqUSd35aw3p-A.png?exp=1749822973&sig=094be297ca1c91b98aa77ce899aba534c7526d2c6b58cf364ee4a108498aafe0"
+      },
+      "generationId": "2bce9daa-db00-484c-8848-6e080bb0f0ad",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/eJUucKUaQfqUSd35aw3p-A.png?exp=1749822973&sig=094be297ca1c91b98aa77ce899aba534c7526d2c6b58cf364ee4a108498aafe0",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T13:56:13.249Z"
+  },
+  {
+    "id": "8fbb018a-04a4-48d1-8d36-f129cd56cffd",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "T-shirt, Forma & Kurumsal Tekstil\n\n\"Matbixx\", logolu web site ürün kategorısı başlığına koymak için bi görsel tasarlar mısın",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern, graphic t-shirt design featuring the bold, stylized logo \"Matbixx\" prominently displayed in a clean, sans-serif font. The logo is centered on a heather grey t-shirt, with a subtle texture indicating fabric weave, and is rendered in a striking teal color that contrasts with the shirt. Surrounding the logo are abstract geometric shapes in varying shades of grey and white, suggesting a website product category header, enhancing the design’s visual appeal and brand identity. The overall composition has a professional and corporate aesthetic, suitable for a web-based textile company.",
+        "resolution": "1024x1024",
+        "seed": 272125440,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/rFyRiD6bQp6IXZqx8moPlQ.png?exp=1749822953&sig=71dd377e24f6a291fe5bc89552fa2b95c9e47371e4e11c5d981c661889f3df1d"
+      },
+      "generationId": "384033f6-6f34-42aa-8bc3-18e6ae75a52a",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/rFyRiD6bQp6IXZqx8moPlQ.png?exp=1749822953&sig=71dd377e24f6a291fe5bc89552fa2b95c9e47371e4e11c5d981c661889f3df1d",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T13:55:53.332Z"
+  },
+  {
+    "id": "123cdad8-ff1f-4dbb-b60e-e5cb64de0f13",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Tekstil & Promosyon Ürünleri\nT-shirt, Forma & Kurumsal Tekstil\n\nMatbixx, logolu web site ürün kategorısı başlığına koymak için bi görsel tasarlar mısın",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "Tekstil & Promosyon Ürünleri\nT-shirt, Forma & Kurumsal Tekstil\n\nMatbixx, logolu web site ürün kategorısı başlığına koymak için bi görsel tasarlar mısın",
+        "resolution": "1024x1024",
+        "seed": 41157890,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/L2o0MmNmQQmlDRs7H9W9yg.png?exp=1749822920&sig=87b83b7c93cb70d39810a3d9025488ee8e765447beb28f3a9aeb6d777b3a820c"
+      },
+      "generationId": "c03201e2-3e76-4889-99b7-a9af29a9cf44",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/L2o0MmNmQQmlDRs7H9W9yg.png?exp=1749822920&sig=87b83b7c93cb70d39810a3d9025488ee8e765447beb28f3a9aeb6d777b3a820c",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T13:55:20.552Z"
+  },
+  {
+    "id": "7c878c54-5502-4c4f-a7c2-1c21aa6c4496",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Tekstil & Promosyon Ürünleri\nT-shirt, Forma & Kurumsal Tekstil\n\nMatbixx, logolu web site ürün kategorısı başlığına koymak için bi görsel tasarlar mısın",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "Tekstil & Promosyon Ürünleri\nT-shirt, Forma & Kurumsal Tekstil\n\nMatbixx, logolu web site ürün kategorısı başlığına koymak için bi görsel tasarlar mısın",
+        "resolution": "1024x1024",
+        "seed": 1901218290,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/ql8W1nZlTKWaBTx6cPSOEg.png?exp=1749822905&sig=1b4983135bf9225f166c680c425e0cba0e0bcc206d9e1d20e77f9a46a191d2ac"
+      },
+      "generationId": "24e40ea8-0fe2-4fdd-a2dd-fa0f894f3b2d",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/ql8W1nZlTKWaBTx6cPSOEg.png?exp=1749822905&sig=1b4983135bf9225f166c680c425e0cba0e0bcc206d9e1d20e77f9a46a191d2ac",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T13:55:05.318Z"
+  },
+  {
     "id": "2f73b9e7-3d2a-4a5d-bfce-ce7f8a0ac67c",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "\"Ömer Kaplan\", \"0544 447 5824\", \"Göç Vize Turizm Danışmanlık Uzmanı\". baskı için 8x5 modern kartvizit tasarımı fotoğrafsız, arkalı önlü.",

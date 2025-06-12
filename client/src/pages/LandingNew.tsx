@@ -817,11 +817,33 @@ export default function LandingNew() {
 
                   {/* Actions */}
                   <div className="grid grid-cols-2 gap-2 pt-4">
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                    <Button 
+                      size="sm" 
+                      className={`${
+                        isAuthenticated 
+                          ? "bg-blue-600 hover:bg-blue-700" 
+                          : "bg-gray-400 cursor-not-allowed"
+                      }`}
+                      disabled={!isAuthenticated}
+                      onClick={() => {
+                        if (isAuthenticated) {
+                          window.location.href = '/quote-form';
+                        } else {
+                          window.location.href = '/api/login';
+                        }
+                      }}
+                    >
                       <Calculator className="h-4 w-4 mr-1" />
-                      Teklif Al
+                      {isAuthenticated ? 'Teklif Al' : 'Giriş Yapın'}
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => {
+                        // Örnekler sayfasına yönlendir - tüm kullanıcılar için aktif
+                        window.open(`/examples/${category.category}`, '_blank');
+                      }}
+                    >
                       <Eye className="h-4 w-4 mr-1" />
                       Örnekler
                     </Button>
