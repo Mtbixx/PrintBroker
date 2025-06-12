@@ -72,11 +72,10 @@ export default function Firmalar() {
     queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
   };
 
-  // Fetch all companies from the API
-  const { data: companies = [], isLoading } = useQuery({
+  const { data: companies = [], isLoading, error, refetch } = useQuery({
     queryKey: ["/api/admin/users"],
     queryFn: async () => {
-      const response = await apiRequest("/api/admin/users");
+      const response = await fetch("/api/admin/users");
       if (!response.ok) {
         throw new Error('Failed to fetch companies');
       }
@@ -84,44 +83,44 @@ export default function Firmalar() {
       console.log('🔍 API Response Data:', data);
       console.log('🔍 Is Array?', Array.isArray(data));
       console.log('🔍 Data Length:', data?.length);
-      return Array.isArray(data) ? data : [];
+
+      // Ensure we always return an array
+      const validData = Array.isArray(data) ? data : [];
+      console.log('🔍 Valid Data:', validData);
+
+      return validData;
     },
     refetchInterval: 30000,
-    retry: 3,
-    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Filter and sort companies
-  const filteredCompanies = companies
-    .filter((company: Company) => {
-      // Only show printer companies (firms)
-      if (company.role !== 'printer') {
-        return false;
-      }
+  // Filter companies based on search term and role
+  const filteredCompanies = companies.filter((company: Company) => {
+    if (!company) return false;
 
-      // Search filter
-      const matchesSearch = 
-        company.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        company.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        company.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        company.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = !searchTerm || 
+      company.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      company.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      company.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      company.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesSearch;
-    })
-    .sort((a: Company, b: Company) => {
-      switch (sortBy) {
-        case 'name':
-          return (a.companyName || '').localeCompare(b.companyName || '');
-        case 'rating':
-          return (b.rating || 0) - (a.rating || 0);
-        case 'projects':
-          return (b.totalProjects || 0) - (a.totalProjects || 0);
-        case 'date':
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        default:
-          return 0;
-      }
-    });
+    const matchesRole = filterRole === 'all' || company.role === filterRole;
+
+    return matchesSearch && matchesRole;
+  });
+
+  const printerCompanies = companies.filter((c: Company) => c && c.role === 'printer');
+  const customerCompanies = companies.filter((c: Company) => c && c.role === 'customer');
+  const adminUsers = companies.filter((c: Company) => c && c.role === 'admin');
+
+  console.log('📊 Company Stats:', {
+    totalCompanies: companies.length,
+    printerCompanies: printerCompanies.length,
+    customerCompanies: customerCompanies.length,
+    adminUsers: adminUsers.length,
+    filteredCompanies: filteredCompanies.length,
+    searchTerm,
+    rawCompanies: companies
+  });
 
   const getCompanyInitials = (company: Company) => {
     if (company.companyName) {
@@ -157,18 +156,47 @@ export default function Firmalar() {
     }
   };
 
-  // Calculate stats from real data
-  const printerCompanies = companies.filter((c: Company) => c.role === 'printer');
-  const customerCompanies = companies.filter((c: Company) => c.role === 'customer');
-  const adminUsers = companies.filter((c: Company) => c.role === 'admin');
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-300 rounded w-1/4 mb-6"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-64 bg-gray-300 rounded-lg"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  console.log('📊 Company Stats:', {
-    totalCompanies: companies.length,
-    printerCompanies: printerCompanies.length,
-    customerCompanies: customerCompanies.length,
-    adminUsers: adminUsers.length,
-    filteredCompanies: filteredCompanies.length,
-    searchTerm
+  if (error) {
+    console.error('🚨 Error loading companies:', error);
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">Veri Yükleme Hatası</h2>
+            <p className="text-gray-600 mb-2">Firmalar yüklenirken bir hata oluştu.</p>
+            <p className="text-sm text-red-500 mb-6">{error?.message || 'Bilinmeyen hata'}</p>
+            <Button onClick={() => refetch()} variant="outline">
+              Tekrar Dene
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Debug: Show data state
+  console.log('🔧 Current component state:', {
+    companiesLength: companies.length,
+    isLoading,
+    hasError: !!error,
+    filteredCount: filteredCompanies.length
   });
 
   return (
@@ -223,7 +251,7 @@ export default function Firmalar() {
                   className="pl-10 h-12 text-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
-              
+
             </div>
 
             <div className="flex items-center justify-between mt-4">
@@ -260,7 +288,7 @@ export default function Firmalar() {
                 Kayıt Tarihi
                   </Button>
                 </div>
-                
+
                 <Button
                   variant="outline"
                   size="sm"

@@ -379,10 +379,7 @@ export class DatabaseStorage implements IStorage {
 
   // Admin operations
   async getAllUsers(): Promise<User[]> {
-    console.log('getAllUsers triggered');
-    const allUsers = await db.select().from(users);
-    console.log('getAllUsers completed');
-    return allUsers;
+    return await db.select().from(users).orderBy(desc(users.createdAt));
   }
 
   async getUserStats(): Promise<any> {
