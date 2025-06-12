@@ -461,11 +461,9 @@ export default function CustomerDashboard() {
                                 return imageUrl ? (
                                   <div className="relative w-full h-full">
                                     <img 
-                                      src={imageUrl} 
+                                      src={`/api/proxy/image?url=${encodeURIComponent(imageUrl)}`} 
                                       alt={design.prompt || 'Tasarım'}
                                       className="w-full h-full object-cover rounded-lg transition-all duration-200"
-                                      crossOrigin="anonymous"
-                                      referrerPolicy="no-referrer"
                                       onError={(e) => {
                                         console.error('❌ Image failed to load:', imageUrl);
                                         const target = e.currentTarget as HTMLImageElement;
@@ -556,11 +554,10 @@ export default function CustomerDashboard() {
                                         return imageUrl ? (
                                           <div className="relative">
                                             <img 
-                                              src={imageUrl} 
+                                              src={`/api/proxy/image?url=${encodeURIComponent(imageUrl)}`} 
                                               alt={design.prompt || 'Tasarım'}
                                               className="w-full h-auto rounded-lg max-h-96 object-contain mx-auto"
                                               style={{ opacity: 0 }}
-                                              crossOrigin="anonymous"
                                               onError={(e) => {
                                                 console.error('Preview image failed to load:', imageUrl);
                                                 const target = e.currentTarget as HTMLImageElement;
