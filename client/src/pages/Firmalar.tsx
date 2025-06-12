@@ -81,6 +81,9 @@ export default function Firmalar() {
         throw new Error('Failed to fetch companies');
       }
       const data = await response.json();
+      console.log('🔍 API Response Data:', data);
+      console.log('🔍 Is Array?', Array.isArray(data));
+      console.log('🔍 Data Length:', data?.length);
       return Array.isArray(data) ? data : [];
     },
     refetchInterval: 30000,
@@ -158,6 +161,15 @@ export default function Firmalar() {
   const printerCompanies = companies.filter((c: Company) => c.role === 'printer');
   const customerCompanies = companies.filter((c: Company) => c.role === 'customer');
   const adminUsers = companies.filter((c: Company) => c.role === 'admin');
+
+  console.log('📊 Company Stats:', {
+    totalCompanies: companies.length,
+    printerCompanies: printerCompanies.length,
+    customerCompanies: customerCompanies.length,
+    adminUsers: adminUsers.length,
+    filteredCompanies: filteredCompanies.length,
+    searchTerm
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">

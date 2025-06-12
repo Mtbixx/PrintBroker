@@ -1375,26 +1375,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if user is authenticated
       const userId = req.session?.user?.id;
       if (!userId) {
+        console.log('❌ No user ID in session');
         return res.status(401).json({ message: "Authentication required" });
       }
 
       // Get fresh user data
       const currentUser = await storage.getUser(userId);
       if (!currentUser) {
+        console.log('❌ User not found:', userId);
         return res.status(401).json({ message: "User not found" });
       }
 
+      console.log('👤 Current user:', { id: userId, role: currentUser.role });
+
       // Allow admin and also allow regular users to see printer companies (for Firmalar page)
       const users = await storage.getAllUsers();
+      console.log('📦 Total users from database:', users.length);
+      
+      const printerUsers = users.filter(user => user.role === 'printer');
+      console.log('🏭 Printer users found:', printerUsers.length);
       
       // If user is admin, return all users
       if (currentUser.role === 'admin') {
+        console.log('✅ Admin access - returning all users');
         res.json(users);
       } else {
         // For non-admin users, only return printer companies and basic info
-        const publicData = users
-          .filter(user => user.role === 'printer' && user.isActive)
-          .map(user => ({
+        const activelyPrinters = users.filter(user => user.role === 'printer' && user.isActive);
+        console.log('🏭 Active printer users:', activelyPrinters.length);
+        
+        const publicData = activelyPrinters.map(user => ({
             id: user.id,
             companyName: user.companyName,
             firstName: user.firstName,
@@ -1419,6 +1429,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             foundedYear: new Date().getFullYear() - Math.floor(Math.random() * 20) - 5
           }));
         
+        console.log('📤 Returning public data for', publicData.length, 'printer companies');
         res.json(publicData);
       }
     } catch (error) {
