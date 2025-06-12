@@ -102,7 +102,7 @@ export default function Navigation() {
     const baseItems = [
       {
         href: "/",
-        label: "Ana Sayfa",
+        label: "Ana Sayfa", 
         icon: <Home className="h-4 w-4" />,
         active: location === "/"
       },
@@ -209,7 +209,7 @@ export default function Navigation() {
           <nav className="hidden md:flex space-x-1">
             {navigationItems.map((item) => (
               <Link key={item.href} href={item.href}>
-                <a
+                <span
                   className={`flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
                     item.active
                       ? "bg-primary text-white"
@@ -218,7 +218,7 @@ export default function Navigation() {
                 >
                   {item.icon}
                   <span className="ml-2">{item.label}</span>
-                </a>
+                </span>
               </Link>
             ))}
           </nav>
@@ -408,7 +408,7 @@ export default function Navigation() {
               <div className="mt-6 space-y-1">
                 {navigationItems.map((item) => (
                   <Link key={item.href} href={item.href}>
-                    <a
+                    <span
                       className={`w-full flex items-center justify-start px-3 py-2 text-sm font-medium transition-colors rounded-md cursor-pointer ${
                         item.active
                           ? "bg-primary text-white"
@@ -418,7 +418,7 @@ export default function Navigation() {
                     >
                       {item.icon}
                       <span className="ml-2">{item.label}</span>
-                    </a>
+                    </span>
                   </Link>
                 ))}
 
