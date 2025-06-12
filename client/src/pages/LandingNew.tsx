@@ -48,6 +48,16 @@ import {
   BarChart3,
   DollarSign,
   Home,
+  Printer,
+  Shirt,
+  Box,
+  Warehouse,
+  Tags,
+  Mountain,
+  TreePine,
+  Car,
+  Monitor,
+  Building,
   LogIn
 } from "lucide-react";
 
@@ -689,19 +699,85 @@ export default function LandingNew() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {productCategories.map((category) => (
+            {productCategories.map((category) => {
+              // Her kategoriye özel icon ve renk
+              const getCategoryIcon = (cat: string) => {
+                switch(cat) {
+                  case 'corporate': return Building2;
+                  case 'industrial': return Factory;
+                  case 'packaging': return Box;
+                  case 'outdoor': return Mountain;
+                  case 'textile': return Shirt;
+                  case 'label': return Tags;
+                  case 'automotive': return Car;
+                  case 'digital': return Monitor;
+                  case 'promotional': return Sparkles;
+                  default: return Package;
+                }
+              };
+
+              const getCategoryGradient = (cat: string) => {
+                switch(cat) {
+                  case 'corporate': return 'from-blue-100 to-indigo-200';
+                  case 'industrial': return 'from-gray-100 to-slate-200';
+                  case 'packaging': return 'from-amber-100 to-orange-200';
+                  case 'outdoor': return 'from-green-100 to-emerald-200';
+                  case 'textile': return 'from-purple-100 to-pink-200';
+                  case 'label': return 'from-yellow-100 to-amber-200';
+                  case 'automotive': return 'from-red-100 to-rose-200';
+                  case 'digital': return 'from-cyan-100 to-blue-200';
+                  case 'promotional': return 'from-violet-100 to-purple-200';
+                  default: return 'from-blue-100 to-indigo-100';
+                }
+              };
+
+              const getCategoryIconColor = (cat: string) => {
+                switch(cat) {
+                  case 'corporate': return 'text-blue-600';
+                  case 'industrial': return 'text-gray-600';
+                  case 'packaging': return 'text-amber-600';
+                  case 'outdoor': return 'text-green-600';
+                  case 'textile': return 'text-purple-600';
+                  case 'label': return 'text-yellow-600';
+                  case 'automotive': return 'text-red-600';
+                  case 'digital': return 'text-cyan-600';
+                  case 'promotional': return 'text-violet-600';
+                  default: return 'text-blue-600';
+                }
+              };
+
+              const IconComponent = getCategoryIcon(category.category);
+
+              return (
               <Card key={category.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
                 <div className="relative overflow-hidden rounded-t-lg">
-                  <div className="h-48 bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
-                    <Package className="h-20 w-20 text-blue-600 opacity-20" />
+                  <div className={`h-48 bg-gradient-to-br ${getCategoryGradient(category.category)} flex items-center justify-center relative`}>
+                    <IconComponent className={`h-20 w-20 ${getCategoryIconColor(category.category)} group-hover:scale-110 transition-transform duration-300`} />
+                    
+                    {/* Dekoratif pattern */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute top-4 left-4">
+                        <IconComponent className="h-8 w-8" />
+                      </div>
+                      <div className="absolute bottom-4 right-4">
+                        <IconComponent className="h-6 w-6" />
+                      </div>
+                      <div className="absolute top-1/2 right-8">
+                        <IconComponent className="h-4 w-4" />
+                      </div>
+                    </div>
                   </div>
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-white/90 text-gray-700">
+                    <Badge className="bg-white/90 text-gray-700 backdrop-blur-sm">
                       {category.category === 'corporate' && 'Kurumsal'}
                       {category.category === 'industrial' && 'Endüstriyel'}
                       {category.category === 'packaging' && 'Ambalaj'}
                       {category.category === 'outdoor' && 'Dış Mekan'}
                       {category.category === 'textile' && 'Tekstil'}
+                      {category.category === 'label' && 'Etiket'}
+                      {category.category === 'automotive' && 'Otomotiv'}
+                      {category.category === 'digital' && 'Dijital'}
+                      {category.category === 'promotional' && 'Promosyon'}
                     </Badge>
                   </div>
                 </div>
@@ -752,7 +828,8 @@ export default function LandingNew() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
