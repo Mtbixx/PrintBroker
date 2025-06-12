@@ -142,10 +142,10 @@ export default function DesignEngine() {
           description: "Tasarım servisi yapılandırıldı ve çalışıyor. Tekrar deneyin.",
           variant: "destructive",
         });
-      } else if (errorMessage.includes('Rate limit') || errorMessage.includes('429')) {
+      } else if (errorMessage.includes('Rate limit') || errorMessage.includes('429') || errorMessage.includes('Too Many Requests')) {
         toast({
-          title: "Çok Fazla İstek",
-          description: "Lütfen birkaç saniye bekleyip tekrar deneyin.",
+          title: "Sistem Yoğunluğu",
+          description: "Şu anda çok fazla istek var. Lütfen 30 saniye bekleyip tekrar deneyin.",
           variant: "destructive",
         });
       } else {
@@ -175,12 +175,28 @@ export default function DesignEngine() {
       });
       queryClient.invalidateQueries({ queryKey: ['/api/design/history'] });
     },
-    onError: (error) => {
-      toast({
-        title: "Hata",
-        description: "Toplu tasarım oluşturulurken bir hata oluştu.",
-        variant: "destructive",
-      });
+    onError: (error: any) => {
+      const errorMessage = error.message || 'Toplu tasarım oluşturulurken bir hata oluştu.';
+      
+      if (errorMessage.includes('Rate limit') || errorMessage.includes('429') || errorMessage.includes('Too Many Requests')) {
+        toast({
+          title: "Sistem Yoğunluğu",
+          description: "Şu anda çok fazla istek var. Lütfen 30 saniye bekleyip tekrar deneyin.",
+          variant: "destructive",
+        });
+      } else if (errorMessage.includes('Insufficient credit')) {
+        toast({
+          title: "Yetersiz Kredi 💳",
+          description: "Toplu tasarım oluşturmak için yeterli krediniz yok.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Hata",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
     },
   });
 

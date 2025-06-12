@@ -1,5 +1,434 @@
 [
   {
+    "id": "40c9b40b-e41d-4464-8f69-5ccf364e1410",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "MatBixx için modern logo tasarımı",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern logo design featuring the text \"MatBixx\" in a bold, sans-serif typeface with a dark teal color. A stylized, geometric representation of a mountain peak subtly incorporates into the negative space between the \"M\" and \"a\" letters. The background is a clean, solid white, giving a sense of sophistication and minimalism. The overall design aims for a tech-forward and reliable aesthetic, suitable for a business or brand identity.",
+        "resolution": "1024x1024",
+        "seed": 1959885954,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/eU2t72XGTvqLXX8VKs_HZQ.png?exp=1749779735&sig=cc5aa333d21fe73bb3e5a20bd525df0a83509b446593a3c186923afd4a1fad59"
+      },
+      "generationId": "1cb5110d-c202-4d50-8bcc-77a79c34a440",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/eU2t72XGTvqLXX8VKs_HZQ.png?exp=1749779735&sig=cc5aa333d21fe73bb3e5a20bd525df0a83509b446593a3c186923afd4a1fad59",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:55:35.533Z"
+  },
+  {
+    "id": "b9ab68bc-faab-47cc-a5d2-144abf382a5a",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "\"Ömer Kaplan\", \"0544 447 5824\", \"Göç Vize Turizm Danışmanlık Uzmanı\". baskı için 8x5 modern kartvizit tasarımı fotoğrafsız, arkalı önlü.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern, double-sided business card design for \"Ömer Kaplan\", \"0544 447 5824\", \"Göç Vize Turizm Danışmanlık Uzmanı\". The card features a clean, geometric background pattern of overlapping triangles in shades of grey and a subtle textured paper effect. The text is presented in a sophisticated sans-serif typeface, with \"Ömer Kaplan\" prominently displayed in a slightly larger font size and positioned centrally. The back of the card displays the contact details, arranged neatly with a thin, horizontal line accentuating the professional design aesthetic.",
+        "resolution": "1024x1024",
+        "seed": 961166495,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/2NFIpT6bQrC1K25mYPGSgA.png?exp=1749779655&sig=7c834082d6817ed20b8374504976c4b853509555f19b55ab9d6caecd68892415"
+      },
+      "generationId": "fc298798-3056-4f21-a0ed-051b3a0082fc",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/2NFIpT6bQrC1K25mYPGSgA.png?exp=1749779655&sig=7c834082d6817ed20b8374504976c4b853509555f19b55ab9d6caecd68892415",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:54:15.670Z"
+  },
+  {
+    "id": "80af048b-e451-4f9c-8779-e284c96f3fdc",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "\"Ömer Kaplan\", \"0544 447 5824\", \"Göç Vize Turizm Danışmanlık Uzmanı\". baskı için 8x5 modern kartvizit tasarımı fotoğrafsız, arkalı önlü.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "AUTO",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design for \"Ömer Kaplan\", \"Göç Vize Turizm Danışmanlık Uzmanı,\" with the contact number \"0544 447 5824,\" featuring a minimalist design with a clean, geometric pattern subtly overlaid on a deep navy blue background to convey professionalism and trustworthiness. The name and title are prominently displayed in a crisp, sans-serif white font on the front, while the back features a simplified, stylized world map in a lighter shade of blue, representing the consultancy's focus on migration and visas. The typography is modern and legible, utilizing a clear hierarchy to ensure readability, and the overall design aims for a sophisticated, trustworthy, and easily recognizable aesthetic suitable for a professional network. The card layout provides ample space for personalized messages and maintains a balanced, uncluttered appearance ideal for printing.",
+        "resolution": "1024x1024",
+        "seed": 1303399176,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/eECoHfzLTtKEBpX7rSWiHw.png?exp=1749779638&sig=f745853c948d11ae3bc38d24acf2e8ab37b10f4dfa7372b74e6e08c1d9f4431c"
+      },
+      "generationId": "8719a1d3-050a-4686-91fb-a02b24353ed5",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "AUTO",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/eECoHfzLTtKEBpX7rSWiHw.png?exp=1749779638&sig=f745853c948d11ae3bc38d24acf2e8ab37b10f4dfa7372b74e6e08c1d9f4431c",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:53:58.379Z"
+  },
+  {
+    "id": "09f9b992-b22d-4b1d-a24d-8159ea9a5c73",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "\"Ömer Kaplan\", \"0544 447 5824\", \"Göc Vize Turizm Danışmanlık Uzmanı\". baskı için 8x5 modern kartvizit tasarımı fotoğrafsız, arkalı önlü.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "AUTO",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern, professional business card design for \"Ömer Kaplan\", \"0544 447 5824\", \"Göc Vize Turizm Danışmanlık Uzmanı\". The card features a clean, geometric layout with a dark teal background and subtle, abstract patterns suggesting travel routes and connections. Centered on the front is the text in a crisp, sans-serif font, with the name and title prominently displayed, and contact details presented in a smaller, easily readable size on the reverse side. The design incorporates a narrow band of gold foil along the edges, adding a touch of sophistication and luxury, creating an impression of trust and expertise.",
+        "resolution": "1024x1024",
+        "seed": 439919810,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/fXDPWO0DQdqfNDVQw2CCcA.png?exp=1749779606&sig=3a9121582bd5ac3df70d2ba9946bb03d7d8c18a4ef8a818485eef6048c7dd13f"
+      },
+      "generationId": "134bbd13-1455-4ae2-b193-1f348be635b6",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "AUTO",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/fXDPWO0DQdqfNDVQw2CCcA.png?exp=1749779606&sig=3a9121582bd5ac3df70d2ba9946bb03d7d8c18a4ef8a818485eef6048c7dd13f",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:53:26.981Z"
+  },
+  {
+    "id": "58ad7e00-d315-4014-b514-74c7126e379f",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "\"Ömer Kaplan\", \"0544 447 5824\", \"Göc Vize Turizm Danışmanlık Uzmanı\". baskı için 8x5 modern kartvizit tasarımı fotoğrafsız, arkalı önlü.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "AUTO",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design for \"Ömer Kaplan\", \"0544 447 5824\", \"Göc Vize Turizm Danışmanlık Uzmanı\" presented in a clean, professional layout with a subtle geometric pattern in the background. The text is displayed in a sleek, sans-serif font with a dark grey color scheme against a crisp white background. On the reverse side, a stylized icon representing travel or immigration (e.g., a compass or a passport stamp) is subtly incorporated. The overall impression is one of trustworthiness, efficiency, and modern expertise.",
+        "resolution": "1024x1024",
+        "seed": 1451783545,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/Fa_g3bFSRYmQ23ewmGlV8Q.png?exp=1749779585&sig=4cacabe2674fb8e723b1b3991332e3860e8c9b61a09f2665dcc6ad5b36c34d07"
+      },
+      "generationId": "5b7f7bab-9cc6-479e-ba96-ac50bbf58d10",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "AUTO",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/Fa_g3bFSRYmQ23ewmGlV8Q.png?exp=1749779585&sig=4cacabe2674fb8e723b1b3991332e3860e8c9b61a09f2665dcc6ad5b36c34d07",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:53:06.000Z"
+  },
+  {
+    "id": "4e980c96-8df6-42fb-a784-ff3c938f0c22",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "\"Ömer Kaplan\", \"0544 447 5824\", \"Göc Vize Turizm Danışmanlık Uzmanı\". baskı için 8x5 modern kartvizit tasarımı fotoğrafsız.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "AUTO",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design for \"Ömer Kaplan\", \"0544 447 5824\", \"Göc Vize Turizm Danışmanlık Uzmanı\". The card features a textured, slate-gray background with a subtle geometric pattern reminiscent of city architecture. Centered on the card is the name \"Ömer Kaplan\" in a clean, sans-serif typeface, with the contact details listed beneath in a smaller, complementary font. A thin, horizontal line separates the name and contact details from a small, embossed logo of a stylized compass, suggesting expertise in immigration and travel consulting.",
+        "resolution": "1024x1024",
+        "seed": 330050337,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/7zAE_hUYSM2KGGezK0SnZg.png?exp=1749779536&sig=366bb668f713c473ccd2cd9303e3ccca538084ebbe31f021ed87bd5c95d7d615"
+      },
+      "generationId": "6162b80e-7819-40c8-9e66-2f554cb522ad",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "AUTO",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/7zAE_hUYSM2KGGezK0SnZg.png?exp=1749779536&sig=366bb668f713c473ccd2cd9303e3ccca538084ebbe31f021ed87bd5c95d7d615",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:52:16.415Z"
+  },
+  {
+    "id": "0c53ff2d-3352-4377-9661-007ef10c4c03",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı. baskı için 8x5 modern kartvizit tasarımı fotoğrafsız.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "AUTO",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design for \"Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı\" presented with a professional, understated aesthetic. The card features a dark navy blue background with a subtle, geometric pattern reminiscent of city skylines. Centered on the card is the contact information in a clean, sans-serif typeface, with \"Ömer Kaplan\" appearing in a slightly larger, bolder font. A thin, horizontal line of silver separates the name from the contact details, conveying a sense of sophistication and reliability.",
+        "resolution": "1024x1024",
+        "seed": 816077991,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/iWTg62lRREGdcguF2W3Ffg.png?exp=1749779495&sig=c1c4ad3b97fd63a2c7560130f64f50f8849e9db1eb4d29d2482131492c04da48"
+      },
+      "generationId": "74f54f67-3b84-4dee-8413-32cd83e1c38f",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "AUTO",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/iWTg62lRREGdcguF2W3Ffg.png?exp=1749779495&sig=c1c4ad3b97fd63a2c7560130f64f50f8849e9db1eb4d29d2482131492c04da48",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:51:36.111Z"
+  },
+  {
+    "id": "a66d9b5d-72cc-4b2b-ba68-1bca651f8f07",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı. baskı için 8x5 modern kartvizit tasarımı fotoğrafsız.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern, minimalist business card design featuring \"Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı\" in a clean, sans-serif typeface, centered on a crisp white background. Below the contact information, a stylized compass icon in a muted gold tone subtly points upwards, symbolizing guidance and direction in visa and tourism consulting. The card has a subtle, embossed texture, creating depth and a premium feel, with the edges precisely trimmed. A thin, horizontal line in the same gold color separates the contact details from the compass icon, adding a touch of understated elegance.",
+        "resolution": "1024x1024",
+        "seed": 2019552462,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/b06SiD93RSGfn8mdQlorxA.png?exp=1749779464&sig=5b0e7710e6d7b29bd282bb1d5fcc7039b3bb5dc02555881026ef842a332e3712"
+      },
+      "generationId": "3eb575a1-551c-4c86-98dc-8bc9c5660a44",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/b06SiD93RSGfn8mdQlorxA.png?exp=1749779464&sig=5b0e7710e6d7b29bd282bb1d5fcc7039b3bb5dc02555881026ef842a332e3712",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:51:04.661Z"
+  },
+  {
+    "id": "f2baaf16-624d-464b-8d53-bf58abb7444d",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı. baskı için 8x5 modern kartvizit tasarımı fotoğrafsız.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "GENERAL",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design for \"Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı\" presented in a clean, minimalist style suitable for professional printing at 8x5 inches. The text is centered with a sophisticated, sans-serif font, utilizing a dark gray color against a crisp white background, ensuring legibility and conveying trustworthiness. A subtle embossed pattern resembling a world map is overlaid on the background, hinting at his expertise in migration and visa consultancy, with a single, stylized compass icon discreetly placed near the contact details. The card has a matte finish to project a sense of refinement and professionalism.",
+        "resolution": "1024x1024",
+        "seed": 1202594224,
+        "style_type": "GENERAL",
+        "url": "https://ideogram.ai/api/images/ephemeral/yW0tjIzaRiytGK0vfu2Xhw.png?exp=1749779443&sig=ffffb3b9f2a76578cc3e4a814f7eb65addd080213fe47b13926e2fa5b9881fdf"
+      },
+      "generationId": "61ffa378-b02b-426f-a395-cac82a25dff0",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "GENERAL",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/yW0tjIzaRiytGK0vfu2Xhw.png?exp=1749779443&sig=ffffb3b9f2a76578cc3e4a814f7eb65addd080213fe47b13926e2fa5b9881fdf",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:50:43.306Z"
+  },
+  {
+    "id": "4ea3030f-ec97-4acd-95ce-7a09b71a372b",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı. baskı için 8x5 modern kartvizit tasarımı fotoğrafsız.",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design for \"Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı\" intended for print. The card features a clean layout with a subtle gradient background transitioning from a muted teal to a light gray, creating a sense of professionalism and trustworthiness. Centered on the card is the name \"Ömer Kaplan\" in a bold, sans-serif font, followed by his phone number and profession listed underneath in a smaller, complementary font, conveying clarity and accessibility. A thin, horizontal line separates the contact details from a small, stylized icon representing global migration, subtly alluding to his expertise in visa and tourism consulting.",
+        "resolution": "1024x1024",
+        "seed": 1136901481,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/jEN9ZmRaTP2trA0krujyhw.png?exp=1749779421&sig=39fd74384fb667569f742a4e523e56528b01427b0cdad29396c5015f458057da"
+      },
+      "generationId": "2e1c719d-122c-4fb0-9242-1c45c71afeea",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/jEN9ZmRaTP2trA0krujyhw.png?exp=1749779421&sig=39fd74384fb667569f742a4e523e56528b01427b0cdad29396c5015f458057da",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:50:21.500Z"
+  },
+  {
+    "id": "da4320b4-5115-4760-972e-208ef8acc5b4",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı. Baskı için 8x5 modern kartvizit tasarımı",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design featuring Ömer Kaplan, a Migration Visa Tourism Consultancy Expert, prominently displayed. The card showcases a professional portrait of Ömer Kaplan, looking confident and approachable against a subtly textured, dark grey background. Below his image, the contact information \"0544 447 5824\" and \"Göç Vize Turizm Danışmanlık Uzmanı\" are presented in a clean, legible sans-serif font with a touch of gold foil, creating a sense of sophistication. The card design utilizes a geometric pattern in the bottom right corner, and the full text \"Ömer Kaplan\" is displayed in a slightly larger font at the very top.",
+        "resolution": "1024x1024",
+        "seed": 326421887,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/6ofPgF3QQe-XAPcjI723eg.png?exp=1749779362&sig=944b7847af51acc3c3e773f99a80d988811b25096910e80938b59fe82d7ada43"
+      },
+      "generationId": "e22ffbdb-f893-4dcf-9ca2-674d26263470",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/6ofPgF3QQe-XAPcjI723eg.png?exp=1749779362&sig=944b7847af51acc3c3e773f99a80d988811b25096910e80938b59fe82d7ada43",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:49:22.424Z"
+  },
+  {
+    "id": "15d20bec-606f-4088-a543-7075a7406476",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Kartvizit tasarımı yapmanı istiyorum, Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı. Modern bi tasarım olsun. 8x5 cm ölçüsünde standart business card, gerçek fotoğraf istemiyorum sadece baskı için tasarım",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "Kartvizit tasarımı yapmanı istiyorum, Ömer Kaplan, 0544 447 5824, Göc Vize Turizm Danışmanlık Uzmanı. Modern bi tasarım olsun. 8x5 cm ölçüsünde standart business card, gerçek fotoğraf istemiyorum sadece baskı için tasarım",
+        "resolution": "1024x1024",
+        "seed": 1842587144,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/1YbcJaRJSzS38zL6dY4j-g.png?exp=1749779330&sig=69d155306d5c820055b0925b1e527fbca44df6aa054c86e0123e923fe109b6d4"
+      },
+      "generationId": "92acd3da-591b-4d4e-b907-3c6318312557",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/1YbcJaRJSzS38zL6dY4j-g.png?exp=1749779330&sig=69d155306d5c820055b0925b1e527fbca44df6aa054c86e0123e923fe109b6d4",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:48:50.429Z"
+  },
+  {
+    "id": "8c3169a0-e31a-42b7-89ea-9bf56d8c189e",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "Kartvizit tasarımı yapmanı istiyorum, Ömer Kaplan, 0544 447 5824, Göç Vize Turizm Danışmanlık Uzmanı. Modern bi tasarım olsun ",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern business card design featuring \"Ömer Kaplan, 0544 447 5824, Göç Vize Turizm Danışmanlık Uzmanı\". The card showcases a professional portrait of Ömer Kaplan, sharply dressed in a dark suit, with a confident and approachable expression, positioned slightly off-center. A subtle, abstract background pattern resembling a world map in muted blues and grays fades into the edges of the card, with the text elegantly arranged in a clean, sans-serif font below the portrait, ensuring readability. The overall design evokes trust and expertise, using a sophisticated color palette of dark navy, white, and a touch of gold for the company name, creating a sleek and memorable impression.",
+        "resolution": "1024x1024",
+        "seed": 253119583,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/i_PpgK3nQYCgTPM2GswNzg.png?exp=1749779269&sig=c3d599c7f79b8d55524ab236cd1d5eea93167c6b6bc2d19301330e7ea61fccfc"
+      },
+      "generationId": "0b6c979a-538b-4028-8ddb-5c69f568e674",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/i_PpgK3nQYCgTPM2GswNzg.png?exp=1749779269&sig=c3d599c7f79b8d55524ab236cd1d5eea93167c6b6bc2d19301330e7ea61fccfc",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:47:49.929Z"
+  },
+  {
     "id": "7b7a0f9e-dcc2-4249-af73-4fa1069a9392",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "MatBixx firması için baskı platformuna öncülük eden bi firmaya modern ve kurumsal bi logo tasarla \n",
