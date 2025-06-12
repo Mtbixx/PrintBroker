@@ -459,62 +459,108 @@ export default function LandingNew() {
                   Referanslar
                 </Link>
                 <div className="px-4 pt-2 border-t border-gray-200 space-y-2">
-                  <div className="text-sm font-medium text-gray-900 mb-3">Panel Girişi</div>
+                  {isAuthenticated && user ? (
+                    <>
+                      <div className="text-sm font-medium text-gray-900 mb-3">Hesap Bilgileri</div>
+                      
+                      <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                        <div className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</div>
+                        <div className="text-xs text-gray-500">{user.email}</div>
+                        <Badge variant="secondary" className="mt-1 text-xs">
+                          {user.role === 'customer' ? 'Müşteri' : user.role === 'printer' ? 'Üretici' : 'Admin'}
+                        </Badge>
+                        {user.role === 'customer' && (
+                          <div className="mt-2 flex justify-between items-center">
+                            <span className="text-xs text-gray-500">Bakiye:</span>
+                            <span className="text-sm font-semibold text-green-600">₺{user.creditBalance}</span>
+                          </div>
+                        )}
+                      </div>
 
-                  <Button 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white justify-start" 
-                    onClick={() => {
-                      window.location.href = '/api/login?returnTo=/customer-dashboard';
-                    }}
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    Müşteri Girişi
-                  </Button>
+                      <Button 
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white justify-start" 
+                        onClick={() => {
+                          const dashboardUrl = user.role === 'customer' ? '/customer-dashboard' :
+                                               user.role === 'printer' ? '/printer-dashboard' :
+                                               '/admin-dashboard';
+                          window.location.href = dashboardUrl;
+                        }}
+                      >
+                        <BarChart3 className="h-4 w-4 mr-2" />
+                        Panel
+                      </Button>
 
-                  <Button 
-                    className="w-full bg-orange-600 hover:bg-orange-700 text-white justify-start" 
-                    onClick={() => {
-                      window.location.href = '/api/login?returnTo=/printer-dashboard';
-                    }}
-                  >
-                    <Building2 className="h-4 w-4 mr-2" />
-                    Üretici Girişi
-                  </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start text-red-600 hover:text-red-700" 
+                        onClick={() => {
+                          window.location.href = '/api/logout';
+                        }}
+                      >
+                        <LogIn className="h-4 w-4 mr-2" />
+                        Çıkış Yap
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-sm font-medium text-gray-900 mb-3">Panel Girişi</div>
 
-                  <Button 
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white justify-start" 
-                    onClick={() => {
-                      window.location.href = '/api/login?returnTo=/admin-dashboard';
-                    }}
-                  >
-                    <Factory className="h-4 w-4 mr-2" />
-                    Admin Girişi
-                  </Button>
+                      <Button 
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white justify-start" 
+                        onClick={() => {
+                          window.location.href = '/api/login?returnTo=/customer-dashboard';
+                        }}
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        Müşteri Girişi
+                      </Button>
 
-                  <div className="border-t border-gray-200 my-2"></div>
-                  <div className="text-sm font-medium text-gray-900 mb-3">Yeni Kayıt</div>
+                      <Button 
+                        className="w-full bg-orange-600 hover:bg-orange-700 text-white justify-start" 
+                        onClick={() => {
+                          window.location.href = '/api/login?returnTo=/printer-dashboard';
+                        }}
+                      >
+                        <Building2 className="h-4 w-4 mr-2" />
+                        Üretici Girişi
+                      </Button>
 
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start" 
-                    onClick={() => {
-                      window.location.href = '/customer-register';
-                    }}
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    Müşteri Kaydı (35₺/tasarım)
-                  </Button>
+                      <Button 
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white justify-start" 
+                        onClick={() => {
+                          window.location.href = '/api/login?returnTo=/admin-dashboard';
+                        }}
+                      >
+                        <Factory className="h-4 w-4 mr-2" />
+                        Admin Girişi
+                      </Button>
 
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start" 
-                    onClick={() => {
-                      window.location.href = '/printer-register';
-                    }}
-                  >
-                    <Building2 className="h-4 w-4 mr-2" />
-                    Üretici Kaydı (2999₺/ay)
-                  </Button>
+                      <div className="border-t border-gray-200 my-2"></div>
+                      <div className="text-sm font-medium text-gray-900 mb-3">Yeni Kayıt</div>
+
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start" 
+                        onClick={() => {
+                          window.location.href = '/customer-register';
+                        }}
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        Müşteri Kaydı (35₺/tasarım)
+                      </Button>
+
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start" 
+                        onClick={() => {
+                          window.location.href = '/printer-register';
+                        }}
+                      >
+                        <Building2 className="h-4 w-4 mr-2" />
+                        Üretici Kaydı (2999₺/ay)
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
