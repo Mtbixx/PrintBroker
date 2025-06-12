@@ -375,7 +375,7 @@ export default function Firmalar() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCompanies.map((company: Company) => (
-              <Card key={company.id} className="group hover:shadow-2xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white/95 cursor-pointer transform hover:-translate-y-1">
+              <Card key={company.id} className="group hover:shadow-2xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white/95 cursor-pointer transform hover:-translate-y-1 h-fit">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
@@ -422,21 +422,21 @@ export default function Firmalar() {
                 </CardHeader>
 
                 
-<CardContent className="p-4">
-                  <div className="space-y-4">
+<CardContent className="p-4 h-auto min-h-[280px] flex flex-col">
+                  <div className="flex-1 space-y-3">
                     {/* Company Header */}
                     <div className="text-center">
-                      <h3 className="font-bold text-xl text-gray-900 leading-tight mb-3">
+                      <h3 className="font-bold text-lg text-gray-900 leading-tight mb-2 line-clamp-2 min-h-[3rem]">
                         {company.companyName || `${company.firstName} ${company.lastName}`}
                       </h3>
 
                       {/* Rating */}
-                      <div className="flex items-center justify-center gap-2 mb-4">
+                      <div className="flex items-center justify-center gap-2 mb-3">
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`h-5 w-5 ${
+                              className={`h-4 w-4 ${
                                 i < Math.floor(company.rating || 
                                   // Consistent rating based on company ID
                                   (4.0 + ((company.id?.charCodeAt(company.id.length - 1) || 0) % 10) * 0.1)
@@ -447,7 +447,7 @@ export default function Firmalar() {
                             />
                           ))}
                         </div>
-                        <span className="text-lg font-semibold text-gray-700">
+                        <span className="text-base font-semibold text-gray-700 ml-1">
                           {(company.rating || 
                             // Consistent rating based on company ID
                             (4.0 + ((company.id?.charCodeAt(company.id.length - 1) || 0) % 10) * 0.1)
@@ -457,27 +457,27 @@ export default function Firmalar() {
                     </div>
 
                     {/* Completed Projects Count */}
-                    <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg text-center">
-                      <div className="text-3xl font-bold text-green-700 mb-1">
+                    <div className="bg-gradient-to-r from-green-50 to-blue-50 p-3 rounded-lg text-center flex-shrink-0">
+                      <div className="text-2xl font-bold text-green-700 mb-1">
                         {company.totalProjects || 
                           // Consistent project count based on company ID
                           (10 + ((company.id?.charCodeAt(company.id.length - 4) || 0) % 40))
                         }
                       </div>
-                      <div className="text-sm text-gray-600">Tamamlanan Proje</div>
+                      <div className="text-xs text-gray-600">Tamamlanan Proje</div>
                     </div>
+                  </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        className="flex-1"
-                        onClick={() => setSelectedCompany(company)}
-                      >
-                        <Eye className="h-4 w-4 mr-2" />
-                        Detayları Gör
-                      </Button>
-                    </div>
+                  {/* Action Buttons - Fixed at bottom */}
+                  <div className="flex gap-2 mt-3 pt-2 border-t border-gray-100">
+                    <Button 
+                      size="sm" 
+                      className="flex-1 text-xs"
+                      onClick={() => setSelectedCompany(company)}
+                    >
+                      <Eye className="h-3 w-3 mr-1" />
+                      Detayları Gör
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
