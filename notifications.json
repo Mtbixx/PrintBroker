@@ -1,14 +1,14 @@
 [
   {
-    "id": "13a36345-e65c-4e7d-8d44-042c3132a6e0",
+    "id": "db5c4b6c-2bed-44bd-95f8-0e7eb5c0a110",
     "userId": "dev-user-1748981533183",
     "type": "new_quote",
     "title": "Yeni Teklif Talebi",
-    "message": "Kozmetik - 59,548 adet - ₺17720",
+    "message": "Güvenlik Etiket - 36,909 adet - ₺18104",
     "data": {
-      "quoteId": "303e23e5-994f-4bcc-acd7-aa835df1bbe3"
+      "quoteId": "856c1073-fff7-4442-aa47-0ae727e1a789"
     },
     "isRead": false,
-    "createdAt": "2025-06-12T16:30:42.543Z"
+    "createdAt": "2025-06-12T17:01:46.365Z"
   }
 ]
