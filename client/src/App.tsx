@@ -20,6 +20,9 @@ import ProductCategoriesNew from "./pages/ProductCategoriesNew";
 import References from "./pages/References";
 import ReferencesNew from "./pages/ReferencesNew";
 import DesignQuote from "./pages/DesignQuote";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import KVKK from "./pages/KVKK";
 import NotFound from "./pages/not-found";
 
 function AppRouter() {
@@ -97,9 +100,9 @@ function AppRouter() {
         </>
       )}
       <Route path="/design-quote" component={DesignQuote} />
-      <Route path="/privacy-policy" component={() => import('./pages/PrivacyPolicy').then(m => m.default)} />
-      <Route path="/terms-of-service" component={() => import('./pages/TermsOfService').then(m => m.default)} />
-      <Route path="/kvkk" component={() => import('./pages/KVKK').then(m => m.default)} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
+      <Route path="/kvkk" component={KVKK} />
       <Route component={NotFound} />
     </Switch>
   );
