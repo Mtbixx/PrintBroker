@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -52,6 +53,7 @@ import {
 
 export default function LandingNew() {
   const { toast } = useToast();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [liveJobs, setLiveJobs] = useState<any[]>([]);
@@ -305,75 +307,123 @@ export default function LandingNew() {
                 </span>
               </div>
 
-              {/* Active Login Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6">
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Panel Girişi
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64">
-                  <div className="px-4 py-3 border-b">
-                    <p className="font-semibold text-gray-900">Panel Türü Seçin</p>
-                  </div>
-                  <DropdownMenuItem 
-                    className="px-4 py-3 cursor-pointer hover:bg-blue-50" 
-                    onClick={() => handlePanelLogin('/customer-dashboard')}
-                  >
-                    <User className="h-4 w-4 mr-3 text-blue-600" />
-                    <div>
-                      <div className="font-medium">Müşteri Girişi</div>
-                      <div className="text-sm text-gray-500">Mevcut hesabınızla giriş yapın</div>
+              {/* Authentication-aware Navigation */}
+              {isAuthenticated && user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex items-center space-x-2">
+                      <User className="h-4 w-4" />
+                      <span>{user.firstName} {user.lastName}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-64">
+                    <div className="px-4 py-3 border-b">
+                      <p className="font-semibold text-gray-900">{user.firstName} {user.lastName}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                      <Badge variant="secondary" className="mt-1">
+                        {user.role === 'customer' ? 'Müşteri' : user.role === 'printer' ? 'Üretici' : 'Admin'}
+                      </Badge>
                     </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="px-4 py-3 cursor-pointer hover:bg-orange-50" 
-                    onClick={() => handlePanelLogin('/printer-dashboard')}
-                  >
-                    <Building2 className="h-4 w-4 mr-3 text-orange-600" />
-                    <div>
-                      <div className="font-medium">Üretici Girişi</div>
-                      <div className="text-sm text-gray-500">Mevcut hesabınızla giriş yapın</div>
+                    {user.role === 'customer' && (
+                      <DropdownMenuItem>
+                        <div className="w-full">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-500">Bakiye:</span>
+                            <span className="font-semibold text-green-600">₺{user.creditBalance}</span>
+                          </div>
+                        </div>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href={
+                        user.role === 'customer' ? '/customer-dashboard' :
+                        user.role === 'printer' ? '/printer-dashboard' :
+                        '/admin-dashboard'
+                      } className="cursor-pointer">
+                        <BarChart3 className="h-4 w-4 mr-2" />
+                        Panel
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="cursor-pointer text-red-600 hover:text-red-700"
+                      onClick={() => window.location.href = '/api/logout'}
+                    >
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Çıkış Yap
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6">
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Panel Girişi
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-64">
+                    <div className="px-4 py-3 border-b">
+                      <p className="font-semibold text-gray-900">Panel Türü Seçin</p>
                     </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="px-4 py-3 cursor-pointer hover:bg-purple-50" 
-                    onClick={() => handlePanelLogin('/admin-dashboard')}
-                  >
-                    <Factory className="h-4 w-4 mr-3 text-purple-600" />
-                    <div>
-                      <div className="font-medium">Admin Girişi</div>
-                      <div className="text-sm text-gray-500">Yönetici hesabıyla giriş yapın</div>
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="px-4 py-3 cursor-pointer hover:bg-gray-100" 
-                    onClick={() => {
-                      window.location.href = '/customer-register';
-                    }}
-                  >
-                    <User className="h-4 w-4 mr-3 text-green-600" />
-                    <div>
-                      <div className="font-medium">Yeni Müşteri Kaydı</div>
-                      <div className="text-sm text-gray-500">Kredili sistem - 35₺/tasarım</div>
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="px-4 py-3 cursor-pointer hover:bg-gray-100" 
-                    onClick={() => {
-                      window.location.href = '/printer-register';
-                    }}
-                  >
-                    <Building2 className="h-4 w-4 mr-3 text-teal-600" />
-                    <div>
-                      <div className="font-medium">Üretici Firma Kaydı</div>
-                      <div className="text-sm text-gray-500">Geniş müşteri portföyüne erişim - 2999₺/ay</div>
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <DropdownMenuItem 
+                      className="px-4 py-3 cursor-pointer hover:bg-blue-50" 
+                      onClick={() => handlePanelLogin('/customer-dashboard')}
+                    >
+                      <User className="h-4 w-4 mr-3 text-blue-600" />
+                      <div>
+                        <div className="font-medium">Müşteri Girişi</div>
+                        <div className="text-sm text-gray-500">Mevcut hesabınızla giriş yapın</div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="px-4 py-3 cursor-pointer hover:bg-orange-50" 
+                      onClick={() => handlePanelLogin('/printer-dashboard')}
+                    >
+                      <Building2 className="h-4 w-4 mr-3 text-orange-600" />
+                      <div>
+                        <div className="font-medium">Üretici Girişi</div>
+                        <div className="text-sm text-gray-500">Mevcut hesabınızla giriş yapın</div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="px-4 py-3 cursor-pointer hover:bg-purple-50" 
+                      onClick={() => handlePanelLogin('/admin-dashboard')}
+                    >
+                      <Factory className="h-4 w-4 mr-3 text-purple-600" />
+                      <div>
+                        <div className="font-medium">Admin Girişi</div>
+                        <div className="text-sm text-gray-500">Yönetici hesabıyla giriş yapın</div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      className="px-4 py-3 cursor-pointer hover:bg-gray-100" 
+                      onClick={() => {
+                        window.location.href = '/customer-register';
+                      }}
+                    >
+                      <User className="h-4 w-4 mr-3 text-green-600" />
+                      <div>
+                        <div className="font-medium">Yeni Müşteri Kaydı</div>
+                        <div className="text-sm text-gray-500">Kredili sistem - 35₺/tasarım</div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="px-4 py-3 cursor-pointer hover:bg-gray-100" 
+                      onClick={() => {
+                        window.location.href = '/printer-register';
+                      }}
+                    >
+                      <Building2 className="h-4 w-4 mr-3 text-teal-600" />
+                      <div>
+                        <div className="font-medium">Üretici Firma Kaydı</div>
+                        <div className="text-sm text-gray-500">Geniş müşteri portföyüne erişim - 2999₺/ay</div>
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </nav>
 
             {/* Mobile menu button */}
