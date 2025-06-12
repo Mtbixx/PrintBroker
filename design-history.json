@@ -1,5 +1,38 @@
 [
   {
+    "id": "7b7a0f9e-dcc2-4249-af73-4fa1069a9392",
+    "userId": "CUS-1749640755370-ACTPK3",
+    "prompt": "MatBixx firması için baskı platformuna öncülük eden bi firmaya modern ve kurumsal bi logo tasarla \n",
+    "options": {
+      "aspectRatio": "1x1",
+      "styleType": "DESIGN",
+      "magicPrompt": "ON",
+      "negativePrompt": ""
+    },
+    "result": {
+      "0": {
+        "is_image_safe": true,
+        "prompt": "A modern and corporate logo for the MatBixx company, featuring a stylized letter \"M\" formed from interconnected circuit pathways. The \"M\" is rendered in a gradient of deep teal and silver, suggesting technology and innovation, and sits centered on a clean white background. Below the icon, the text \"MatBixx\" appears in a sleek, sans-serif typeface in a charcoal grey. The overall design conveys reliability and leadership in the print platform industry with a professional, minimalist aesthetic.",
+        "resolution": "1024x1024",
+        "seed": 1298580688,
+        "style_type": "DESIGN",
+        "url": "https://ideogram.ai/api/images/ephemeral/vcldPoh7QB68G6kDuWhlxw.png?exp=1749776915&sig=6a999920b257b3c548c519fced24f2409ac4fa7d587c6a3af3fac3fd6f3471b7"
+      },
+      "generationId": "5bf075a0-63c2-4b73-8802-9dff9bad8d43",
+      "metadata": {
+        "model": "V_2",
+        "aspectRatio": "1x1",
+        "styleType": "DESIGN",
+        "creditCost": 35
+      }
+    },
+    "url": "https://ideogram.ai/api/images/ephemeral/vcldPoh7QB68G6kDuWhlxw.png?exp=1749776915&sig=6a999920b257b3c548c519fced24f2409ac4fa7d587c6a3af3fac3fd6f3471b7",
+    "status": "completed",
+    "downloadCount": 0,
+    "isBookmarked": false,
+    "createdAt": "2025-06-12T01:08:35.657Z"
+  },
+  {
     "id": "2d361644-0dd1-4c43-b39a-63af86e9df5d",
     "userId": "CUS-1749640755370-ACTPK3",
     "prompt": "Serhat İlik Parfüm, 50ml, kırmızı zemin üzerine gold çerçeve detayları olan etiket baskısında kullanılacak bi tasarım yap",

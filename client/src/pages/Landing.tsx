@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +49,12 @@ const Landing: React.FC = () => {
   const [liveData, setLiveData] = useState<LiveFeedData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedLoginType, setSelectedLoginType] = useState<'customer' | 'printer' | 'admin' | null>(null);
+  
+  // Auth durumunu kontrol et
+  const { data: user, isLoading: authLoading } = useQuery({
+    queryKey: ["/api/auth/user"],
+    retry: false,
+  });
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [registerForm, setRegisterForm] = useState({
@@ -201,15 +208,77 @@ const Landing: React.FC = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center space-x-2 hover:bg-blue-50">
-                    <User className="w-4 h-4" />
-                    <span>Panel Giriş</span>
-                    <ChevronDown className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-64 p-2">
+              {!authLoading && user ? (
+                // Logged in user - show personalized menu
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex items-center space-x-2 hover:bg-blue-50">
+                      <User className="w-4 h-4" />
+                      <span>{user.firstName} {user.lastName}</span>
+                      <Badge variant="secondary" className="ml-1">
+                        {user.role === 'customer' ? 'Müşteri' : user.role === 'printer' ? 'Matbaa' : 'Admin'}
+                      </Badge>
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-64 p-2">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <div className="font-semibold text-gray-900">{user.firstName} {user.lastName}</div>
+                      <div className="text-sm text-gray-500">{user.email}</div>
+                      {user.role === 'customer' && (
+                        <div className="text-sm text-green-600 font-medium mt-1">
+                          Bakiye: {user.creditBalance}₺
+                        </div>
+                      )}
+                    </div>
+                    <DropdownMenuItem 
+                      className="px-4 py-3 cursor-pointer hover:bg-blue-50" 
+                      onClick={() => {
+                        if (user.role === 'customer') window.location.href = '/customer-dashboard';
+                        else if (user.role === 'printer') window.location.href = '/printer-dashboard';
+                        else if (user.role === 'admin') window.location.href = '/admin-dashboard';
+                      }}
+                    >
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                          {user.role === 'customer' && <User className="w-4 h-4 text-blue-600" />}
+                          {user.role === 'printer' && <Factory className="w-4 h-4 text-orange-600" />}
+                          {user.role === 'admin' && <Shield className="w-4 h-4 text-purple-600" />}
+                        </div>
+                        <div>
+                          <div className="font-medium text-gray-900">Panele Git</div>
+                          <div className="text-sm text-gray-500">
+                            {user.role === 'customer' && 'Müşteri panelinize dönün'}
+                            {user.role === 'printer' && 'Matbaa panelinize dönün'}
+                            {user.role === 'admin' && 'Admin panelinize dönün'}
+                          </div>
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="px-4 py-3 cursor-pointer hover:bg-red-50" 
+                      onClick={() => window.location.href = '/api/logout'}
+                    >
+                      <div className="flex items-center text-red-600">
+                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                          <User className="w-4 h-4 text-red-600" />
+                        </div>
+                        <div className="font-medium">Çıkış Yap</div>
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                // Not logged in - show login options
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex items-center space-x-2 hover:bg-blue-50">
+                      <User className="w-4 h-4" />
+                      <span>Panel Giriş</span>
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-64 p-2">
                   <DropdownMenuItem 
                     className="px-6 py-4 cursor-pointer hover:bg-blue-50 border-b border-gray-50" 
                     onClick={() => handleShowLogin('customer')}
@@ -238,22 +307,23 @@ const Landing: React.FC = () => {
                       </div>
                     </div>
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="px-6 py-4 cursor-pointer hover:bg-purple-50" 
-                    onClick={() => handleShowLogin('admin')}
-                  >
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                        <Shield className="w-5 h-5 text-purple-600" />
+                    <DropdownMenuItem 
+                      className="px-6 py-4 cursor-pointer hover:bg-purple-50" 
+                      onClick={() => handleShowLogin('admin')}
+                    >
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                          <Shield className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">Yönetici Paneli</div>
+                          <div className="text-sm text-gray-500">Sistem yönetimi ve kontrol</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-semibold text-gray-900">Yönetici Paneli</div>
-                        <div className="text-sm text-gray-500">Sistem yönetimi ve kontrol</div>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </div>
         </div>
