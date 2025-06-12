@@ -251,6 +251,21 @@ async function createTestUsers() {
         companyName: 'Matbixx Admin',
         createdAt: new Date(),
         updatedAt: new Date()
+      },
+      {
+        id: 'ADM-BATUHAN-001',
+        email: 'batuhan@matbixx.com',
+        firstName: 'Batuhan',
+        lastName: 'Admin',
+        phone: '+90 555 000 0001',
+        role: 'admin',
+        password: '230897',
+        isActive: true,
+        creditBalance: '999999.00',
+        subscriptionStatus: 'active',
+        companyName: 'Matbixx Admin',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ];
 
