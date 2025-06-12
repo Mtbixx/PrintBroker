@@ -8,6 +8,7 @@ import LoadingPage from "@/components/LoadingPage";
 import Landing from "./pages/Landing";
 import LandingNew from "./pages/LandingNew";
 import Home from "./pages/Home";
+import Blog from "./pages/Blog";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import PrinterDashboard from "@/pages/PrinterDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -39,6 +40,7 @@ function AppRouter() {
         <>
           <Route path="/" component={LandingNew} />
           <Route path="/products" component={ProductCategoriesNew} />
+          <Route path="/blog" component={Blog} />
           <Route path="/old" component={Landing} />
           <Route path="/old-products" component={ProductCategories} />
           <Route path="/references" component={ReferencesNew} />
@@ -65,6 +67,7 @@ function AppRouter() {
         <>
           <Route path="/" component={LandingNew} />
           <Route path="/products" component={ProductCategoriesNew} />
+          <Route path="/blog" component={Blog} />
           <Route path="/dashboard" component={() => {
             // Universal dashboard route that redirects based on role
             const userRole = (user as any)?.role || 'customer';
