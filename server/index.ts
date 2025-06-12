@@ -6,6 +6,7 @@ import { pythonAnalyzerService } from './pythonAnalyzerService';
 import { execSync } from 'child_process';
 import { corsOptions, securityHeaders } from './corsConfig';
 import { generalLimiter } from './rateLimiter';
+import { handleSEORoute } from './seoRenderer';
 
 const app = express();
 
@@ -129,6 +130,12 @@ async function initializePythonServices() {
   } else {
     serveStatic(app);
   }
+
+  // SEO middleware for bots
+  app.use(handleSEORoute);
+
+  // API routes
+  app.use('/api', routes);
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
