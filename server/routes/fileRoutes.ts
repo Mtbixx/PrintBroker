@@ -1,9 +1,9 @@
 import express from 'express';
 import { z } from 'zod';
-import { validateRequest } from '../middleware/optimize';
-import { authMiddleware } from '../middleware/auth';
-import { fileService } from '../services/file';
-import { upload } from '../middleware/upload';
+import { validateRequest } from '../middleware/optimize.js';
+import { authMiddleware } from '../middleware/auth.js';
+import { fileService } from '../services/file.js';
+import { upload } from '../middleware/upload.js';
 
 const router = express.Router();
 
