@@ -1,14 +1,17 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { storage } from '../storage';
-import { setupAuth, isAuthenticated } from '../replitAuth';
+import { storage } from '../storage.js';
+import { authenticate } from '../middleware/auth.js';
 import { z } from 'zod';
-import { User, UserRole, AuthRequest } from '../types';
-import { AuthenticationError, AuthorizationError, ValidationError, NotFoundError } from '../errors';
-import { cacheMiddleware, clearCache } from '../middleware/cache';
+import { User, UserRole, AuthRequest } from '../types/index.js';
+import { cache } from '../middleware/cache.js';
+import { optimizeResponse, validateRequest } from '../middleware/optimize.js';
+import { authorize, checkOwnership } from '../middleware/auth.js';
+import { AppError } from '../errors/AppError.js';
+import { jwtService } from '../services/jwt.js';
+import { redisConfig } from '../config/redis.js';
+import { AuthenticationError, AuthorizationError, ValidationError, NotFoundError } from '../errors/index.js';
 import express from 'express';
-import { validateRequest } from '../middleware/optimize';
-import { authMiddleware } from '../middleware/auth';
-import { userService } from '../services/user';
+import { userService } from '../services/user.js';
 
 const router = express.Router();
 
@@ -16,13 +19,13 @@ const router = express.Router();
 const requireAdmin = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     await new Promise((resolve, reject) => {
-      isAuthenticated(req, res, (err) => {
+      authenticate(req, res, (err: any) => {
         if (err) reject(err);
         else resolve(true);
       });
     });
 
-    const userId = req.user?.claims?.sub;
+    const userId = req.user?.id;
     if (!userId) {
       throw new AuthenticationError();
     }
@@ -65,7 +68,7 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
 router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
-    const user = await storage.authenticateUser(email, password);
+    const user = await userService.authenticateUser(email, password);
     res.json(user);
   } catch (error) {
     next(new AuthenticationError('Geçersiz e-posta veya şifre'));
@@ -88,10 +91,14 @@ const changePasswordSchema = z.object({
 
 // Profil bilgilerini getir
 router.get('/profile',
-  authMiddleware,
-  async (req, res) => {
+  authorize(['customer', 'printer', 'admin']),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        throw new AuthenticationError();
+      }
+
       const user = await userService.getUserProfile(userId);
       
       if (!user) {
@@ -124,11 +131,15 @@ router.get('/profile',
 
 // Profil güncelle
 router.put('/profile',
-  authMiddleware,
+  authorize(['customer', 'printer', 'admin']),
   validateRequest(updateProfileSchema),
-  async (req, res) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        throw new AuthenticationError();
+      }
+
       const updates = req.body;
       
       const updatedUser = await userService.updateUserProfile(userId, updates);
@@ -165,11 +176,15 @@ router.put('/profile',
 
 // Şifre değiştir
 router.put('/password',
-  authMiddleware,
+  authorize(['customer', 'printer', 'admin']),
   validateRequest(changePasswordSchema),
-  async (req, res) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        throw new AuthenticationError();
+      }
+
       const { currentPassword, newPassword } = req.body;
       
       const success = await userService.changePassword(
@@ -200,10 +215,13 @@ router.put('/password',
 
 // Hesabı sil
 router.delete('/profile',
-  authMiddleware,
-  async (req, res) => {
+  authorize(['customer', 'printer', 'admin']),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        throw new AuthenticationError();
+      }
       
       const success = await userService.deleteUser(userId);
       

@@ -2,8 +2,8 @@ import express from 'express';
 import { z } from 'zod';
 import { validateRequest } from '../middleware/optimize.js';
 import { authMiddleware } from '../middleware/auth.js';
-import { fileService } from '../services/file.js';
-import { upload } from '../middleware/upload.js';
+import { fileUploadService } from '../services/fileUpload.js';
+import multer from 'multer';
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ const uploadFileSchema = z.object({
 // Dosya yükle
 router.post('/upload',
   authMiddleware,
-  upload.single('file'),
+  multer().single('file'),
   validateRequest(uploadFileSchema),
   async (req, res) => {
     try {
@@ -30,15 +30,7 @@ router.post('/upload',
       const userId = req.user?.id;
       const { type, metadata } = req.body;
       
-      const file = await fileService.saveFile({
-        userId,
-        type,
-        metadata,
-        originalName: req.file.originalname,
-        mimeType: req.file.mimetype,
-        size: req.file.size,
-        path: req.file.path
-      });
+      const file = await fileUploadService.saveFile(req.file, userId);
       
       res.status(201).json({
         message: 'Dosya başarıyla yüklendi',
@@ -69,7 +61,7 @@ router.get('/:id',
       const userId = req.user?.id;
       const fileId = req.params.id;
       
-      const file = await fileService.getFileById(fileId);
+      const file = await fileUploadService.getFileById(fileId);
       
       if (!file) {
         return res.status(404).json({
@@ -105,7 +97,7 @@ router.delete('/:id',
       const userId = req.user?.id;
       const fileId = req.params.id;
       
-      const file = await fileService.getFileById(fileId);
+      const file = await fileUploadService.getFileById(fileId);
       
       if (!file) {
         return res.status(404).json({
@@ -122,7 +114,7 @@ router.delete('/:id',
         });
       }
 
-      await fileService.deleteFile(fileId);
+      await fileUploadService.deleteFile(fileId);
       
       res.json({
         message: 'Dosya başarıyla silindi'
@@ -145,7 +137,7 @@ router.get('/',
       const userId = req.user?.id;
       const { type, page = 1, limit = 10 } = req.query;
       
-      const files = await fileService.getUserFiles(userId, {
+      const files = await fileUploadService.getUserFiles(userId, {
         type: type as string,
         page: Number(page),
         limit: Number(limit)

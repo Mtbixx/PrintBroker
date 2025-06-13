@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { File } from 'multer';
+import type { Multer } from 'multer';
 
 // Kullanıcı rolleri
 export type UserRole = 'admin' | 'printer' | 'customer';
@@ -9,7 +9,11 @@ export interface User {
   id: string;
   email: string;
   role: UserRole;
-  companyName?: string;
+  name?: string;
+  company?: string;
+  phone?: string;
+  address?: string;
+  password?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -77,13 +81,11 @@ export interface File {
 // Özel Request tipi
 export interface AuthRequest extends Request {
   user?: {
-    claims?: {
-      sub: string;
-      email: string;
-      role: UserRole;
-    };
+    id: string;
+    email: string;
+    role: UserRole;
   };
-  file?: File;
+  file?: Express.Multer.File;
   body: any;
   params: {
     [key: string]: string;

@@ -3,6 +3,7 @@ import session from "express-session";
 import type { Express, RequestHandler } from "express";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
+import { config } from "./config";
 
 // Extend session types
 declare module 'express-session' {
@@ -49,8 +50,9 @@ export async function setupAuth(app: Express) {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false, // Set to true in production with HTTPS
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+      secure: process.env.NODE_ENV === 'production', // Production'da true
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 hafta
     },
     name: 'matbixx.sid'
   }));
