@@ -1,15 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
-import { setupAuth } from "./replitAuth";
-import userRoutes from './routes/userRoutes';
-import quoteRoutes from './routes/quoteRoutes';
-import fileRoutes from './routes/fileRoutes';
+import userRoutes from './routes/userRoutes.js';
+import quoteRoutes from './routes/quoteRoutes.js';
+import fileRoutes from './routes/fileRoutes.js';
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware'ini ayarla
-  await setupAuth(app);
-
   // Route modüllerini kullan
   app.use('/api', userRoutes);
   app.use('/api', quoteRoutes);
