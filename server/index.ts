@@ -7,7 +7,7 @@ import { execSync } from 'child_process';
 import { corsOptions, securityHeaders } from "./corsConfig.js";
 import { generalLimiter } from "./rateLimiter.js";
 import { handleSEORoute } from "./seoRenderer.js";
-import { errorHandler } from "./errors.js";
+import { globalErrorHandler } from "./errorHandling.js";
 
 const app = express();
 
@@ -85,7 +85,7 @@ app.use('/api/v1', v1Router);
     process.exit(1);
   });
 
-  app.use(errorHandler);
+  app.use(globalErrorHandler);
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
