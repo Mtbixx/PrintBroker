@@ -23,6 +23,9 @@ const configSchema = z.object({
   database: z.object({
     url: z.string().url(),
   }),
+  redis: z.object({
+    url: z.string().url(),
+  }),
   cors: z.object({
     origin: z.string().url(),
     credentials: z.boolean(),
@@ -58,6 +61,9 @@ export const config = {
   },
   database: {
     url: process.env.DATABASE_URL || "postgres://localhost:5432/printbroker",
+  },
+  redis: {
+    url: process.env.REDIS_URL || "redis://localhost:6379",
   },
   cors: {
     origin: process.env.CORS_ORIGIN || "http://localhost:3000",
