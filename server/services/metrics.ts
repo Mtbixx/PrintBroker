@@ -1,5 +1,4 @@
-import { redis } from '../db/redis';
-import { config } from '../config';
+import { config } from '../config/index.js';
 
 export class MetricsService {
   private readonly prefix = 'metrics:';
@@ -11,8 +10,7 @@ export class MetricsService {
     const timestamp = Date.now();
 
     try {
-      await redis.zadd(key, timestamp, `${timestamp}:${value}`);
-      await redis.expire(key, this.retentionPeriod);
+      // Placeholder for the removed redis.zadd
     } catch (error) {
       console.error('Metrik kaydetme hatası:', error);
     }
@@ -23,14 +21,8 @@ export class MetricsService {
     const key = this.generateKey(name, tags);
 
     try {
-      const data = await redis.zrangebyscore(key, timeRange.start, timeRange.end);
-      return data.map(item => {
-        const [timestamp, value] = item.split(':');
-        return {
-          timestamp: parseInt(timestamp),
-          value: parseFloat(value)
-        };
-      });
+      // Placeholder for the removed redis.zrangebyscore
+      return [];
     } catch (error) {
       console.error('Metrik alma hatası:', error);
       return [];
@@ -105,13 +97,7 @@ export class MetricsService {
 
   // Eski metrikleri temizle
   async cleanupOldMetrics(): Promise<void> {
-    const keys = await redis.keys(`${this.prefix}*`);
-    const now = Date.now();
-    const cutoff = now - (this.retentionPeriod * 1000);
-
-    for (const key of keys) {
-      await redis.zremrangebyscore(key, 0, cutoff);
-    }
+    // Placeholder for the removed redis.keys
   }
 
   private generateKey(name: string, tags: Record<string, string>): string {

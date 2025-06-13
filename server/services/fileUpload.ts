@@ -1,9 +1,10 @@
-import { createWriteStream } from 'fs';
+import { createWriteStream, createReadStream } from 'fs';
 import { mkdir, stat } from 'fs/promises';
 import { join } from 'path';
 import { pipeline } from 'stream/promises';
 import { v4 as uuidv4 } from 'uuid';
-import { config } from '../config';
+import { config } from '../config/index.js';
+import { type InsertFile } from '@shared/schema';
 
 export class FileUploadService {
   private static instance: FileUploadService;
@@ -20,12 +21,7 @@ export class FileUploadService {
     return FileUploadService.instance;
   }
 
-  public async saveFile(file: Express.Multer.File, userId: string): Promise<{
-    path: string;
-    originalName: string;
-    mimeType: string;
-    size: number;
-  }> {
+  public async saveFile(file: Express.Multer.File, userId: string): Promise<InsertFile> {
     try {
       // Kullanıcıya özel dizin oluştur
       const userDir = join(this.uploadDir, userId);
@@ -48,11 +44,18 @@ export class FileUploadService {
         throw new Error('Dosya boyutu çok büyük');
       }
 
+      const now = new Date();
       return {
-        path: filePath,
+        id: uuidv4(),
+        filename: fileName,
         originalName: file.originalname,
-        mimeType: file.mimetype,
-        size: stats.size
+        mimeType: file.mimetype as typeof config.upload.allowedMimeTypes[number],
+        size: stats.size,
+        userId,
+        type: 'other',
+        status: 'ready',
+        createdAt: now,
+        updatedAt: now
       };
     } catch (error) {
       console.error('Dosya yükleme hatası:', error);
@@ -62,7 +65,7 @@ export class FileUploadService {
 
   public async validateFile(file: Express.Multer.File): Promise<void> {
     // Dosya tipini kontrol et
-    if (!config.upload.allowedMimeTypes.includes(file.mimetype)) {
+    if (!config.upload.allowedMimeTypes.includes(file.mimetype as typeof config.upload.allowedMimeTypes[number])) {
       throw new Error('Desteklenmeyen dosya tipi');
     }
 

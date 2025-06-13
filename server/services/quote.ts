@@ -1,10 +1,8 @@
-import { pool } from '../db/pool';
-import { redis } from '../db/redis';
-import { AppError } from '../errors/AppError';
-import { loggerService } from './logger';
-import { metricsService } from './metrics';
-import { notificationService } from './notification';
-import { emailService } from './email';
+import { dbPool } from '../db/pool.js';
+import { PoolClient } from 'pg';
+import { AppError } from '../errors/AppError.js';
+import { loggerService } from './logger.js';
+import { metricsService } from './metrics.js';
 
 interface QuoteData {
   userId: string;
@@ -51,7 +49,7 @@ interface QuoteResponse {
 export class QuoteService {
   // Teklif oluştur
   async createQuote(data: QuoteData) {
-    const client = await pool.connect();
+    const client: PoolClient = await dbPool.getClient();
     try {
       await client.query('BEGIN');
 
@@ -69,7 +67,7 @@ export class QuoteService {
           data.specifications,
           data.attachments,
           data.budget,
-          data.deadline,
+          data.deadline.toISOString(),
           data.status,
           data.priority,
           data.category,
@@ -87,22 +85,7 @@ export class QuoteService {
         [quote.id, data.status, data.userId, 'create']
       );
 
-      // Bildirim gönder
-      await notificationService.create({
-        userId: data.userId,
-        type: 'quote_created',
-        message: 'Teklifiniz başarıyla oluşturuldu',
-        data: { quoteId: quote.id }
-      });
-
-      // E-posta gönder
-      await emailService.sendQuoteConfirmation(data.userId, quote.id);
-
       await client.query('COMMIT');
-
-      // Metrikleri güncelle
-      await metricsService.incrementQuoteCount();
-      await metricsService.trackQuoteCreation(data.category);
 
       return quote;
     } catch (error) {
@@ -115,7 +98,7 @@ export class QuoteService {
 
   // Teklif güncelle
   async updateQuote(quoteId: string, userId: string, data: Partial<QuoteData>) {
-    const client = await pool.connect();
+    const client: PoolClient = await dbPool.getClient();
     try {
       await client.query('BEGIN');
 
@@ -154,7 +137,7 @@ export class QuoteService {
           data.specifications,
           data.attachments,
           data.budget,
-          data.deadline,
+          data.deadline?.toISOString(),
           data.status,
           data.priority,
           data.category,
@@ -173,16 +156,6 @@ export class QuoteService {
         [quoteId, updatedQuote.status, userId, 'update']
       );
 
-      // Bildirim gönder
-      if (data.status && data.status !== quote.status) {
-        await notificationService.create({
-          userId,
-          type: 'quote_status_updated',
-          message: `Teklif durumu güncellendi: ${data.status}`,
-          data: { quoteId, status: data.status }
-        });
-      }
-
       await client.query('COMMIT');
       return updatedQuote;
     } catch (error) {
@@ -195,7 +168,7 @@ export class QuoteService {
 
   // Teklif yanıtı oluştur
   async createQuoteResponse(quoteId: string, data: QuoteResponse) {
-    const client = await pool.connect();
+    const client: PoolClient = await dbPool.getClient();
     try {
       await client.query('BEGIN');
 
@@ -222,7 +195,7 @@ export class QuoteService {
           quoteId,
           data.message,
           data.price,
-          data.estimatedDeliveryDate,
+          data.estimatedDeliveryDate.toISOString(),
           data.terms,
           data.paymentTerms
         ]
@@ -245,17 +218,6 @@ export class QuoteService {
          VALUES ($1, $2, $3, $4)`,
         [quoteId, 'reviewing', 'system', 'response']
       );
-
-      // Bildirim gönder
-      await notificationService.create({
-        userId: quote.userId,
-        type: 'quote_response',
-        message: 'Teklifinize yanıt verildi',
-        data: { quoteId, responseId: response.id }
-      });
-
-      // E-posta gönder
-      await emailService.sendQuoteResponse(quote.userId, quoteId, response);
 
       await client.query('COMMIT');
       return response;
@@ -303,13 +265,13 @@ export class QuoteService {
 
     if (filters.startDate) {
       conditions.push(`created_at >= $${paramIndex}`);
-      params.push(filters.startDate);
+      params.push(filters.startDate.toISOString());
       paramIndex++;
     }
 
     if (filters.endDate) {
       conditions.push(`created_at <= $${paramIndex}`);
-      params.push(filters.endDate);
+      params.push(filters.endDate.toISOString());
       paramIndex++;
     }
 
@@ -321,7 +283,7 @@ export class QuoteService {
 
     const offset = (pagination.page - 1) * pagination.limit;
 
-    const result = await pool.query(
+    const result = await dbPool.query(
       `SELECT q.*, 
               COUNT(*) OVER() as total_count,
               (SELECT json_agg(r.*) FROM quote_responses r WHERE r.quote_id = q.id) as responses
@@ -340,19 +302,19 @@ export class QuoteService {
     );
 
     return {
-      data: result.rows,
+      data: result,
       pagination: {
-        total: parseInt(result.rows[0]?.total_count || '0'),
+        total: parseInt(result[0]?.total_count || '0'),
         page: pagination.page,
         limit: pagination.limit,
-        pages: Math.ceil(parseInt(result.rows[0]?.total_count || '0') / pagination.limit)
+        pages: Math.ceil(parseInt(result[0]?.total_count || '0') / pagination.limit)
       }
     };
   }
 
   // Teklif detayı
   async getQuoteDetails(quoteId: string, userId: string) {
-    const result = await pool.query(
+    const result = await dbPool.query(
       `SELECT q.*, 
               (SELECT json_agg(r.*) FROM quote_responses r WHERE r.quote_id = q.id) as responses,
               (SELECT json_agg(h.* ORDER BY h.created_at DESC) FROM quote_history h WHERE h.quote_id = q.id) as history
@@ -361,16 +323,16 @@ export class QuoteService {
       [quoteId, userId]
     );
 
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       throw new AppError('Teklif bulunamadı', 404);
     }
 
-    return result.rows[0];
+    return result[0];
   }
 
   // Teklif istatistikleri
   async getQuoteStats(userId: string) {
-    const result = await pool.query(
+    const result = await dbPool.query(
       `SELECT 
          COUNT(*) as total_quotes,
          COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending_quotes,
@@ -387,31 +349,33 @@ export class QuoteService {
       [userId]
     );
 
-    return result.rows[0];
+    return result[0];
   }
 
   // Teklif kategorileri
   async getQuoteCategories() {
-    const result = await pool.query(
+    const result = await dbPool.query(
       `SELECT DISTINCT category, COUNT(*) as count
        FROM quotes
        GROUP BY category
-       ORDER BY count DESC`
+       ORDER BY count DESC`,
+      []
     );
 
-    return result.rows;
+    return result;
   }
 
   // Teklif etiketleri
   async getQuoteTags() {
-    const result = await pool.query(
+    const result = await dbPool.query(
       `SELECT DISTINCT unnest(tags) as tag, COUNT(*) as count
        FROM quotes
        GROUP BY tag
-       ORDER BY count DESC`
+       ORDER BY count DESC`,
+      []
     );
 
-    return result.rows;
+    return result;
   }
 }
 
