@@ -1,4 +1,3 @@
-
 import cors from 'cors';
 
 // Üretim ortamı için güvenli CORS ayarları
@@ -12,7 +11,8 @@ const allowedOrigins = [
   'https://*.replit.app',
   // Production domain (güncellenecek)
   'https://matbixx.com',
-  'https://www.matbixx.com'
+  'https://www.matbixx.com',
+  'https://printbroker.onrender.com' // Render deployment URL'si eklendi
 ];
 
 export const corsOptions: cors.CorsOptions = {

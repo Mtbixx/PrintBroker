@@ -10,7 +10,7 @@ class RedisConfig {
       host: config.redis.host,
       port: config.redis.port,
       password: config.redis.password,
-      db: config.redis.db,
+      username: config.redis.username,
       retryStrategy: (times: number) => {
         const delay = Math.min(times * 50, 2000);
         return delay;
