@@ -8,7 +8,8 @@ import { AppError } from '../errors/AppError.js';
 import multer from 'multer';
 import { storage } from '../storage.js';
 import { type InsertFile } from '../shared/schema.js';
-import { v4 as uuidv4 } from 'uuid';
+import pkg from 'uuid';
+const { v4: uuidv4 } = pkg;
 
 const router = express.Router();
 

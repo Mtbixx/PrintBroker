@@ -2,7 +2,8 @@ import { createWriteStream, createReadStream } from 'fs';
 import { mkdir, stat } from 'fs/promises';
 import { join } from 'path';
 import { pipeline } from 'stream/promises';
-import { v4 as uuidv4 } from 'uuid';
+import pkg from 'uuid';
+const { v4: uuidv4 } = pkg;
 import { config } from '../config/index.js';
 import { type InsertFile } from '@shared/schema';
 
