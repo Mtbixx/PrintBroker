@@ -1,6 +1,9 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const bcrypt = require('bcrypt');
+
 import { storage } from '../storage.js';
-import { User, UserRole } from '../types.js';
-import bcrypt from 'bcrypt';
+import { User, UserRole, UserStatus } from '../types';
 import { AppError } from '../errors/AppError.js';
 
 export class UserService {

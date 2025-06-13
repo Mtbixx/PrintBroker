@@ -1,7 +1,11 @@
-import bcrypt from 'bcrypt';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const bcrypt = require('bcrypt');
+
 import { db } from '../db';
 import { User, UserRole } from '../types';
-import { AuthError } from '../errors';
+import { AuthError } from '../errors/AppError';
+import { Request, Response, NextFunction } from 'express';
 
 export class AuthService {
   // Kullanıcı doğrulama

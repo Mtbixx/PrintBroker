@@ -1,7 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import cors from 'cors';
 import { registerRoutes } from "./routes.js";
-import { setupVite, serveStatic, log } from "./vite.js";
+import { setupVite, serveStatic, log } from "./vite.ts";
 import { execSync } from 'child_process';
 import { corsOptions, securityHeaders } from "./corsConfig.js";
 import { generalLimiter } from "./rateLimiter.js";
