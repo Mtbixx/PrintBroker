@@ -574,7 +574,6 @@ export default function CustomerDashboard() {
                                                 target.style.opacity = '1';
                                                 target.style.transition = 'opacity 0.3s ease-in-out';
                                               }}
-                                              style={{ opacity: '0' }}
                                             />
                                             <div className="preview-fallback hidden w-full h-64 bg-gray-100 flex flex-col items-center justify-center rounded-lg">
                                               <ImageIcon className="h-16 w-16 text-gray-400 mb-2" />

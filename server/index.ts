@@ -1,13 +1,13 @@
+import dotenv from 'dotenv'; dotenv.config();
 import express, { type Request, Response, NextFunction } from "express";
 import cors from 'cors';
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-import { pythonAnalyzerService } from './pythonAnalyzerService';
+import { registerRoutes } from "./routes.js";
+import { setupVite, serveStatic, log } from "./vite.js";
 import { execSync } from 'child_process';
-import { corsOptions, securityHeaders } from './corsConfig';
-import { generalLimiter } from './rateLimiter';
-import { handleSEORoute } from './seoRenderer';
-import { errorHandler } from './errors';
+import { corsOptions, securityHeaders } from "./corsConfig.js";
+import { generalLimiter } from "./rateLimiter.js";
+import { handleSEORoute } from "./seoRenderer.js";
+import { errorHandler } from "./errors.js";
 
 const app = express();
 
@@ -32,7 +32,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   const originalResJson = res.json;
   res.json = function (bodyJson: any, ...args: any[]) {
     capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+    return originalResJson.apply(res, [bodyJson]);
   };
 
   res.on("finish", () => {
@@ -58,40 +58,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-// Python Analyzer Sistem Kontrolü
-async function initializePythonServices() {
-  // Python Environment Test with graceful degradation
-  console.log('🐍 Python tabanlı analiz sistemi kontrol ediliyor...');
-  try {
-    execSync('python3 -c "import sys; print(\'Python OK\')"', { 
-      stdio: 'pipe',
-      timeout: 5000
-    });
-
-    // Test individual packages
-    const packages = ['fitz', 'PIL', 'cv2', 'numpy', 'svglib', 'reportlab', 'cairosvg'];
-    const availablePackages = [];
-
-    for (const pkg of packages) {
-      try {
-        execSync(`python3 -c "import ${pkg}"`, { stdio: 'pipe', timeout: 2000 });
-        availablePackages.push(pkg);
-      } catch {
-        console.log(`⚠️ Python package missing: ${pkg}`);
-      }
-    }
-
-    if (availablePackages.length >= 4) {
-      console.log('✅ Python analiz sistemi AKTIF');
-      console.log(`📦 Mevcut kütüphaneler: ${availablePackages.join(', ')}`);
-    } else {
-      console.log('⚠️ Python analiz sistemi KISITLI - Temel Node.js servisleri aktif');
-    }
-  } catch (error) {
-    console.log('⚠️ Python bulunamadı - Sadece Node.js servisleri aktif');
-  }
-}
-
 // Versiyonlu API örneği
 const v1Router = express.Router();
 
@@ -102,8 +68,6 @@ v1Router.get('/health', (req: Request, res: Response) => {
 app.use('/api/v1', v1Router);
 
 (async () => {
-  // Python servislerini başlat
-  await initializePythonServices();
   const server = await registerRoutes(app);
 
   // Global unhandled promise rejection handler
