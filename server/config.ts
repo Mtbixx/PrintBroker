@@ -24,7 +24,7 @@ const configSchema = z.object({
     url: z.string().url(),
   }),
   redis: z.object({
-    url: z.string().url(),
+    url: z.string().min(1),
   }),
   cors: z.object({
     origin: z.string().url(),
