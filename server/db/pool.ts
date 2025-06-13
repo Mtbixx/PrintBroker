@@ -1,4 +1,5 @@
-import { Pool, PoolClient } from 'pg';
+import pkg from 'pg';
+const { Pool, PoolClient } = pkg;
 import { config } from '../config';
 
 export class DatabasePool {

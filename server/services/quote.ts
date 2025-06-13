@@ -1,5 +1,6 @@
+import pkg from 'pg';
+const { PoolClient } = pkg;
 import { dbPool } from '../db/pool.js';
-import { PoolClient } from 'pg';
 import { AppError } from '../errors/AppError.js';
 import { loggerService } from './logger.js';
 import { metricsService } from './metrics.js';
