@@ -41,7 +41,7 @@ const configSchema = z.object({
 });
 
 // Create the configuration object
-const config = {
+export const config = {
   env: (process.env.NODE_ENV || "development") as "development" | "test" | "production",
   port: parseInt(process.env.PORT || "3000", 10),
   baseUrl: process.env.BASE_URL || "http://localhost:3000",
@@ -77,6 +77,4 @@ const config = {
 };
 
 // Validate the configuration
-const validatedConfig = configSchema.parse(config);
-
-export default validatedConfig; 
+export const validatedConfig = configSchema.parse(config); 
