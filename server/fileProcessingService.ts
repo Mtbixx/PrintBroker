@@ -3,6 +3,8 @@ import path from 'path';
 import { promisify } from 'util';
 import { exec, spawn } from 'child_process';
 import sharp from 'sharp';
+import { File } from 'multer';
+import { File as FileType } from './types';
 
 const execAsync = promisify(exec);
 
@@ -509,6 +511,10 @@ except Exception as e:
       console.error('❌ processLayoutWithPython error:', error);
       throw error;
     }
+  }
+
+  async processUploadedFile(file: File): Promise<FileType> {
+    // ... existing code ...
   }
 }
 
