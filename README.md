@@ -1,43 +1,91 @@
-# PrintBroker Projesi
+# Print Broker
 
-## Genel Bakış
-Bu proje, matbaa ve baskı işleri için PDF tasarım analizi, dizilim optimizasyonu ve profesyonel iş akışları sunan çok katmanlı bir sistemdir. Node.js (TypeScript) tabanlı backend ve modern bir frontend içerir.
+Print Broker, baskı hizmetleri için bir platformdur. Müşteriler ve baskı firmaları arasında köprü kurarak, baskı işlerinin yönetimini kolaylaştırır.
 
-## Klasör Yapısı
-- `client/` : React + TypeScript ile yazılmış frontend uygulaması
-- `server/` : Express.js tabanlı backend (API, PDF işleme, ödeme, AI servisleri)
-- `shared/` : Ortak tipler ve şemalar
-- `uploads/`, `attached_assets/` : Dosya yükleme ve varlıklar
+## Özellikler
+
+- Kullanıcı kimlik doğrulama ve yetkilendirme
+- Teklif oluşturma ve yönetimi
+- Dosya yükleme ve yönetimi
+- Gerçek zamanlı bildirimler
+- Çoklu dil desteği
 
 ## Kurulum
-### Node.js Servisleri
+
+1. Repoyu klonlayın:
 ```bash
-npm install
-npm run dev # server ve client için
+git clone https://github.com/yourusername/printbroker.git
+cd printbroker
 ```
 
-## Çalıştırma
-- Frontend: `http://localhost:5173` (veya Vite portu)
-- Backend: `http://localhost:3000` (veya belirlediğiniz port)
+2. Bağımlılıkları yükleyin:
+```bash
+npm install
+```
 
-## Temel Özellikler
-- PDF analiz ve kalite kontrol
-- Tasarım çıkarımı ve dizilim optimizasyonu
-- AI tabanlı analiz ve öneriler
-- Ödeme entegrasyonu (PayTR)
-- Dosya yükleme ve yönetimi
-- Modern UI/UX
+3. `.env` dosyasını oluşturun:
+```bash
+cp .env.example .env
+```
 
-## Geliştirme
-- Ortak tipler için `shared/` klasörünü kullanın
-- Testler ve CI/CD için öneriler README sonunda
+4. `.env` dosyasını düzenleyin ve gerekli değişkenleri ayarlayın:
+```
+DATABASE_URL=postgres://user:password@localhost:5432/printbroker
+JWT_SECRET=your-secret-key
+JWT_REFRESH_SECRET=your-refresh-secret-key
+PORT=3000
+```
 
-## Katkı ve İletişim
-Sorularınız veya katkılarınız için lütfen proje sahibiyle iletişime geçin.
+5. Veritabanını oluşturun:
+```bash
+npm run db:push
+```
 
----
+6. Uygulamayı başlatın:
+```bash
+# Geliştirme modu
+npm run dev
 
-## İleri Seviye: Test, Versiyonlama, Hata Yönetimi
-- Her servis için test altyapısı kurun (örnekler eklenecek)
-- API endpointlerinde versiyonlama kullanın (örn. `/api/v1/`)
-- Hata yönetimi için merkezi middleware ve kullanıcıya anlamlı mesajlar sağlayın 
+# Üretim modu
+npm run build
+npm start
+```
+
+## API Endpoints
+
+### Kimlik Doğrulama
+
+- `POST /api/auth/register` - Yeni kullanıcı kaydı
+- `POST /api/auth/login` - Kullanıcı girişi
+- `GET /api/auth/user` - Kullanıcı bilgilerini getir
+- `POST /api/auth/refresh` - Token yenileme
+- `POST /api/auth/logout` - Çıkış yap
+
+### Teklifler
+
+- `GET /api/quotes` - Teklifleri listele
+- `POST /api/quotes` - Yeni teklif oluştur
+- `GET /api/quotes/:id` - Teklif detaylarını getir
+- `PUT /api/quotes/:id` - Teklif güncelle
+- `DELETE /api/quotes/:id` - Teklif sil
+
+### Dosyalar
+
+- `POST /api/files/upload` - Dosya yükle
+- `GET /api/files/:id` - Dosya indir
+- `DELETE /api/files/:id` - Dosya sil
+
+## Teknolojiler
+
+- Node.js
+- Express.js
+- PostgreSQL
+- Drizzle ORM
+- JWT
+- TypeScript
+- React
+- Tailwind CSS
+
+## Lisans
+
+MIT 

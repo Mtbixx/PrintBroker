@@ -4,8 +4,6 @@ import { authService } from '../services/auth.js';
 import { jwtService } from '../services/jwt.js';
 import { authenticate } from '../middleware/auth.js';
 import { validateRequest } from '../middleware/validate.js';
-import type { Request, Response, NextFunction } from 'express';
-import type { User } from '../types/index.js';
 
 const router = Router();
 
@@ -15,7 +13,7 @@ const loginSchema = z.object({
   password: z.string().min(6)
 });
 
-router.post('/login', validateRequest(loginSchema), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/login', validateRequest(loginSchema), async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await authService.validateUser(email, password);
@@ -50,7 +48,7 @@ const registerSchema = z.object({
   role: z.enum(['admin', 'printer', 'customer'])
 });
 
-router.post('/register', validateRequest(registerSchema), async (req: Request, res: Response, next: NextFunction) => {
+router.post('/register', validateRequest(registerSchema), async (req, res, next) => {
   try {
     const { email, password, name, company, role } = req.body;
     
@@ -85,7 +83,7 @@ router.post('/register', validateRequest(registerSchema), async (req: Request, r
 });
 
 // Kullanıcı bilgilerini getir
-router.get('/user', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+router.get('/user', authenticate, async (req, res, next) => {
   try {
     const userId = req.user?.id;
     if (!userId) {
@@ -110,7 +108,7 @@ router.get('/user', authenticate, async (req: Request, res: Response, next: Next
 });
 
 // Token yenileme
-router.post('/refresh', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/refresh', async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
@@ -125,7 +123,7 @@ router.post('/refresh', async (req: Request, res: Response, next: NextFunction) 
 });
 
 // Çıkış yap
-router.post('/logout', authenticate, async (req: Request, res: Response, next: NextFunction) => {
+router.post('/logout', authenticate, async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
     if (refreshToken) {

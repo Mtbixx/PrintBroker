@@ -1,28 +1,19 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "NodeNext",
-    "skipLibCheck": true,
     "moduleResolution": "NodeNext",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": false,
-    "outDir": "./dist/server",
-    "jsx": "react-jsx",
+    "esModuleInterop": true,
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "types": ["node", "express", "multer"],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./client/src/*"],
-      "@shared/*": ["./shared/*"],
-      "../shared/*": ["./shared/*"]
+      "@/*": ["*"]
     }
   },
-  "include": ["src", "server", "shared"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["server/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

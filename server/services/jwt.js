@@ -1,28 +1,16 @@
 import jwt from 'jsonwebtoken';
-import { config } from '../config/index.js';
-import { User } from '../types/index.js';
+import { config } from '../config.js';
 
-interface TokenPayload {
-  userId: string;
-  email: string;
-  role: string;
-}
-
-export class JwtService {
-  private static instance: JwtService;
-
-  private constructor() {}
-
-  public static getInstance(): JwtService {
-    if (!JwtService.instance) {
-      JwtService.instance = new JwtService();
+class JwtService {
+  constructor() {
+    if (!config.jwt.secret || !config.jwt.refreshSecret) {
+      throw new Error('JWT secret ve refresh secret gerekli');
     }
-    return JwtService.instance;
   }
 
-  public async generateTokens(user: User) {
-    const payload: TokenPayload = {
-      userId: user.id,
+  generateTokens(user) {
+    const payload = {
+      id: user.id,
       email: user.email,
       role: user.role
     };
@@ -35,29 +23,26 @@ export class JwtService {
       expiresIn: config.jwt.refreshExpiration
     });
 
-    return {
-      accessToken,
-      refreshToken
-    };
+    return { accessToken, refreshToken };
   }
 
-  public verifyToken(token: string): TokenPayload {
+  verifyToken(token) {
     try {
-      return jwt.verify(token, config.jwt.secret) as TokenPayload;
+      return jwt.verify(token, config.jwt.secret);
     } catch (error) {
       throw new Error('Geçersiz token');
     }
   }
 
-  public verifyRefreshToken(token: string): TokenPayload {
+  verifyRefreshToken(token) {
     try {
-      return jwt.verify(token, config.jwt.refreshSecret) as TokenPayload;
+      return jwt.verify(token, config.jwt.refreshSecret);
     } catch (error) {
       throw new Error('Geçersiz refresh token');
     }
   }
 
-  public async refreshAccessToken(refreshToken: string) {
+  async refreshAccessToken(refreshToken) {
     try {
       const payload = this.verifyRefreshToken(refreshToken);
       
@@ -71,7 +56,7 @@ export class JwtService {
     }
   }
 
-  public async revokeRefreshToken(token: string) {
+  async revokeRefreshToken(token) {
     try {
       // Token'ı doğrula
       this.verifyRefreshToken(token);
@@ -85,4 +70,4 @@ export class JwtService {
   }
 }
 
-export const jwtService = JwtService.getInstance(); 
+export const jwtService = new JwtService(); 

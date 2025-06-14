@@ -8,12 +8,15 @@ export type UserRole = 'admin' | 'printer' | 'customer';
 export interface User {
   id: string;
   email: string;
+  name: string;
   role: UserRole;
-  name?: string;
-  company?: string;
+  company: string;
   phone?: string;
   address?: string;
-  password?: string;
+  city?: string;
+  postalCode?: string;
+  taxNumber?: string;
+  password: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -25,34 +28,13 @@ export type QuoteStatus = 'pending' | 'accepted' | 'rejected' | 'completed';
 // İş teklifi tipi
 export interface Quote {
   id: string;
-  title: string;
-  type: string;
-  category: string;
+  customerId: string;
+  printerId: string;
   status: QuoteStatus;
-  location: string;
-  quantity: number;
-  totalPrice: number;
-  estimatedBudget: number;
-  companyInfo: {
-    name: string;
-    sector: string;
-    location: string;
-    projectScale: string;
-    urgency: string;
-  };
-  specifications: {
-    quantity: number;
-    projectType: string;
-    material: string;
-    printType: string;
-    finishing: string;
-    colors: string;
-    deadline: string;
-    qualityLevel: string;
-  };
+  description: string;
+  price?: number;
   createdAt: Date;
-  deadline: Date;
-  userId: string;
+  updatedAt: Date;
 }
 
 // Matbaa teklifi tipi
