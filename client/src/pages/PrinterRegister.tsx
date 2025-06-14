@@ -117,40 +117,47 @@ export default function PrinterRegister() {
     if (!validateForm()) return;
 
     setIsLoading(true);
-
+    
     try {
-      const response = await fetch('/api/register', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          role: 'printer'
+          email: formData.email,
+          password: formData.password,
+          name: `${formData.firstName} ${formData.lastName}`,
+          company: formData.companyName,
+          role: 'printer',
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          postalCode: formData.postalCode,
+          taxNumber: formData.taxNumber,
+          website: formData.website,
+          description: formData.description
         })
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Kayıt işlemi başarısız');
       }
 
       const data = await response.json();
 
-      if (data.success) {
-        toast({
-          title: "Kayıt Başarılı",
-          description: "Matbaa hesabınız oluşturuldu, matbaa panelinize yönlendiriliyorsunuz...",
-        });
-
-        setTimeout(() => {
-          window.location.href = '/printer-dashboard';
-        }, 1500);
-      } else {
-        throw new Error(data.message || "Kayıt işlemi başarısız");
-      }
+      toast({
+        title: "Kayıt Başarılı",
+        description: "Firma hesabınız oluşturuldu, yönetici panelinize yönlendiriliyorsunuz...",
+      });
+      
+      setTimeout(() => {
+        window.location.href = '/printer-dashboard';
+      }, 1500);
     } catch (error: any) {
       console.error("Registration error:", error);
       toast({
         title: "Kayıt Hatası",
-        description: error.message || "Kayıt işlemi başarısız. Lütfen tekrar deneyin.",
+        description: error.message || "Kayıt işlemi başlatılamadı. Lütfen tekrar deneyin.",
         variant: "destructive",
       });
     } finally {

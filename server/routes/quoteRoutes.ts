@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { validateRequest } from '../middleware/optimize.js';
 import { authenticate } from '../middleware/auth.js';
 import { quoteService } from '../services/quote.js';
+import { Request, Response } from 'express';
+import { prisma } from '../lib/prisma.js';
 
 const router = express.Router();
 
@@ -189,20 +191,49 @@ router.delete('/:id',
   }
 );
 
-// Canlı iş akışı
-router.get('/live-feed',
-  async (req, res) => {
-    try {
-      const quotes = await quoteService.getLiveQuotes();
-      res.json({ quotes });
-    } catch (error) {
-      console.error('Canlı iş akışı hatası:', error);
-      res.status(500).json({
-        error: 'Canlı iş akışı hatası',
-        message: 'İş akışı verileri alınırken bir hata oluştu'
-      });
-    }
+// Canlı iş akışı endpoint'i
+router.get('/live-feed', async (req: Request, res: Response) => {
+  try {
+    const quotes = await prisma.quote.findMany({
+      where: {
+        status: {
+          in: ['pending', 'in_progress', 'quality_check']
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        customer: {
+          select: {
+            company: true,
+            city: true
+          }
+        }
+      },
+      take: 10
+    });
+
+    const formattedQuotes = quotes.map(quote => ({
+      id: quote.id,
+      title: quote.title,
+      status: quote.status,
+      amount: quote.amount,
+      location: quote.customer.city,
+      time: quote.createdAt
+    }));
+
+    res.json({
+      success: true,
+      data: formattedQuotes
+    });
+  } catch (error) {
+    console.error('Canlı iş akışı verileri alınamadı:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Canlı iş akışı verileri alınamadı'
+    });
   }
-);
+});
 
 export default router; 

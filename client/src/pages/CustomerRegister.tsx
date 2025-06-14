@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -113,39 +112,42 @@ export default function CustomerRegister() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/register', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          email: formData.email,
+          password: formData.password,
+          name: `${formData.firstName} ${formData.lastName}`,
+          company: formData.company,
           role: 'customer',
-          companyName: formData.company
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          postalCode: formData.postalCode
         })
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Kayıt işlemi başarısız');
       }
 
       const data = await response.json();
 
-      if (data.success) {
-        toast({
-          title: "Kayıt Başarılı",
-          description: "Hesabınız oluşturuldu, müşteri panelinize yönlendiriliyorsunuz...",
-        });
-        
-        setTimeout(() => {
-          window.location.href = '/customer-dashboard';
-        }, 1500);
-      } else {
-        throw new Error(data.message || "Kayıt işlemi başarısız");
-      }
+      toast({
+        title: "Kayıt Başarılı",
+        description: "Hesabınız oluşturuldu, müşteri panelinize yönlendiriliyorsunuz...",
+      });
+      
+      setTimeout(() => {
+        window.location.href = '/customer-dashboard';
+      }, 1500);
     } catch (error: any) {
       console.error("Registration error:", error);
       toast({
         title: "Kayıt Hatası",
-        description: "Kayıt işlemi başlatılamadı. Lütfen tekrar deneyin.",
+        description: error.message || "Kayıt işlemi başlatılamadı. Lütfen tekrar deneyin.",
         variant: "destructive",
       });
     } finally {
