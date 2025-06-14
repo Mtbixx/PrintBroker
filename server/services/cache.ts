@@ -1,68 +1,49 @@
-import Redis from 'ioredis';
-import { config } from '../config';
+import { Redis } from 'ioredis';
+import { config } from '../config.js';
 
 export class CacheService {
   private redis: Redis;
   private readonly defaultTTL = 3600; // 1 saat
 
   constructor() {
-    this.redis = new Redis({
-      host: config.redis.host,
-      port: config.redis.port,
-      password: config.redis.password,
-      db: config.redis.db,
+    this.redis = new Redis(config.redis.url, {
       retryStrategy: (times: number) => {
         const delay = Math.min(times * 50, 2000);
         return delay;
-      }
+      },
+      tls: {},
     });
 
-    this.redis.on('error', (error) => {
+    this.redis.on('error', (error: Error) => {
       console.error('Redis bağlantı hatası:', error);
     });
   }
 
   // Veri önbellekleme
-  async set(key: string, value: any, ttl: number = this.defaultTTL): Promise<void> {
-    try {
-      const serializedValue = JSON.stringify(value);
-      await this.redis.set(key, serializedValue, 'EX', ttl);
-    } catch (error) {
-      console.error('Önbellek yazma hatası:', error);
-      throw error;
+  async set(key: string, value: any, ttl?: number): Promise<void> {
+    const serializedValue = JSON.stringify(value);
+    if (ttl) {
+      await this.redis.setex(key, ttl, serializedValue);
+    } else {
+      await this.redis.set(key, serializedValue);
     }
   }
 
   // Önbellekten veri alma
   async get<T>(key: string): Promise<T | null> {
-    try {
-      const value = await this.redis.get(key);
-      if (!value) return null;
-      return JSON.parse(value) as T;
-    } catch (error) {
-      console.error('Önbellek okuma hatası:', error);
-      return null;
-    }
+    const value = await this.redis.get(key);
+    if (!value) return null;
+    return JSON.parse(value) as T;
   }
 
   // Önbellekten veri silme
-  async delete(key: string): Promise<void> {
-    try {
-      await this.redis.del(key);
-    } catch (error) {
-      console.error('Önbellek silme hatası:', error);
-      throw error;
-    }
+  async del(key: string): Promise<void> {
+    await this.redis.del(key);
   }
 
   // Önbellek temizleme
   async clear(): Promise<void> {
-    try {
-      await this.redis.flushdb();
-    } catch (error) {
-      console.error('Önbellek temizleme hatası:', error);
-      throw error;
-    }
+    await this.redis.flushdb();
   }
 
   // Önbellek durumu
@@ -89,18 +70,18 @@ export class CacheService {
   }
 
   // Bellek bilgisi ayrıştırma
-  private parseMemoryInfo(info: string): any {
+  private parseMemoryInfo(info: string): Record<string, any> {
     const lines = info.split('\n');
-    const memory: any = {};
+    const result: Record<string, any> = {};
 
     for (const line of lines) {
       const [key, value] = line.split(':');
       if (key && value) {
-        memory[key.trim()] = value.trim();
+        result[key.trim()] = value.trim();
       }
     }
 
-    return memory;
+    return result;
   }
 
   // Önbellek anahtarı oluşturma
@@ -116,30 +97,19 @@ export class CacheService {
   }
 
   // Toplu önbellek işlemleri
-  async mset(items: Array<{ key: string; value: any; ttl?: number }>): Promise<void> {
-    try {
-      const pipeline = this.redis.pipeline();
-      
-      for (const item of items) {
-        const serializedValue = JSON.stringify(item.value);
-        pipeline.set(item.key, serializedValue, 'EX', item.ttl || this.defaultTTL);
-      }
-
-      await pipeline.exec();
-    } catch (error) {
-      console.error('Toplu önbellek yazma hatası:', error);
-      throw error;
-    }
+  async mset(keyValues: { [key: string]: any }): Promise<void> {
+    const serializedValues = Object.entries(keyValues).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: JSON.stringify(value)
+      }),
+      {}
+    );
+    await this.redis.mset(serializedValues);
   }
 
-  async mget<T>(keys: string[]): Promise<Array<T | null>> {
-    try {
-      const values = await this.redis.mget(keys);
-      return values.map(value => value ? JSON.parse(value) as T : null);
-    } catch (error) {
-      console.error('Toplu önbellek okuma hatası:', error);
-      throw error;
-    }
+  async mget(keys: string[]): Promise<(string | null)[]> {
+    return this.redis.mget(keys);
   }
 
   // Önbellek süresi uzatma
@@ -154,13 +124,12 @@ export class CacheService {
 
   // Önbellek anahtarı kontrolü
   async exists(key: string): Promise<boolean> {
-    try {
-      const result = await this.redis.exists(key);
-      return result === 1;
-    } catch (error) {
-      console.error('Önbellek anahtarı kontrolü hatası:', error);
-      return false;
-    }
+    const result = await this.redis.exists(key);
+    return result === 1;
+  }
+
+  async keys(pattern: string): Promise<string[]> {
+    return this.redis.keys(pattern);
   }
 }
 

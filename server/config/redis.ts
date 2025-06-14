@@ -1,23 +1,20 @@
-import Redis from 'ioredis';
-import { config } from './index';
+import { Redis } from 'ioredis';
+import { config } from './index.js';
 
 class RedisConfig {
   private static instance: RedisConfig;
   private client: Redis;
 
   private constructor() {
-    this.client = new Redis({
-      host: config.redis.host,
-      port: config.redis.port,
-      password: config.redis.password,
-      username: config.redis.username,
+    this.client = new Redis(config.redis.url, {
       retryStrategy: (times: number) => {
         const delay = Math.min(times * 50, 2000);
         return delay;
-      }
+      },
+      tls: {},
     });
 
-    this.client.on('error', (error) => {
+    this.client.on('error', (error: Error) => {
       console.error('Redis bağlantı hatası:', error);
     });
 
@@ -85,4 +82,4 @@ class RedisConfig {
   }
 }
 
-export const redisConfig = RedisConfig.getInstance(); 
+export const redisConfig = RedisConfig.getInstance();
