@@ -189,4 +189,20 @@ router.delete('/:id',
   }
 );
 
+// Canlı iş akışı
+router.get('/live-feed',
+  async (req, res) => {
+    try {
+      const quotes = await quoteService.getLiveQuotes();
+      res.json({ quotes });
+    } catch (error) {
+      console.error('Canlı iş akışı hatası:', error);
+      res.status(500).json({
+        error: 'Canlı iş akışı hatası',
+        message: 'İş akışı verileri alınırken bir hata oluştu'
+      });
+    }
+  }
+);
+
 export default router; 
