@@ -32,7 +32,7 @@ export const config = {
     }
   },
   redis: {
-    url: process.env.REDIS_URL || 'redis://localhost:6379',
+    url: process.env.REDIS_URL || 'invalid_redis_url_fallback',
   },
   jwt: {
     secret: process.env.JWT_SECRET || 'your-secret-key',
@@ -41,7 +41,7 @@ export const config = {
     refreshExpiration: '7d'
   },
   server: {
-    port: parseInt(process.env.PORT || '3000', 10),
+    port: parseInt(process.env.PORT || '8080', 10),
     host: process.env.HOST || 'localhost'
   }
 } as const; 

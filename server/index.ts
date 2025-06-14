@@ -1,12 +1,14 @@
+import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import cors from 'cors';
 import { registerRoutes } from "./routes.js";
-import { setupVite, serveStatic, log } from "./vite.ts";
+import { setupVite, serveStatic, log } from "./vite.js";
 import { execSync } from 'child_process';
 import { corsOptions, securityHeaders } from "./corsConfig.js";
 import { generalLimiter } from "./rateLimiter.js";
 import { handleSEORoute } from "./seoRenderer.js";
 import { globalErrorHandler } from "./errorHandling.js";
+import { config } from './config/index.js';
 
 const app = express();
 
@@ -101,10 +103,10 @@ app.use('/api/v1', v1Router);
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5000;
+  const port = config.server.port;
   server.listen({
     port,
-    host: "0.0.0.0",
+    host: config.server.host,
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
