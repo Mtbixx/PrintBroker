@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface LoginCredentials {
   username: string;
@@ -42,37 +43,27 @@ export const useAuth = () => {
     queryKey: ['/api/auth/user'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/auth/user', {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
+        const response = await apiRequest('GET', '/api/auth/user');
 
-        if (response.status === 401) {
+        // No longer checking for 401 directly as apiRequest will throw if not ok
+        // The retry logic below will handle unauthorized cases
+        return response; // apiRequest already returns JSON
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("401")) {
           console.log('Authentication failed: Unauthorized');
           return null; // Not authenticated - this is normal
         }
-
-        if (!response.ok) {
-          console.error(`Authentication failed: HTTP ${response.status}`);
-          return null;
-        }
-
-        const userData = await response.json();
-        return userData;
-      } catch (error) {
         console.error('Authentication request failed:', error);
-        return null;
+        throw error; // Re-throw other errors
       }
     },
     retry: (failureCount, error) => {
       console.log('Auth query retry:', { failureCount, error });
-      if (error instanceof Error && error.message === 'Unauthorized') {
+      if (error instanceof Error && error.message.includes("401")) {
         console.log('Unauthorized error, not retrying');
         return false;
       }
-      return failureCount < 2;
+      return failureCount < 2; // Retry other errors up to 2 times
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
     gcTime: 5 * 60 * 1000, // 5 minutes
@@ -81,29 +72,14 @@ export const useAuth = () => {
 
   const login = useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          email: credentials.username,
-          password: credentials.password
-        }),
+      return await apiRequest('POST', '/api/auth/login', {
+        email: credentials.username,
+        password: credentials.password
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Giriş başarısız' }));
-        throw new Error(errorData.message || 'Giriş başarısız');
-      }
-
-      return response.json();
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
 
-      // Redirect based on user role or provided URL
       if (data.redirectUrl) {
         setTimeout(() => {
           window.location.href = data.redirectUrl;
@@ -128,26 +104,11 @@ export const useAuth = () => {
 
   const register = useMutation({
     mutationFn: async (registerData: RegisterData) => {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(registerData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Registration failed' }));
-        throw new Error(errorData.message || `HTTP ${response.status}: Registration failed`);
-      }
-
-      return response.json();
+      return await apiRequest('POST', '/api/auth/register', registerData);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
 
-      // Redirect based on registration success
       if (data.redirectUrl) {
         window.location.href = data.redirectUrl;
       }
@@ -156,11 +117,8 @@ export const useAuth = () => {
 
   const logout = useMutation({
     mutationFn: async () => {
-      const response = await fetch('/api/logout', {
-        method: 'GET',
-        credentials: 'include'
-      });
-      return response;
+      // Use apiRequest for logout if it's a POST, otherwise direct fetch
+      return await apiRequest('POST', '/api/logout', {}); // Assuming logout is now POST
     },
     onSuccess: () => {
       queryClient.clear();
@@ -168,7 +126,6 @@ export const useAuth = () => {
     },
     onError: (error) => {
       console.error('Logout error:', error);
-      // Force redirect even on error
       queryClient.clear();
       window.location.href = '/';
     }
@@ -176,15 +133,13 @@ export const useAuth = () => {
 
   const isAuthenticated = !!user && !error;
 
-    // Log authentication state
-    console.log('useAuth state:', {
-        user,
-        isLoading,
-        error,
-        isAuthenticated
-    });
+  console.log('useAuth state:', {
+    user,
+    isLoading,
+    error,
+    isAuthenticated
+  });
 
-  // Session check function
   const checkSession = async () => {
     try {
       await refetch();

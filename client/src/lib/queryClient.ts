@@ -7,8 +7,12 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// Define the base API URL using Vite environment variable
+const BASE_API_URL = import.meta.env.VITE_API_BASE_URL || ""; // Default to empty string if not set
+
 // Real API request implementation
 export const apiRequest = async (method: string, url: string, data?: any) => {
+  const fullUrl = `${BASE_API_URL}${url}`; // Prepend base URL
   const options: RequestInit = {
     method,
     headers: {
@@ -22,7 +26,7 @@ export const apiRequest = async (method: string, url: string, data?: any) => {
   }
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(fullUrl, options);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Request failed' }));
@@ -31,7 +35,7 @@ export const apiRequest = async (method: string, url: string, data?: any) => {
 
     return await response.json();
   } catch (error) {
-    console.error(`API Request failed: ${method} ${url}`, error);
+    console.error(`API Request failed: ${method} ${fullUrl}`, error);
     throw error;
   }
 };
@@ -42,7 +46,8 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    const fullUrl = `${BASE_API_URL}${queryKey[0] as string}`; // Prepend base URL
+    const res = await fetch(fullUrl, {
       credentials: "include",
     });
 

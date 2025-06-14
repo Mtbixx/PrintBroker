@@ -28,6 +28,9 @@ services:
     buildCommand: npm install && npm run build:client
     staticPublishPath: dist/public
     autoDeploy: true
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://printbroker.onrender.com
 
 databases:
   - name: printbroker-db
