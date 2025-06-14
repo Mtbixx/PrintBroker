@@ -23,6 +23,12 @@ services:
     healthCheckPath: /api/v1/health
     autoDeploy: true
 
+  - type: staticSite
+    name: printbroker-frontend
+    buildCommand: npm install && npm run build:client
+    staticPublishPath: dist/public
+    autoDeploy: true
+
 databases:
   - name: printbroker-db
     databaseName: printbroker
