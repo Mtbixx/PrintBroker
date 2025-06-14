@@ -26,6 +26,9 @@ import { loggerService } from './services/logger.js';
 import { metricsService } from './services/metrics.js';
 import { config } from './config/index.js';
 
+console.log('DEBUG: server/index.ts - Yüklenen config nesnesi:', config);
+console.log('DEBUG: server/index.ts - config.jwt değeri:', config.jwt);
+
 // Rota tanımlamaları
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
