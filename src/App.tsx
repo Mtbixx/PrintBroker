@@ -1,5 +1,5 @@
 import { Route, Switch } from 'wouter';
-import QuoteFormNew from './pages/QuoteFormNew';
+import QuoteFormNew from '../client/src/pages/QuoteFormNew';
 
 export default function App() {
   return (

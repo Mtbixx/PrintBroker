@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useToast } from "./use-toast";
 import { Toast } from "./toast";
 import { ToastViewport } from "./toast-viewport";

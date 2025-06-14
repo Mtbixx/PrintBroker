@@ -6,6 +6,8 @@ export type ToastProps = {
   description?: string;
   action?: React.ReactNode;
   variant?: "default" | "success" | "error" | "warning" | "info";
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export type ToastActionElement = React.ReactElement<typeof ToastAction>;
@@ -18,6 +20,8 @@ type ToasterToast = ToastProps & {
   title?: string;
   description?: string;
   action?: ToastActionElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 const actionTypes = {
@@ -159,7 +163,7 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
-      onOpenChange: (open) => {
+      onOpenChange: (open: boolean) => {
         if (!open) dismiss();
       },
     },
