@@ -8,7 +8,14 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "start": "node server/index.js",
-    "db:push": "drizzle-kit push:pg"
+    "db:push": "drizzle-kit push:pg",
+    "build:frontend": "tsc && vite build",
+    "build:backend": "tsc && npm run build:server",
+    "build:server": "tsc -p tsconfig.server.json",
+    "push:frontend": "git add . && git commit -m 'frontend: update' && git push origin main",
+    "push:backend": "git add . && git commit -m 'backend: update' && git push origin main",
+    "deploy:frontend": "npm run build:frontend && npm run push:frontend",
+    "deploy:backend": "npm run build:backend && npm run push:backend"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
