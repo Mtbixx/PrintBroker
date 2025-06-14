@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { AppError, ErrorCodes, ErrorMessages } from '../errors/AppError';
-import { loggerService } from '../services/logger';
-import { metricsService } from '../services/metrics';
+import { AppError, ErrorCodes, ErrorMessages } from '../errors/AppError.js';
+import { loggerService } from '../services/logger.js';
+import { metricsService } from '../services/metrics.js';
 
 // Hata yönetimi middleware'i
 export const errorHandler = (
@@ -39,7 +39,7 @@ export const errorHandler = (
 
   // AppError ise
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
+    res.status(err.statusCode).json({
       success: false,
       error: {
         code: err.code,
@@ -47,11 +47,8 @@ export const errorHandler = (
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
       }
     });
-  }
-
-  // ValidationError ise
-  if (err.name === 'ValidationError') {
-    return res.status(400).json({
+  } else if (err.name === 'ValidationError') { // ValidationError ise
+    res.status(400).json({
       success: false,
       error: {
         code: ErrorCodes.VALIDATION_ERROR,
@@ -59,41 +56,34 @@ export const errorHandler = (
         details: (err as any).errors
       }
     });
-  }
-
-  // JWT hatası ise
-  if (err.name === 'JsonWebTokenError') {
-    return res.status(401).json({
+  } else if (err.name === 'JsonWebTokenError') { // JWT hatası ise
+    res.status(401).json({
       success: false,
       error: {
         code: ErrorCodes.AUTHENTICATION_ERROR,
         message: ErrorMessages[ErrorCodes.AUTHENTICATION_ERROR]
       }
     });
-  }
-
-  // JWT süresi dolmuşsa
-  if (err.name === 'TokenExpiredError') {
-    return res.status(401).json({
+  } else if (err.name === 'TokenExpiredError') { // JWT süresi dolmuşsa
+    res.status(401).json({
       success: false,
       error: {
         code: ErrorCodes.AUTHENTICATION_ERROR,
         message: 'Oturum süresi doldu'
       }
     });
+  } else { // Varsayılan sunucu hatası
+    res.status(500).json({
+      success: false,
+      error: {
+        code: ErrorCodes.SERVER_ERROR,
+        message: process.env.NODE_ENV === 'production'
+          ? ErrorMessages[ErrorCodes.SERVER_ERROR]
+          : err.message,
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      }
+    });
   }
-
-  // Varsayılan sunucu hatası
-  return res.status(500).json({
-    success: false,
-    error: {
-      code: ErrorCodes.SERVER_ERROR,
-      message: process.env.NODE_ENV === 'production'
-        ? ErrorMessages[ErrorCodes.SERVER_ERROR]
-        : err.message,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-    }
-  });
 };
 
 // 404 hatası middleware'i

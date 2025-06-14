@@ -1,8 +1,8 @@
 import express from 'express';
 import { z } from 'zod';
-import { validateRequest } from '../middleware/optimize';
-import { authMiddleware } from '../middleware/auth';
-import { chatService } from '../services/chat';
+import { validateRequest } from '../middleware/optimize.js';
+import { authenticate } from '../middleware/auth.js';
+import { chatService } from '../services/chat.js';
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ const sendMessageSchema = z.object({
 
 // Mesaj gönder
 router.post('/messages',
-  authMiddleware,
+  authenticate,
   validateRequest(sendMessageSchema),
   async (req, res) => {
     try {
@@ -45,7 +45,7 @@ router.post('/messages',
 
 // Mesajları listele
 router.get('/messages',
-  authMiddleware,
+  authenticate,
   async (req, res) => {
     try {
       const userId = req.user?.id;
@@ -76,7 +76,7 @@ router.get('/messages',
 
 // Mesaj sil
 router.delete('/messages/:id',
-  authMiddleware,
+  authenticate,
   async (req, res) => {
     try {
       const userId = req.user?.id;
@@ -116,7 +116,7 @@ router.delete('/messages/:id',
 
 // Okunmamış mesaj sayısını getir
 router.get('/unread',
-  authMiddleware,
+  authenticate,
   async (req, res) => {
     try {
       const userId = req.user?.id;
@@ -147,7 +147,7 @@ router.get('/unread',
 
 // Mesajları okundu olarak işaretle
 router.post('/messages/read',
-  authMiddleware,
+  authenticate,
   async (req, res) => {
     try {
       const userId = req.user?.id;

@@ -2,8 +2,8 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const bcrypt = require('bcrypt');
 
-import { storage } from '../storage.js';
-import { User, UserRole, UserStatus } from '../types';
+import { prisma } from '../lib/prisma.js';
+import { User, UserRole } from '../types/index.js';
 import { AppError } from '../errors/AppError.js';
 
 export class UserService {
@@ -18,25 +18,26 @@ export class UserService {
     return UserService.instance;
   }
 
-  async getUserProfile(userId: string): Promise<User | undefined> {
-    return storage.getUser(userId);
+  async getUserProfile(userId: string): Promise<User | null> {
+    return prisma.user.findUnique({
+      where: { id: userId },
+    });
   }
 
   async updateUserProfile(userId: string, updates: Partial<User>): Promise<User | undefined> {
-    const existingUser = await storage.getUser(userId);
+    const existingUser = await prisma.user.findUnique({ where: { id: userId } });
     if (!existingUser) {
       return undefined;
     }
-    const updatedUser = await storage.upsertUser({
-      ...existingUser,
-      ...updates,
-      id: userId, // Ensure ID is passed for upsert
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updates as any, // Prisma'nın User tipi ile Partial<User> arasındaki farkı yönetmek için any kullanıldı.
     });
     return updatedUser;
   }
 
   async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<boolean> {
-    const user = await storage.getUser(userId);
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user || !user.password) {
       throw new AppError('Kullanıcı bulunamadı veya şifresi yok', 404, 'USER_NOT_FOUND');
     }
@@ -47,21 +48,21 @@ export class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await storage.upsertUser({ ...user, password: hashedPassword, id: userId });
+    await prisma.user.update({ where: { id: userId }, data: { password: hashedPassword } });
     return true;
   }
 
   async deleteUser(userId: string): Promise<boolean> {
-    const user = await storage.getUser(userId);
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       return false;
     }
-    await storage.deleteUser(userId);
+    await prisma.user.delete({ where: { id: userId } });
     return true;
   }
 
   async authenticateUser(email: string, passwordReq: string): Promise<User> {
-    const user = await storage.getUserByEmail(email);
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !user.password) {
       throw new AppError('Geçersiz e-posta veya şifre', 401, 'INVALID_CREDENTIALS');
     }

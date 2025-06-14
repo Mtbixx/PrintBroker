@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 import { prisma } from '../lib/prisma.js';
 import { User, UserRole } from '../types/index.js';
-import { AuthError } from '../errors/AppError.js';
+import { AuthenticationError } from '../errors/AppError.js';
 import { Request, Response, NextFunction } from 'express';
 
 export class AuthService {
@@ -38,7 +38,7 @@ export class AuthService {
       return user;
     } catch (error) {
       console.error('Kullanıcı doğrulama hatası:', error);
-      throw new AuthError('Kullanıcı doğrulama hatası');
+      throw new AuthenticationError('Kullanıcı doğrulama hatası');
     }
   }
 
@@ -77,7 +77,7 @@ export class AuthService {
       return user;
     } catch (error) {
       console.error('Kullanıcı oluşturma hatası:', error);
-      throw new AuthError('Kullanıcı oluşturma hatası');
+      throw new AuthenticationError('Kullanıcı oluşturma hatası');
     }
   }
 
@@ -89,7 +89,7 @@ export class AuthService {
       });
     } catch (error) {
       console.error('Kullanıcı bulma hatası:', error);
-      throw new AuthError('Kullanıcı bulma hatası');
+      throw new AuthenticationError('Kullanıcı bulma hatası');
     }
   }
 
@@ -102,13 +102,13 @@ export class AuthService {
       });
 
       if (!result) {
-        throw new AuthError('Kullanıcı bulunamadı');
+        throw new AuthenticationError('Kullanıcı bulunamadı');
       }
 
       return result;
     } catch (error) {
       console.error('Rol güncelleme hatası:', error);
-      throw new AuthError('Rol güncelleme hatası');
+      throw new AuthenticationError('Rol güncelleme hatası');
     }
   }
 
@@ -123,7 +123,7 @@ export class AuthService {
       });
     } catch (error) {
       console.error('Şifre güncelleme hatası:', error);
-      throw new AuthError('Şifre güncelleme hatası');
+      throw new AuthenticationError('Şifre güncelleme hatası');
     }
   }
 
@@ -137,7 +137,7 @@ export class AuthService {
       return !!result;
     } catch (error) {
       console.error('Kullanıcı silme hatası:', error);
-      throw new AuthError('Kullanıcı silme hatası');
+      throw new AuthenticationError('Kullanıcı silme hatası');
     }
   }
 
@@ -151,7 +151,7 @@ export class AuthService {
         .join(', ');
 
       if (!updateFields) {
-        throw new AuthError('Geçersiz güncelleme alanları');
+        throw new AuthenticationError('Geçersiz güncelleme alanları');
       }
 
       const values = Object.values(updates).filter(value => value !== undefined);
@@ -165,13 +165,13 @@ export class AuthService {
       });
 
       if (!result) {
-        throw new AuthError('Kullanıcı bulunamadı');
+        throw new AuthenticationError('Kullanıcı bulunamadı');
       }
 
       return result;
     } catch (error) {
       console.error('Kullanıcı güncelleme hatası:', error);
-      throw new AuthError('Kullanıcı güncelleme hatası');
+      throw new AuthenticationError('Kullanıcı güncelleme hatası');
     }
   }
 }

@@ -1,7 +1,13 @@
 import express from 'express';
-import { rateLimits } from '../services/rateLimit';
-import { compress, optimizeResponse, validateRequest, cacheControl, corsOptions } from '../middleware/optimize';
+import { rateLimitService } from '../services/rateLimit.js';
+import { compress, optimizeResponse, validateRequest, cacheControl, corsOptions } from '../middleware/optimize.js';
 import cors from 'cors';
+
+import authRoutes from './authRoutes.js';
+import userRoutes from './userRoutes.js';
+import quoteRoutes from './quoteRoutes.js';
+import fileRoutes from './fileRoutes.js';
+import chatRoutes from './chatRoutes.js';
 
 // Ana router
 const router = express.Router();
@@ -15,19 +21,19 @@ router.use(cors(corsOptions));
 const v1Router = express.Router();
 
 // Auth rotaları
-v1Router.use('/auth', rateLimits.auth, require('./authRoutes').default);
+v1Router.use('/auth', rateLimitService.middleware(rateLimitService.profiles.auth), authRoutes);
 
 // Kullanıcı rotaları
-v1Router.use('/users', rateLimits.api, require('./userRoutes').default);
+v1Router.use('/users', rateLimitService.middleware(rateLimitService.profiles.api), userRoutes);
 
 // Teklif rotaları
-v1Router.use('/quotes', rateLimits.api, require('./quoteRoutes').default);
+v1Router.use('/quotes', rateLimitService.middleware(rateLimitService.profiles.api), quoteRoutes);
 
 // Dosya rotaları
-v1Router.use('/files', rateLimits.upload, require('./fileRoutes').default);
+v1Router.use('/files', rateLimitService.middleware(rateLimitService.profiles.upload), fileRoutes);
 
 // Chat rotaları
-v1Router.use('/chat', rateLimits.chat, require('./chatRoutes').default);
+v1Router.use('/chat', rateLimitService.middleware(rateLimitService.profiles.chat), chatRoutes);
 
 // API dokümantasyonu
 v1Router.get('/docs', (req, res) => {
@@ -63,24 +69,7 @@ v1Router.get('/docs', (req, res) => {
         delete: 'DELETE /chat/messages/:id'
       }
     },
-    rateLimits: {
-      auth: {
-        windowMs: 15 * 60 * 1000,
-        max: 5
-      },
-      api: {
-        windowMs: 60 * 1000,
-        max: 100
-      },
-      upload: {
-        windowMs: 60 * 1000,
-        max: 10
-      },
-      chat: {
-        windowMs: 60 * 1000,
-        max: 50
-      }
-    }
+    rateLimits: rateLimitService.profiles
   });
 });
 

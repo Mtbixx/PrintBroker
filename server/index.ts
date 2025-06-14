@@ -1,114 +1,95 @@
-import 'dotenv/config';
-import express, { type Request, Response, NextFunction } from "express";
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+console.log('DEBUG: Dotenv yüklendiği dosya yolu:', path.resolve(__dirname, '../../.env'));
+console.log('DEBUG: server/index.ts - DATABASE_URL değeri:', process.env.DATABASE_URL);
+console.log('DEBUG: server/index.ts - REDIS_URL değeri:', process.env.REDIS_URL);
+
+import express from 'express';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import { rateLimitService } from './services/rateLimit.js';
+import { jwtService } from './services/jwt.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { AppError } from './errors/AppError.js';
+import { redisConfig } from './config/redis.js';
+import { corsOptions } from './middleware/optimize.js';
 import cors from 'cors';
-import { registerRoutes } from "./routes.js";
-import { setupVite, serveStatic, log } from "./vite.js";
-import { execSync } from 'child_process';
-import { corsOptions, securityHeaders } from "./corsConfig.js";
-import { generalLimiter } from "./rateLimiter.js";
-import { handleSEORoute } from "./seoRenderer.js";
-import { globalErrorHandler } from "./errorHandling.js";
+import { loggerService } from './services/logger.js';
+import { metricsService } from './services/metrics.js';
 import { config } from './config/index.js';
+
+// Rota tanımlamaları
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import quoteRoutes from './routes/quoteRoutes.js';
+import fileRoutes from './routes/fileRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 const app = express();
 
-// Security ve CORS middleware'leri ilk sırada
+// Güvenlik için helmet kullan
+app.use(helmet());
+
+// CORS ayarları
 app.use(cors(corsOptions));
-app.use(securityHeaders);
 
-// Trust proxy for rate limiting (Replit için gerekli)
-app.set('trust proxy', 1);
+// İstek gövdesi ayrıştırma
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Global rate limiting
-app.use('/api/', generalLimiter);
+// HTTP istekleri için loglama
+app.use(morgan('dev'));
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+// Sıkıştırma
+app.use(compression());
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+// Rate limiting middleware'leri
+app.use('/api/auth', rateLimitService.middleware(rateLimitService.profiles.auth));
+app.use('/api', rateLimitService.middleware(rateLimitService.profiles.api));
+app.use('/api/files', rateLimitService.middleware(rateLimitService.profiles.upload));
+app.use('/api/chat', rateLimitService.middleware(rateLimitService.profiles.chat));
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson: any, ...args: any[]) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson]);
-  };
+// Rotaları kullan
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/quotes', quoteRoutes);
+app.use('/api/files', fileRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/admin', adminRoutes);
 
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api") && res.statusCode !== 304) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-
-      // Only log response for errors or slow requests
-      if (res.statusCode >= 400 || duration > 1000) {
-        if (capturedJsonResponse) {
-          logLine += ` :: ${JSON.stringify(capturedJsonResponse).slice(0, 100)}`;
-        }
-      }
-
-      if (logLine.length > 120) {
-        logLine = logLine.slice(0, 119) + "…";
-      }
-
-      log(logLine);
-    }
-  });
-
-  next();
+// Ana dizine bir hoş geldiniz mesajı ekleyin
+app.get('/', (req, res) => {
+  res.send('PrintBroker API Çalışıyor!');
 });
 
-// Versiyonlu API örneği
-const v1Router = express.Router();
+// Hata işleyici middleware'i
+app.use(errorHandler as express.ErrorRequestHandler);
 
-v1Router.get('/health', (req: Request, res: Response) => {
-  res.json({ status: 'ok', version: 'v1' });
+// Sunucuyu başlat
+const PORT = config.server.port || 8080;
+const HOST = config.server.host || 'localhost';
+
+app.listen(PORT, HOST, () => {
+  loggerService.info(`Server ${HOST}:${PORT} adresinde çalışıyor`);
+  loggerService.logSystemEvent('Server Started', { port: PORT, host: HOST });
+  console.log(`Server ${HOST}:${PORT} adresinde çalışıyor`);
 });
 
-app.use('/api/v1', v1Router);
+// Uygulama kapatıldığında Redis bağlantısını kapat
+process.on('SIGINT', async () => {
+  console.log('Sunucu kapatılıyor...');
+  await redisConfig.getClient().quit();
+  console.log('Redis bağlantısı kapatıldı.');
+  process.exit(0);
+});
 
-(async () => {
-  const server = await registerRoutes(app);
-
-  // Global unhandled promise rejection handler
-  process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
-    console.error('🔥 Unhandled Rejection at:', promise, 'reason:', reason);
-    // Log stack trace if available
-    if (reason instanceof Error) {
-      console.error('Stack:', reason.stack);
-    }
-  });
-
-  // Global uncaught exception handler
-  process.on('uncaughtException', (error: Error) => {
-    console.error('Uncaught Exception:', error);
-    process.exit(1);
-  });
-
-  app.use(globalErrorHandler);
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
-
-  // SEO middleware for bots
-  app.use(handleSEORoute);
-
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = config.server.port;
-  server.listen({
-    port,
-    host: config.server.host,
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
-})();
+export default app;
