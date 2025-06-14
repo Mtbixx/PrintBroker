@@ -2,30 +2,40 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const bcrypt = require('bcrypt');
 
-import { db } from '../db';
-import { User, UserRole } from '../types';
-import { AuthError } from '../errors/AppError';
+import { prisma } from '../lib/prisma.js';
+import { User, UserRole } from '../types/index.js';
+import { AuthError } from '../errors/AppError.js';
 import { Request, Response, NextFunction } from 'express';
 
 export class AuthService {
+  private static instance: AuthService;
+
+  private constructor() {}
+
+  public static getInstance(): AuthService {
+    if (!AuthService.instance) {
+      AuthService.instance = new AuthService();
+    }
+    return AuthService.instance;
+  }
+
   // Kullanıcı doğrulama
   async validateUser(email: string, password: string): Promise<User | null> {
     try {
-      const user = await db.query(
-        'SELECT * FROM users WHERE email = $1',
-        [email]
-      );
+      const user = await prisma.user.findUnique({
+        where: { email }
+      });
 
-      if (!user.rows[0]) {
+      if (!user || !user.password) {
         return null;
       }
 
-      const isValid = await bcrypt.compare(password, user.rows[0].password);
+      const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) {
         return null;
       }
 
-      return user.rows[0];
+      return user;
     } catch (error) {
       console.error('Kullanıcı doğrulama hatası:', error);
       throw new AuthError('Kullanıcı doğrulama hatası');
@@ -38,24 +48,33 @@ export class AuthService {
     password: string;
     name: string;
     company?: string;
+    role?: UserRole;
+    phone?: string;
+    address?: string;
+    city?: string;
+    postalCode?: string;
+    taxNumber?: string;
   }): Promise<User> {
     try {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-      const result = await db.query(
-        `INSERT INTO users (email, password, name, company, role)
-         VALUES ($1, $2, $3, $4, $5)
-         RETURNING *`,
-        [
-          userData.email,
-          hashedPassword,
-          userData.name,
-          userData.company,
-          'user'
-        ]
-      );
+      const user = await prisma.user.create({
+        data: {
+          email: userData.email,
+          password: hashedPassword,
+          name: userData.name,
+          company: userData.company,
+          role: userData.role || 'customer',
+          phone: userData.phone,
+          address: userData.address,
+          city: userData.city,
+          postalCode: userData.postalCode,
+          taxNumber: userData.taxNumber,
+          isActive: true
+        }
+      });
 
-      return result.rows[0];
+      return user;
     } catch (error) {
       console.error('Kullanıcı oluşturma hatası:', error);
       throw new AuthError('Kullanıcı oluşturma hatası');
@@ -65,12 +84,9 @@ export class AuthService {
   // E-posta ile kullanıcı bulma
   async findUserByEmail(email: string): Promise<User | null> {
     try {
-      const result = await db.query(
-        'SELECT * FROM users WHERE email = $1',
-        [email]
-      );
-
-      return result.rows[0] || null;
+      return await prisma.user.findUnique({
+        where: { email }
+      });
     } catch (error) {
       console.error('Kullanıcı bulma hatası:', error);
       throw new AuthError('Kullanıcı bulma hatası');
@@ -80,16 +96,16 @@ export class AuthService {
   // Kullanıcı rolünü güncelleme
   async updateUserRole(userId: string, role: UserRole): Promise<User> {
     try {
-      const result = await db.query(
-        'UPDATE users SET role = $1 WHERE id = $2 RETURNING *',
-        [role, userId]
-      );
+      const result = await prisma.user.update({
+        where: { id: userId },
+        data: { role }
+      });
 
-      if (!result.rows[0]) {
+      if (!result) {
         throw new AuthError('Kullanıcı bulunamadı');
       }
 
-      return result.rows[0];
+      return result;
     } catch (error) {
       console.error('Rol güncelleme hatası:', error);
       throw new AuthError('Rol güncelleme hatası');
@@ -101,10 +117,10 @@ export class AuthService {
     try {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-      await db.query(
-        'UPDATE users SET password = $1 WHERE id = $2',
-        [hashedPassword, userId]
-      );
+      await prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword }
+      });
     } catch (error) {
       console.error('Şifre güncelleme hatası:', error);
       throw new AuthError('Şifre güncelleme hatası');
@@ -114,12 +130,11 @@ export class AuthService {
   // Kullanıcı silme
   async deleteUser(userId: string): Promise<boolean> {
     try {
-      const result = await db.query(
-        'DELETE FROM users WHERE id = $1 RETURNING id',
-        [userId]
-      );
+      const result = await prisma.user.delete({
+        where: { id: userId }
+      });
 
-      return result.rowCount > 0;
+      return !!result;
     } catch (error) {
       console.error('Kullanıcı silme hatası:', error);
       throw new AuthError('Kullanıcı silme hatası');
@@ -140,16 +155,20 @@ export class AuthService {
       }
 
       const values = Object.values(updates).filter(value => value !== undefined);
-      const result = await db.query(
-        `UPDATE users SET ${updateFields} WHERE id = $1 RETURNING *`,
-        [userId, ...values]
-      );
+      const result = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          [updateFields]: {
+            set: Object.fromEntries(Object.entries(updates).filter(([key, value]) => value !== undefined).map(([key, value]) => [key, value]))
+          }
+        }
+      });
 
-      if (!result.rows[0]) {
+      if (!result) {
         throw new AuthError('Kullanıcı bulunamadı');
       }
 
-      return result.rows[0];
+      return result;
     } catch (error) {
       console.error('Kullanıcı güncelleme hatası:', error);
       throw new AuthError('Kullanıcı güncelleme hatası');
@@ -157,4 +176,4 @@ export class AuthService {
   }
 }
 
-export const authService = new AuthService(); 
+export const authService = AuthService.getInstance(); 
