@@ -1,113 +1,61 @@
 import jwt from 'jsonwebtoken';
-import { config } from '../config';
-import { redisConfig } from '../config/redis';
+import { config } from '../config/index.js';
+import { User } from '../types/index.js';
 
 interface TokenPayload {
   userId: string;
-  role: string;
   email: string;
+  role: string;
 }
 
-export class JWTService {
-  private static instance: JWTService;
-  private readonly secret: string;
-  private readonly accessTokenExpiry: string;
-  private readonly refreshTokenExpiry: string;
+export class JwtService {
+  private static instance: JwtService;
 
-  private constructor() {
-    this.secret = config.jwt.secret;
-    this.accessTokenExpiry = config.jwt.accessTokenExpiry;
-    this.refreshTokenExpiry = config.jwt.refreshTokenExpiry;
-  }
+  private constructor() {}
 
-  public static getInstance(): JWTService {
-    if (!JWTService.instance) {
-      JWTService.instance = new JWTService();
+  public static getInstance(): JwtService {
+    if (!JwtService.instance) {
+      JwtService.instance = new JwtService();
     }
-    return JWTService.instance;
+    return JwtService.instance;
   }
 
-  public generateTokens(payload: TokenPayload): {
-    accessToken: string;
-    refreshToken: string;
-  } {
-    const accessToken = jwt.sign(payload, this.secret, {
-      expiresIn: this.accessTokenExpiry
+  public async generateTokens(user: User) {
+    const payload: TokenPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role
+    };
+
+    const accessToken = jwt.sign(payload, config.jwt.secret, {
+      expiresIn: config.jwt.accessExpiration
     });
 
-    const refreshToken = jwt.sign(payload, this.secret, {
-      expiresIn: this.refreshTokenExpiry
+    const refreshToken = jwt.sign(payload, config.jwt.refreshSecret, {
+      expiresIn: config.jwt.refreshExpiration
     });
 
-    // Refresh token'ı Redis'e kaydet
-    this.storeRefreshToken(payload.userId, refreshToken);
-
-    return { accessToken, refreshToken };
+    return {
+      accessToken,
+      refreshToken
+    };
   }
 
   public verifyToken(token: string): TokenPayload {
     try {
-      return jwt.verify(token, this.secret) as TokenPayload;
+      return jwt.verify(token, config.jwt.secret) as TokenPayload;
     } catch (error) {
-      if (error instanceof jwt.TokenExpiredError) {
-        throw new Error('Token süresi doldu');
-      }
-      if (error instanceof jwt.JsonWebTokenError) {
-        throw new Error('Geçersiz token');
-      }
-      throw error;
+      throw new Error('Geçersiz token');
     }
   }
 
-  public async refreshAccessToken(refreshToken: string): Promise<string> {
+  public verifyRefreshToken(token: string): TokenPayload {
     try {
-      // Refresh token'ı doğrula
-      const payload = this.verifyToken(refreshToken);
-
-      // Redis'te refresh token'ı kontrol et
-      const storedToken = await this.getRefreshToken(payload.userId);
-      if (!storedToken || storedToken !== refreshToken) {
-        throw new Error('Geçersiz refresh token');
-      }
-
-      // Yeni access token oluştur
-      return jwt.sign(payload, this.secret, {
-        expiresIn: this.accessTokenExpiry
-      });
+      return jwt.verify(token, config.jwt.refreshSecret) as TokenPayload;
     } catch (error) {
-      throw new Error('Token yenileme başarısız');
-    }
-  }
-
-  public async revokeRefreshToken(userId: string): Promise<void> {
-    await redisConfig.del(`refresh_token:${userId}`);
-  }
-
-  private async storeRefreshToken(userId: string, token: string): Promise<void> {
-    const expiry = parseInt(this.refreshTokenExpiry);
-    await redisConfig.set(`refresh_token:${userId}`, token, expiry);
-  }
-
-  private async getRefreshToken(userId: string): Promise<string | null> {
-    return redisConfig.get(`refresh_token:${userId}`);
-  }
-
-  public decodeToken(token: string): TokenPayload | null {
-    try {
-      return jwt.decode(token) as TokenPayload;
-    } catch {
-      return null;
-    }
-  }
-
-  public isTokenExpired(token: string): boolean {
-    try {
-      const decoded = jwt.decode(token) as { exp: number };
-      return decoded.exp < Date.now() / 1000;
-    } catch {
-      return true;
+      throw new Error('Geçersiz refresh token');
     }
   }
 }
 
-export const jwtService = JWTService.getInstance(); 
+export const jwtService = JwtService.getInstance(); 

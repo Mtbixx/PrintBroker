@@ -1,8 +1,8 @@
 import express from 'express';
 import { z } from 'zod';
-import { validateRequest } from '../middleware/optimize';
-import { jwtService } from '../services/jwt';
-import { authService } from '../services/auth';
+import { validateRequest } from '../middleware/optimize.js';
+import { jwtService } from '../services/jwt.js';
+import { authService } from '../services/auth.js';
 
 const router = express.Router();
 
@@ -17,7 +17,13 @@ const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   name: z.string().min(2),
-  company: z.string().optional()
+  company: z.string().optional(),
+  role: z.enum(['customer', 'printer']).optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  postalCode: z.string().optional(),
+  taxNumber: z.string().optional()
 });
 
 // Giriş
@@ -30,24 +36,32 @@ router.post('/login',
       
       if (!user) {
         return res.status(401).json({
+          success: false,
           error: 'Kimlik doğrulama hatası',
           message: 'Geçersiz e-posta veya şifre'
         });
       }
 
       const tokens = await jwtService.generateTokens(user);
+      
+      // Kullanıcı rolüne göre yönlendirme URL'si belirle
+      const redirectUrl = user.role === 'printer' ? '/printer-dashboard' : '/customer-dashboard';
+
       res.json({
+        success: true,
         user: {
           id: user.id,
           email: user.email,
           name: user.name,
           role: user.role
         },
+        redirectUrl,
         ...tokens
       });
     } catch (error) {
       console.error('Giriş hatası:', error);
       res.status(500).json({
+        success: false,
         error: 'Giriş hatası',
         message: 'Giriş işlemi sırasında bir hata oluştu'
       });
@@ -60,11 +74,12 @@ router.post('/register',
   validateRequest(registerSchema),
   async (req, res) => {
     try {
-      const { email, password, name, company } = req.body;
+      const { email, password, name, company, role, phone, address, city, postalCode, taxNumber } = req.body;
       
       const existingUser = await authService.findUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({
+          success: false,
           error: 'Kayıt hatası',
           message: 'Bu e-posta adresi zaten kullanılıyor'
         });
@@ -74,22 +89,35 @@ router.post('/register',
         email,
         password,
         name,
-        company
+        company,
+        role,
+        phone,
+        address,
+        city,
+        postalCode,
+        taxNumber
       });
 
       const tokens = await jwtService.generateTokens(user);
+      
+      // Kullanıcı rolüne göre yönlendirme URL'si belirle
+      const redirectUrl = role === 'printer' ? '/printer-dashboard' : '/customer-dashboard';
+
       res.status(201).json({
+        success: true,
         user: {
           id: user.id,
           email: user.email,
           name: user.name,
           role: user.role
         },
+        redirectUrl,
         ...tokens
       });
     } catch (error) {
       console.error('Kayıt hatası:', error);
       res.status(500).json({
+        success: false,
         error: 'Kayıt hatası',
         message: 'Kayıt işlemi sırasında bir hata oluştu'
       });
