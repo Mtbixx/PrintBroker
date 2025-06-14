@@ -36,14 +36,15 @@ import {
 import { Link } from "wouter";
 
 const quoteSchema = z.object({
-  title: z.string().min(1, "Başlık gerekli"),
+  title: z.string().min(3, 'Başlık en az 3 karakter olmalıdır'),
   type: z.enum(["sheet_label", "roll_label", "general_printing"]),
   specifications: z.object({
-    quantity: z.number().min(1, "Miktar en az 1 olmalı"),
-    material: z.string().min(1, "Malzeme seçimi gerekli"),
-    size: z.string().min(1, "Boyut bilgisi gerekli"),
-    description: z.string().min(10, "En az 10 karakter açıklama gerekli")
-  }),
+    quantity: z.number().min(1, 'Miktar en az 1 olmalıdır'),
+    size: z.string().optional(),
+    material: z.string().optional(),
+    color: z.string().optional(),
+    finish: z.string().optional()
+  }).optional(),
   contactInfo: z.object({
     companyName: z.string().min(1, "Firma adı gerekli"),
     contactName: z.string().min(1, "Yetkili kişi adı gerekli"),
@@ -60,7 +61,7 @@ type QuoteFormData = z.infer<typeof quoteSchema>;
 export default function QuoteForm() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-  const { type } = useParams();
+  const { type = 'sheet_label' } = useParams();
   const queryClient = useQueryClient();
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [currentTab, setCurrentTab] = useState("details");
@@ -74,7 +75,13 @@ export default function QuoteForm() {
     defaultValues: {
       title: "",
       type: (type as any) || "sheet_label",
-      specifications: {},
+      specifications: {
+        quantity: 1,
+        size: '',
+        material: '',
+        color: '',
+        finish: ''
+      },
       description: "",
       deadline: "",
       budget: "",
@@ -161,7 +168,7 @@ export default function QuoteForm() {
           description: "AI tasarımınız başarıyla oluşturuldu!",
         });
       }
-    } catch (error: any) => {
+    } catch (error: any) {
       if (error.message.includes("401") || error.message.includes("403")) {
         setHasApiKey(false);
         toast({
