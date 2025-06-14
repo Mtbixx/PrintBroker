@@ -66,9 +66,17 @@ app.use('/api/files', fileRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Statik frontend dosyalarını sun
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Ana dizine bir hoş geldiniz mesajı ekleyin
 app.get('/', (req, res) => {
   res.send('PrintBroker API Çalışıyor!');
+});
+
+// Client-side routing için tüm diğer istekleri index.html'e yönlendir
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
 });
 
 // Hata işleyici middleware'i
