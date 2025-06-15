@@ -6,7 +6,7 @@ export type UserRole = 'admin' | 'printer' | 'customer';
 
 // Kullanıcı tipi
 export interface User {
-  id: string;
+  id: number;
   email: string;
   name: string;
   role: UserRole;
@@ -51,13 +51,14 @@ export interface PrinterQuote {
 
 // Dosya tipi
 export interface File {
-  id: string;
+  id: number;
+  userId: number;
   originalName: string;
-  path: string;
   mimeType: string;
   size: number;
-  userId: string;
+  path: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 // Özel Request tipi

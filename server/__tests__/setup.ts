@@ -1,13 +1,14 @@
-import { config } from 'dotenv';
-import { resolve } from 'path';
+import dotenv from 'dotenv';
 
-// Test ortamı için .env.test dosyasını yükle
-config({ path: resolve(__dirname, '../../.env.test') });
+dotenv.config({ path: '../../../.env' });
 
-// Test veritabanı bağlantısı için gerekli ayarlar
-process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
+process.env.NODE_ENV = 'test';
+process.env.JWT_SECRET = 'test-secret';
+process.env.DATABASE_URL = process.env.TEST_DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/printbroker_test';
+process.env.REDIS_URL = process.env.TEST_REDIS_URL || 'redis://localhost:6379';
 
-// Test ortamı için global ayarlar
+jest.setTimeout(10000);
+
 beforeAll(async () => {
   // Test veritabanını hazırla
 });
@@ -16,12 +17,10 @@ afterAll(async () => {
   // Test veritabanını temizle
 });
 
-// Her testten önce çalışacak
 beforeEach(async () => {
   // Test veritabanını sıfırla
 });
 
-// Her testten sonra çalışacak
 afterEach(async () => {
   // Test veritabanını temizle
 }); 

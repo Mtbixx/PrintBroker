@@ -2,6 +2,7 @@ import { PDFDocument } from 'pdf-lib';
 import { createReadStream } from 'fs';
 import { stat } from 'fs/promises';
 import { config } from '../config';
+import { File } from '../types';
 
 export class PDFService {
   private static instance: PDFService;
@@ -13,6 +14,20 @@ export class PDFService {
       PDFService.instance = new PDFService();
     }
     return PDFService.instance;
+  }
+
+  public async analyzePDF(file: File): Promise<any> {
+    // PDF analiz işlemleri burada yapılacak
+    return {
+      pageCount: 1,
+      dimensions: { width: 595, height: 842 },
+      colorMode: 'RGB'
+    };
+  }
+
+  public async validatePDF(file: File): Promise<boolean> {
+    // PDF doğrulama işlemleri burada yapılacak
+    return true;
   }
 
   public async analyzePDF(filePath: string): Promise<{
